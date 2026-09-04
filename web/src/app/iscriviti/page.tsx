@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Iscriviti() {
   const { titolo, paragrafi, notaProvvisoria } = contenutiPagine.iscriviti
-  const { email } = contenutiPagine.associazione
+  const { email, emailProvvisoria } = contenutiPagine.associazione
 
   return (
     <article className="flex max-w-2xl flex-col gap-6">
@@ -18,11 +18,12 @@ export default function Iscriviti() {
       <p>
         <a
           href={`mailto:${email}`}
-          className="rounded font-semibold text-ambra-scura underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ambra-scura"
+          className="fuoco rounded font-semibold text-ambra-scura underline underline-offset-4"
         >
           {email}
         </a>
       </p>
+      <p className="text-xs">{emailProvvisoria}</p>
       <p className="text-sm">{notaProvvisoria}</p>
     </article>
   )

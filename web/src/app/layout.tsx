@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     template: `%s · ${contenutiPagine.associazione.nome}`,
   },
   description: contenutiPagine.home.occhiello,
+  // Anteprima privata su *.netlify.app: da rimuovere in fase 6, quando il
+  // sito sarà pubblicato sul dominio definitivo.
+  robots: { index: false, follow: false },
 }
 
 export default function RootLayout({
