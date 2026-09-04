@@ -1,0 +1,389 @@
+<title>Il sito del CRAL ARES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap">
+<style>
+  :root{
+    --ground:#F6FAFC; --surface:#FFFFFF; --surface-alt:#EDF5F8;
+    --ink:#0A3D4D; --ink-soft:#4E7180; --line:#D5E5EA;
+    --primary:#0E5C74; --sky:#73D1EA; --amber:#EAA256; --amber-deep:#96591B;
+    --shadow:0 1px 2px rgba(10,61,77,.06), 0 8px 24px rgba(10,61,77,.06);
+    --step:clamp(1rem,.9rem + .4vw,1.0625rem);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#07222B; --surface:#0C313D; --surface-alt:#0F3B4A;
+      --ink:#E3F1F6; --ink-soft:#9DBCC6; --line:#1C4B5B;
+      --primary:#73D1EA; --amber-deep:#EAA256;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#07222B; --surface:#0C313D; --surface-alt:#0F3B4A;
+    --ink:#E3F1F6; --ink-soft:#9DBCC6; --line:#1C4B5B;
+    --primary:#73D1EA; --amber-deep:#EAA256;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:"Titillium Web",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--step); line-height:1.65; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:64rem; margin:0 auto; padding:0 1.5rem}
+  .col{max-width:40rem}
+  h1,h2,h3,.eyebrow,.num{font-family:"Saira Condensed","Titillium Web",sans-serif}
+  h1{font-size:clamp(2.4rem,1.6rem + 3.6vw,4rem); line-height:1.02; font-weight:700;
+     letter-spacing:.005em; margin:0; text-wrap:balance; text-transform:uppercase}
+  h2{font-size:clamp(1.55rem,1.25rem + 1.1vw,2.1rem); line-height:1.12; font-weight:600;
+     margin:0 0 .1em; color:var(--ink); text-wrap:balance; text-transform:uppercase; letter-spacing:.01em}
+  h3{font-size:1.2rem; line-height:1.25; font-weight:600; margin:0; letter-spacing:.015em}
+  p{margin:0}
+  a{color:var(--amber-deep); text-underline-offset:3px; text-decoration-thickness:1px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--primary); outline-offset:3px; border-radius:3px}
+  strong{font-weight:700}
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:.16em; font-size:.78rem; font-weight:600;
+    color:var(--ink-soft);
+  }
+
+  /* ---- testata ---- */
+  .hero{background:#0A3D4D; color:#E3F1F6; padding:3.2rem 0 0; position:relative}
+  .hero .mark{width:min(21rem,68vw); height:auto; display:block; margin-bottom:2.4rem}
+  .hero .eyebrow{color:#73D1EA}
+  .hero h1{color:#FFFFFF}
+  .hero .lede{color:#BCD9E2; font-size:1.15rem; margin-top:1.1rem; max-width:34rem}
+  .hero .skyline{display:block; width:100%; height:clamp(2.6rem,5.5vw,5rem); margin-top:2rem}
+  .hero .meta{
+    display:flex; flex-wrap:wrap; gap:.5rem 2rem; margin-top:1.8rem;
+    font-size:.86rem; color:#8FB6C2; letter-spacing:.04em
+  }
+
+  /* ---- ritmo delle sezioni ---- */
+  main{display:flex; flex-direction:column; gap:4.5rem; padding:4rem 0 5rem}
+  section{display:flex; flex-direction:column; gap:1.5rem}
+  .head{display:flex; flex-direction:column; gap:.35rem}
+  .head .eyebrow{color:var(--amber-deep)}
+  .body-text{display:flex; flex-direction:column; gap:1rem}
+
+  /* ---- schede ---- */
+  .grid{display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:1.4rem 1.35rem; display:flex; flex-direction:column; gap:.6rem; box-shadow:var(--shadow)
+  }
+  .card .tag{
+    align-self:flex-start; font-family:"Saira Condensed",sans-serif; text-transform:uppercase;
+    letter-spacing:.1em; font-size:.72rem; font-weight:600; padding:.2rem .5rem; border-radius:4px;
+    background:var(--surface-alt); color:var(--primary); border:1px solid var(--line)
+  }
+  .card p{color:var(--ink-soft); font-size:.95rem}
+  .card .campi{
+    margin:0; padding-top:.7rem; border-top:1px dashed var(--line);
+    font-size:.88rem; color:var(--ink-soft)
+  }
+
+  /* ---- passi numerati (sequenze reali) ---- */
+  ol.steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1.05rem; counter-reset:s}
+  ol.steps li{display:grid; grid-template-columns:2.35rem 1fr; gap:1rem; align-items:start; counter-increment:s}
+  ol.steps li::before{
+    content:counter(s); font-family:"Saira Condensed",sans-serif; font-weight:700; font-size:1.05rem;
+    line-height:2.35rem; text-align:center; width:2.35rem; height:2.35rem; border-radius:50%;
+    background:var(--surface-alt); color:var(--primary); border:1px solid var(--line)
+  }
+  ol.steps li > div{display:flex; flex-direction:column; gap:.25rem; padding-top:.28rem}
+  ol.steps b{font-weight:700}
+  ol.steps span{color:var(--ink-soft); font-size:.95rem}
+  ol.steps li.chiave::before{background:var(--amber); color:#3B2405; border-color:var(--amber)}
+
+  /* ---- tabella ---- */
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:.94rem; min-width:32rem}
+  th,td{text-align:left; padding:.7rem .95rem; border-bottom:1px solid var(--line); vertical-align:top}
+  th{
+    font-family:"Saira Condensed",sans-serif; text-transform:uppercase; letter-spacing:.09em;
+    font-size:.8rem; font-weight:600; color:var(--ink-soft); background:var(--surface-alt)
+  }
+  tr:last-child td{border-bottom:none}
+  td:first-child{font-weight:600; white-space:nowrap}
+
+  /* ---- fasi ---- */
+  ol.fasi{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0; counter-reset:f}
+  ol.fasi li{
+    counter-increment:f; display:grid; grid-template-columns:3rem 1fr; gap:1.1rem;
+    padding:1.05rem 0; border-bottom:1px solid var(--line)
+  }
+  ol.fasi li:last-child{border-bottom:none}
+  ol.fasi li::before{
+    content:"0" counter(f); font-family:"Saira Condensed",sans-serif; font-weight:700;
+    font-size:1.5rem; color:var(--primary); line-height:1.1
+  }
+  ol.fasi div{display:flex; flex-direction:column; gap:.2rem}
+  ol.fasi .out{font-size:.93rem; color:var(--ink-soft)}
+
+  /* ---- richiami ---- */
+  .nota{
+    background:var(--surface-alt); border-left:3px solid var(--amber); border-radius:0 8px 8px 0;
+    padding:1.1rem 1.3rem; display:flex; flex-direction:column; gap:.5rem
+  }
+  .nota .eyebrow{color:var(--amber-deep)}
+  ul.plain{margin:0; padding-left:1.15rem; display:flex; flex-direction:column; gap:.5rem}
+  ul.plain li::marker{color:var(--primary)}
+
+  footer{
+    border-top:1px solid var(--line); padding:2.2rem 0 3rem; color:var(--ink-soft); font-size:.9rem;
+    display:flex; flex-direction:column; gap:.35rem
+  }
+  @media (max-width:36rem){
+    .hero{padding-top:2.2rem}
+    ol.fasi li{grid-template-columns:2.4rem 1fr; gap:.8rem}
+  }
+
+  /* ---- stampa e PDF ---- */
+  @media print{
+    :root{
+      --ground:#FFFFFF; --surface:#FFFFFF; --surface-alt:#F1F7F9;
+      --ink:#0A3D4D; --ink-soft:#40616E; --line:#C9DDE4;
+      --primary:#0E5C74; --amber-deep:#8A5017; --shadow:none;
+    }
+    *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    @page{size:A4; margin:14mm 16mm}
+    body{font-size:10.5pt; line-height:1.5}
+    .wrap{max-width:none; padding:0}
+    .hero{padding:0 0 0; background:#0A3D4D; margin:-14mm -16mm 0; padding:16mm 16mm 0}
+    .hero .skyline{height:16mm; margin-top:8mm}
+    .hero .mark{width:62mm}
+    main{gap:9mm; padding:9mm 0 0}
+    section{gap:5mm}
+    .head{break-after:avoid; break-inside:avoid}
+    h2,h3{break-after:avoid}
+    h1{font-size:30pt}
+    h2{font-size:16pt}
+    .col{max-width:none}
+    .grid{grid-template-columns:repeat(3,1fr); gap:4mm}
+    .card{box-shadow:none; break-inside:avoid}
+    ol.steps li,ol.fasi li,.nota,.tablewrap{break-inside:avoid}
+    footer{padding:6mm 0 0}
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <svg class="mark" viewBox="0 0 549.12 159.49" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CRAL ARES"><g transform="translate(-141.90 324.10) scale(1 -1)"><path fill="#73d1ea" fill-rule="evenodd" d="M 354.28 223.99 C 368.51 226.99 348.58 190.32 346.34 183.51 L 384.85 183.61 C 383.85 192.97 381.30 208.89 381.26 220.30 C 380.88 223.98 379.90 230.80 384.54 230.39 C 387.27 230.15 390.41 191.37 391.93 183.89 L 435.27 183.96 C 433.33 187.07 428.45 190.22 425.70 192.96 L 408.81 213.66 C 407.02 216.38 402.07 222.55 403.24 226.63 C 404.73 227.42 406.23 227.93 407.80 225.94 C 410.23 222.87 413.11 217.45 417.62 211.98 C 420.40 208.61 421.95 206.34 424.78 203.02 C 430.02 196.87 434.88 193.13 441.08 187.96 C 445.59 184.20 445.52 183.96 453.13 184.06 C 463.78 184.20 474.47 184.07 485.11 184.28 C 484.14 185.67 485.38 184.65 483.20 186.15 C 482.62 186.55 481.43 187.08 480.62 187.52 C 460.01 198.74 438.98 215.85 424.42 234.05 C 420.65 238.76 419.28 240.94 423.10 243.47 C 426.21 242.77 425.16 242.86 427.72 239.30 C 432.58 232.57 446.54 219.62 453.11 214.06 C 456.43 211.25 460.52 208.24 464.30 205.46 C 471.74 199.98 480.05 194.96 488.63 190.29 C 492.01 188.45 498.18 184.27 502.54 184.22 C 508.71 184.16 517.03 184.18 523.08 184.74 L 493.77 202.15 C 489.48 204.88 485.55 205.22 486.92 210.63 C 490.98 211.80 493.81 209.20 496.93 207.31 L 523.31 192.23 C 529.31 188.98 535.22 184.51 543.45 184.56 C 549.23 184.59 566.72 183.91 570.68 185.26 L 571.54 188.56 C 568.98 190.29 549.05 198.09 544.24 200.15 C 534.94 204.12 526.50 208.65 517.94 213.35 C 485.37 231.23 474.68 240.66 447.21 260.41 C 440.82 264.99 431.45 273.21 420.97 273.74 C 383.60 275.61 387.57 266.22 362.93 252.36 C 339.79 239.35 324.61 242.91 301.78 253.29 C 287.54 259.76 280.88 263.44 265.30 253.15 L 236.59 233.00 C 219.63 220.37 192.73 206.00 173.52 196.98 C 169.08 194.89 164.22 192.78 159.72 190.94 C 156.67 189.70 145.90 186.79 149.52 183.42 C 151.94 181.04 194.65 182.39 196.32 182.95 C 199.61 184.05 223.09 199.89 226.13 202.04 L 258.19 226.80 C 260.23 228.01 262.66 228.01 263.43 225.67 C 264.50 222.36 249.73 212.35 247.04 210.22 C 244.26 208.02 241.24 205.57 238.05 203.36 L 209.24 182.83 C 217.47 181.88 230.10 182.77 238.83 182.78 C 247.85 182.80 248.85 184.08 259.20 192.32 L 274.55 206.63 C 277.05 209.32 278.61 211.69 281.30 214.36 C 284.19 217.23 285.65 221.26 290.18 219.61 C 292.13 214.32 281.18 204.75 276.22 199.74 L 257.99 183.16 C 264.16 182.65 271.47 182.97 277.73 183.06 C 288.17 183.20 287.00 183.46 292.54 188.85 C 296.01 192.22 299.03 195.40 302.38 199.42 C 305.15 202.77 307.40 209.83 311.86 210.11 L 313.64 208.45 C 315.00 205.48 304.80 192.28 302.13 189.22 C 300.09 186.89 298.39 185.82 297.30 183.12 L 338.42 183.40 C 345.35 196.14 350.70 218.33 354.28 223.99"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 146.98 263.75 C 154.58 258.36 193.57 272.97 201.44 276.24 C 218.15 283.18 233.31 292.16 249.21 299.19 C 292.73 318.42 301.01 289.73 331.82 290.21 C 343.51 290.39 350.20 295.00 358.37 299.47 C 366.35 303.85 373.11 309.56 385.06 305.04 C 393.30 301.93 400.29 296.48 408.62 293.73 C 419.67 290.08 427.17 294.59 435.47 298.69 C 449.64 305.69 467.10 289.36 488.27 283.91 C 501.38 280.53 508.06 283.62 521.10 282.72 C 534.06 281.83 558.09 269.04 567.53 268.21 C 570.50 267.95 572.77 269.33 571.49 272.15 C 570.43 274.49 562.16 276.22 559.37 277.16 C 545.09 281.99 532.39 289.21 518.45 288.97 C 512.80 288.88 506.72 288.31 501.29 288.42 C 498.68 288.47 495.11 288.58 493.38 289.00 C 470.39 294.69 452.14 312.39 433.60 304.48 C 423.57 300.20 418.70 295.73 406.90 301.32 C 399.44 304.85 391.71 309.96 383.00 312.20 C 370.26 315.48 364.05 309.99 355.90 305.19 C 333.52 292.04 325.39 295.25 302.71 305.30 C 269.32 320.10 254.34 309.02 223.20 293.45 C 206.54 285.11 191.13 277.68 172.88 272.97 C 168.18 271.76 163.06 270.69 158.33 269.86 C 155.73 269.40 153.25 269.17 150.72 268.64 C 147.58 267.98 146.57 267.48 146.98 263.75"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 537.57 178.26 C 432.09 176.93 324.74 176.89 219.09 176.24 C 210.36 176.19 178.59 177.43 173.70 174.44 L 174.07 171.03 C 178.58 168.61 212.02 170.25 220.44 170.30 L 527.05 172.15 C 531.87 172.17 546.84 170.23 546.66 175.50 C 546.52 179.35 541.25 178.31 537.57 178.26"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 167.69 249.42 L 167.53 244.91 C 171.18 243.73 188.72 243.32 191.70 245.29 C 199.47 252.86 170.70 250.78 167.69 249.42"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 177.22 229.37 L 177.30 233.95 C 172.83 234.95 169.97 234.75 165.32 234.74 C 161.80 234.73 155.30 235.75 154.94 231.83 C 154.53 227.25 161.16 228.34 164.70 228.37 C 168.85 228.41 173.77 228.17 177.22 229.37"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 497.80 259.04 C 493.30 257.80 493.01 253.23 500.81 253.09 C 503.53 253.04 512.93 252.85 514.93 253.67 C 518.79 255.25 517.54 259.35 511.37 259.47 C 507.19 259.55 501.47 260.06 497.80 259.04"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 526.27 253.25 C 530.53 253.33 534.85 253.12 539.12 253.38 C 545.60 253.78 545.70 258.51 541.42 258.92 C 538.11 258.64 534.01 258.90 530.44 258.95 C 529.24 258.96 526.98 259.12 525.80 258.97 C 522.53 258.56 522.88 258.00 522.92 254.75 C 523.43 254.51 524.11 254.29 524.29 254.21 Z"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 545.86 243.49 L 545.78 240.23 C 549.33 237.57 559.55 238.03 564.15 239.70 C 565.64 245.17 562.75 244.82 557.63 244.85 C 553.65 244.88 548.48 245.32 545.86 243.49"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 199.24 244.95 L 204.16 244.33 L 210.76 244.47 C 219.83 244.53 219.62 250.75 210.76 250.72 C 203.66 250.70 196.55 252.25 199.24 244.95"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 571.47 173.47 C 572.55 177.88 570.39 178.37 565.92 178.38 C 561.56 178.39 559.54 178.29 560.12 173.65 C 563.44 171.96 568.12 171.78 571.47 173.47"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 160.73 170.71 C 161.81 175.12 159.65 175.60 155.18 175.61 C 150.82 175.62 148.80 175.52 149.38 170.88 C 152.70 169.20 157.38 169.01 160.73 170.71"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 538.85 239.16 C 541.38 246.57 532.82 245.44 531.28 243.93 C 529.25 241.96 530.90 239.50 532.21 238.99 C 533.97 238.30 537.16 238.73 538.85 239.16"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 526.27 253.25 L 524.29 254.21 C 524.11 254.29 523.43 254.51 522.92 254.75 C 522.88 258.00 522.53 258.56 525.80 258.97 C 526.98 259.12 529.24 258.96 530.44 258.95 C 534.01 258.90 538.11 258.64 541.42 258.92 C 540.64 259.87 542.70 259.45 539.71 259.84 C 534.61 259.81 526.32 260.88 522.60 258.54 L 522.29 254.42 Z"/>
+<path fill="#eaa256" fill-rule="evenodd" d="M 618.59 290.92 L 618.59 297.87 L 618.59 299.78 C 618.59 304.72 616.49 306.80 611.28 306.80 C 608.01 306.80 606.38 306.19 605.06 304.55 C 604.13 303.25 603.82 301.69 603.82 297.87 L 603.82 257.04 L 603.82 255.22 C 603.82 250.19 605.91 248.11 611.12 248.11 C 616.64 248.11 618.59 250.02 618.59 255.39 L 618.59 257.04 L 618.59 264.72 L 613.69 264.72 L 613.69 252.79 L 608.71 252.79 L 608.71 302.12 L 613.69 302.12 L 613.69 290.92 Z Z M 627.25 306.37 L 627.25 248.55 L 632.15 248.55 L 632.15 277.50 L 637.12 277.50 L 637.12 248.55 L 642.02 248.55 L 642.02 273.51 L 642.02 274.64 C 642.02 277.41 641.24 278.63 638.91 279.67 C 641.24 280.62 641.94 281.83 642.02 284.78 L 642.02 285.91 L 642.02 297.44 C 642.02 302.03 641.71 303.25 640.08 304.72 C 638.60 306.11 637.43 306.37 632.77 306.37 Z Z M 632.15 301.86 L 637.12 301.86 L 637.12 282.01 L 632.15 282.01 Z Z M 666.00 248.55 L 666.00 297.87 L 666.00 299.69 C 666.00 304.72 663.90 306.80 658.69 306.80 C 653.09 306.80 651.22 304.89 651.22 299.52 L 651.22 297.87 L 651.22 248.55 L 656.12 248.55 L 656.12 277.50 L 661.10 277.50 L 661.10 248.55 Z Z M 661.10 282.01 L 656.12 282.01 L 656.12 302.12 L 661.10 302.12 Z Z M 675.36 306.37 L 675.36 248.55 L 687.02 248.55 L 687.02 253.05 L 680.26 253.05 L 680.26 306.37 Z"/>
+<path fill="#73d1ea" fill-rule="evenodd" d="M 618.63 181.89 L 618.63 231.22 L 618.63 233.04 C 618.63 238.06 616.53 240.14 611.32 240.14 C 605.72 240.14 603.85 238.24 603.85 232.86 L 603.85 231.22 L 603.85 181.89 L 608.75 181.89 L 608.75 210.84 L 613.73 210.84 L 613.73 181.89 Z Z M 613.73 215.35 L 608.75 215.35 L 608.75 235.46 L 613.73 235.46 Z Z M 627.99 239.71 L 627.99 181.89 L 632.89 181.89 L 632.89 210.84 L 637.86 210.84 L 637.86 181.89 L 642.76 181.89 L 642.76 206.86 L 642.76 207.98 C 642.76 210.76 641.98 211.97 639.65 213.01 C 641.98 213.96 642.68 215.18 642.76 218.13 L 642.76 219.25 L 642.76 230.78 C 642.76 235.38 642.45 236.59 640.82 238.06 C 639.34 239.45 638.17 239.71 633.51 239.71 Z Z M 632.89 235.20 L 637.86 235.20 L 637.86 215.35 L 632.89 215.35 Z Z M 663.86 239.71 L 652.20 239.71 L 652.20 181.89 L 663.86 181.89 L 663.86 186.40 L 657.10 186.40 L 657.10 210.84 L 663.86 210.84 L 663.86 215.35 L 657.10 215.35 L 657.10 235.20 L 663.86 235.20 Z Z M 686.98 223.24 L 686.98 231.22 L 686.98 233.04 C 686.98 235.98 686.67 236.94 685.43 238.24 C 684.18 239.62 682.55 240.14 679.67 240.14 C 674.07 240.14 672.21 238.24 672.21 232.86 L 672.21 231.22 L 672.21 219.25 L 672.21 217.69 C 672.21 214.31 672.37 213.44 673.37 212.23 C 674.39 211.10 675.40 210.84 678.27 210.84 L 679.98 210.84 L 682.08 210.84 L 682.08 186.14 L 677.11 186.14 L 677.11 201.13 L 672.21 201.13 L 672.21 190.38 L 672.21 188.56 C 672.21 183.54 674.31 181.46 679.52 181.46 C 685.04 181.46 686.98 183.36 686.98 188.74 L 686.98 190.38 L 686.98 206.86 L 686.98 208.42 C 686.98 211.80 686.75 212.66 685.74 213.79 C 684.73 215.00 683.79 215.35 680.84 215.35 L 679.13 215.35 L 677.11 215.35 L 677.11 235.46 L 682.08 235.46 L 682.08 223.24 Z"/></g></svg>
+    <p class="eyebrow">Documento di presentazione &middot; agosto 2026</p>
+    <h1>Il sito del<br>CRAL ARES</h1>
+    <p class="lede">Come sarà fatto il sito dell'associazione, come si pubblica l'offerta della settimana e come arrivano le richieste dei soci. Scritto per essere letto da tutti, senza termini tecnici.</p>
+    <div class="meta">
+      <span>Indirizzo proposto: cralares.it</span>
+      <span>Realizzazione per tappe</span>
+    </div>
+    <svg class="skyline" viewBox="0 0 430.20 65.74" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none"><g transform="translate(-144.57 322.10) scale(1 -1)"><path fill="#eaa256" d="M 146.98 263.75 C 154.58 258.36 193.57 272.97 201.44 276.24 C 218.15 283.18 233.31 292.16 249.21 299.19 C 292.73 318.42 301.01 289.73 331.82 290.21 C 343.51 290.39 350.20 295.00 358.37 299.47 C 366.35 303.85 373.11 309.56 385.06 305.04 C 393.30 301.93 400.29 296.48 408.62 293.73 C 419.67 290.08 427.17 294.59 435.47 298.69 C 449.64 305.69 467.10 289.36 488.27 283.91 C 501.38 280.53 508.06 283.62 521.10 282.72 C 534.06 281.83 558.09 269.04 567.53 268.21 C 570.50 267.95 572.77 269.33 571.49 272.15 C 570.43 274.49 562.16 276.22 559.37 277.16 C 545.09 281.99 532.39 289.21 518.45 288.97 C 512.80 288.88 506.72 288.31 501.29 288.42 C 498.68 288.47 495.11 288.58 493.38 289.00 C 470.39 294.69 452.14 312.39 433.60 304.48 C 423.57 300.20 418.70 295.73 406.90 301.32 C 399.44 304.85 391.71 309.96 383.00 312.20 C 370.26 315.48 364.05 309.99 355.90 305.19 C 333.52 292.04 325.39 295.25 302.71 305.30 C 269.32 320.10 254.34 309.02 223.20 293.45 C 206.54 285.11 191.13 277.68 172.88 272.97 C 168.18 271.76 163.06 270.69 158.33 269.86 C 155.73 269.40 153.25 269.17 150.72 268.64 C 147.58 267.98 146.57 267.48 146.98 263.75"/></g></svg>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">A cosa serve</p>
+      <h2>Tre cose, fatte bene</h2>
+    </div>
+    <div class="body-text col">
+      <p>Il sito ha tre compiti, in ordine di importanza per chi lo visita: <strong>far conoscere il CRAL ARES</strong> a chi ancora non ne fa parte, <strong>mostrare le offerte e le convenzioni del momento</strong> ai soci, e <strong>raccogliere le loro richieste</strong>, recapitarle a chi le gestisce e tenere traccia di quelle approvate.</p>
+      <p>C'è però un quarto compito, che riguarda voi e non i visitatori, ed è quello che ha guidato tutte le scelte tecniche: <strong>pubblicare una nuova offerta deve richiedere cinque minuti e nessun aiuto esterno.</strong> Il sito si aggiorna compilando un modulo — non serve chiamare nessuno, né aspettare.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Le pagine</p>
+      <h2>Com'è fatto il sito</h2>
+    </div>
+    <div class="body-text col">
+      <p>Le offerte sono visibili a tutti, senza registrazione né password: chi arriva sul sito le vede subito, prezzo scontato compreso. L'appartenenza al CRAL si verifica dopo, quando il socio invia la richiesta e voi la approvate.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th scope="col">Pagina</th><th scope="col">Cosa contiene</th></tr></thead>
+        <tbody>
+          <tr><td>Home</td><td>Presentazione breve dell'associazione, le offerte della settimana in evidenza, il riquadro per iscriversi agli avvisi</td></tr>
+          <tr><td>Offerte</td><td>Tutte le convenzioni valide, con filtro per categoria: cinema, teatri, assicurazione auto, pneumatici…</td></tr>
+          <tr><td>Scheda offerta</td><td>Il dettaglio della singola convenzione, con il pulsante per richiederla o le istruzioni per usufruirne</td></tr>
+          <tr><td>Chi siamo</td><td>L'associazione, il consiglio direttivo, i contatti</td></tr>
+          <tr><td>Iscriviti</td><td>Requisiti, quota associativa e procedura per diventare socio</td></tr>
+          <tr><td>Area riservata</td><td>Non visibile ai soci: è il pannello dove i fondatori pubblicano le offerte e leggono le richieste</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Le offerte</p>
+      <h2>Tre modi di offrire un vantaggio</h2>
+    </div>
+    <div class="body-text col">
+      <p>Non tutte le convenzioni funzionano allo stesso modo: i biglietti del cinema si prenotano tramite voi, lo sconto in palestra no. Per questo ogni offerta, al momento della pubblicazione, viene impostata su una di queste tre modalità — e la scheda sul sito si comporta di conseguenza.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Solo sconto</span>
+        <h3>Il socio ci va da solo</h3>
+        <p>La scheda mostra le istruzioni — «presenta la tessera CRAL alla cassa» — insieme all'eventuale codice sconto, all'indirizzo e ai recapiti del partner. Nessun modulo, nessuna email.</p>
+        <p class="campi">Nessuna richiesta da gestire</p>
+      </article>
+      <article class="card">
+        <span class="tag">Richiesta biglietti</span>
+        <h3>Cinema, teatro, eventi</h3>
+        <p>La scheda mostra il pulsante <strong>Richiedi biglietti</strong>. Il socio indica quanti posti gli servono e per quando; la richiesta arriva a voi via email.</p>
+        <p class="campi">Numero di posti &middot; spettacolo &middot; data e orario preferiti &middot; sala &middot; note</p>
+      </article>
+      <article class="card">
+        <span class="tag">Richiesta convenzione</span>
+        <h3>Palestre, negozi, servizi</h3>
+        <p>La scheda mostra il pulsante <strong>Richiedi informazioni</strong>, con un modulo più adatto alle convenzioni con le società esterne.</p>
+        <p class="campi">Servizio o prodotto di interesse &middot; periodo desiderato &middot; note</p>
+      </article>
+    </div>
+    <div class="nota col">
+      <p class="eyebrow">In entrambi i moduli</p>
+      <p>Il socio lascia sempre gli stessi sei dati: <strong>nome, cognome, codice dipendente, email, telefono</strong> e <strong>modalità di pagamento</strong> — bonifico oppure addebito in busta paga — più il consenso al trattamento dei dati. Il codice dipendente è quello che vi permette di riconoscerlo e di controllare che sia socio in regola.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">La regola di fondo</p>
+      <h2>Il prezzo si vede, il diritto si approva</h2>
+    </div>
+    <div class="body-text col">
+      <p>Sulla scheda dell'offerta il <strong>prezzo riservato ai soci è visibile a tutti</strong>: è quello che rende interessante la convenzione ed è il miglior invito a iscriversi al CRAL. Ottenerlo però è un'altra cosa: il socio invia la richiesta, voi controllate il codice dipendente e <strong>approvate o rifiutate</strong>. Solo allora scattano il prezzo agevolato e le istruzioni per pagare.</p>
+      <p>Perciò ogni scheda dice a chiare lettere che si tratta di un prezzo riservato ai soci, soggetto ad approvazione, e la prima email che il socio riceve conferma soltanto che la richiesta è arrivata — non che è accolta. L'esito arriva con un secondo messaggio, che in caso di rifiuto ne spiega il motivo.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Il lavoro settimanale</p>
+      <h2>Come si pubblica un'offerta</h2>
+    </div>
+    <div class="body-text col">
+      <p>È il gesto che ripeterete ogni settimana per anni, quindi è la parte del sito costruita con più cura. Ecco cosa succede, dall'inizio alla fine.</p>
+    </div>
+    <ol class="steps col">
+      <li><div><b>Aprite l'area riservata</b><span>Un collegamento in fondo al sito. Nessuna password da ricordare: si inserisce il proprio indirizzo email.</span></div></li>
+      <li><div><b>Ricevete un link di accesso</b><span>Arriva subito nella vostra casella. Cliccandolo entrate. Funzionano solo gli indirizzi dei fondatori autorizzati.</span></div></li>
+      <li><div><b>Premete «Nuova offerta»</b><span>Si apre un modulo con i campi che servono: partner, titolo, descrizione, foto, sconto, validità, categoria e istruzioni per usufruirne.</span></div></li>
+      <li class="chiave"><div><b>Vedete l'anteprima mentre scrivete</b><span>Di fianco al modulo compare la scheda esattamente come la vedranno i soci. Nessuna sorpresa dopo la pubblicazione.</span></div></li>
+      <li><div><b>Premete «Pubblica»</b><span>In pochi secondi l'offerta è online. Se preferite prepararla in anticipo, «Salva bozza» la tiene da parte senza mostrarla a nessuno.</span></div></li>
+      <li><div><b>Il sito vi propone di avvisare i soci</b><span>Un pulsante manda l'email a chi si è iscritto agli avvisi, con l'anteprima del messaggio e la conferma prima dell'invio.</span></div></li>
+    </ol>
+    <div class="nota col">
+      <p class="eyebrow">Errori e ripensamenti</p>
+      <p>Un refuso, un prezzo sbagliato, un'offerta annullata dal partner: si riapre l'offerta, si corregge e il sito si aggiorna di nuovo. E quando arriva la data di scadenza che avete indicato, <strong>l'offerta sparisce dal sito da sola</strong>, senza che nessuno debba ricordarsene.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Le richieste</p>
+      <h2>Cosa succede quando un socio richiede</h2>
+    </div>
+    <ol class="steps col">
+      <li><div><b>Il socio compila il modulo</b><span>Parte dalla scheda dell'offerta, che è già indicata: non deve scrivere lui di cosa si tratta.</span></div></li>
+      <li class="chiave"><div><b>La richiesta viene registrata</b><span>Prima di ogni altra cosa. È il passaggio che non può fallire: nessuna richiesta va persa, nemmeno se l'invio delle email si inceppa.</span></div></li>
+      <li><div><b>Arriva l'email ai fondatori</b><span>Ai vostri due o tre indirizzi, con oggetto parlante — <i>Nuova richiesta biglietti — Cinema Astra — Mario Rossi</i> — e tutti i dati nel corpo del messaggio.</span></div></li>
+      <li><div><b>Il socio riceve la presa in carico</b><span>Un messaggio automatico con il riepilogo, che gli ricorda di attendere l'approvazione. Premendo «Rispondi» sull'email che avete ricevuto scrivete direttamente a lui, senza copiare indirizzi.</span></div></li>
+      <li class="chiave"><div><b>Approvate o rifiutate</b><span>Dalla bacheca controllate il codice dipendente e decidete. Il rifiuto richiede una riga di spiegazione: il socio deve capire cosa fare.</span></div></li>
+      <li><div><b>Parte l'esito</b><span>Se approvata, l'email contiene le istruzioni per pagare secondo la modalità scelta dal socio: coordinate per il bonifico, oppure conferma della trattenuta in busta paga. Se rifiutata, il motivo.</span></div></li>
+    </ol>
+    <div class="body-text col">
+      <p><strong>La bacheca delle richieste</strong> è il posto dove tutto questo accade: l'elenco di quanto è arrivato, diviso fra da decidere, approvate e rifiutate, filtrabile per offerta ed esportabile in un foglio di calcolo. Serve quando dovete contare quanti biglietti ordinare, e serve a non perdere il filo quando le richieste sono trenta e non tre.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Gli avvisi</p>
+      <h2>Far sapere ai soci che c'è una novità</h2>
+    </div>
+    <div class="body-text col">
+      <p>Un'offerta pubblicata che nessuno vede è un'offerta sprecata. Per questo i soci possono lasciare il proprio indirizzo email sul sito e ricevere un avviso quando esce una nuova convenzione.</p>
+      <p>L'iscrizione avviene in due passaggi — il socio lascia l'email e conferma cliccando un link che riceve — perché la legge lo richiede e perché evita che qualcuno iscriva altri a sua insaputa. Ogni messaggio contiene il collegamento per cancellarsi in qualsiasi momento.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Dati personali</p>
+      <h2>Privacy, presa sul serio</h2>
+    </div>
+    <div class="body-text col">
+      <p>Il sito raccoglie nome, cognome, codice dipendente, email e telefono di dipendenti dell'Agenzia delle Entrate, insieme alla modalità di pagamento scelta: dati personali a tutti gli effetti. Le regole che seguiremo:</p>
+    </div>
+    <ul class="plain col">
+      <li>Informativa sulla privacy raggiungibile da ogni modulo e dal fondo di ogni pagina.</li>
+      <li>Consenso esplicito prima dell'invio, con casella <strong>non</strong> preselezionata, e registrazione della data in cui è stato prestato.</li>
+      <li>Cancellazione automatica delle richieste dopo 24 mesi.</li>
+      <li>Nessun cookie di profilazione e nessun tracciamento pubblicitario.</li>
+      <li>Dati conservati su server situati nell'Unione Europea.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Il percorso</p>
+      <h2>Come lo realizziamo</h2>
+    </div>
+    <div class="body-text col">
+      <p>Il sito non nasce tutto insieme: si costruisce per tappe, e ogni tappa produce qualcosa che potete vedere e provare. Non serve aspettare la fine per farsi un'idea, e lungo la strada c'è spazio per cambiare quello che non convince.</p>
+    </div>
+    <ol class="fasi">
+      <li><div><b>Il sito si presenta</b><span class="out">L'associazione online: chi siamo, contatti, come iscriversi.</span></div></li>
+      <li><div><b>Le offerte prendono vita</b><span class="out">Pubblicazione delle convenzioni, moduli di richiesta e gestione delle approvazioni.</span></div></li>
+      <li><div><b>Si va in rete</b><span class="out">Indirizzo definitivo, avvisi ai soci e controlli finali prima dell'apertura al pubblico.</span></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="head">
+      <p class="eyebrow">Prossimo passo</p>
+      <h2>Cosa serve da voi</h2>
+    </div>
+    <div class="body-text col">
+      <p>La parte tecnica non è bloccata da nulla: si può cominciare. Queste sono invece le informazioni che dovrete darci strada facendo, e che nessuno può scrivere al posto vostro.</p>
+    </div>
+    <ul class="plain col">
+      <li><strong>Gli indirizzi email dei fondatori</strong> che devono ricevere le richieste (due o tre).</li>
+      <li><strong>Le coordinate bancarie</strong> del CRAL, da inserire nell'email di approvazione per chi sceglie il bonifico.</li>
+      <li><strong>Come funziona l'addebito in busta paga</strong>: con quale procedura l'amministrazione accetta le trattenute e quali dati servono. È l'unico punto che dipende da un accordo esterno all'associazione, quindi conviene chiarirlo presto — il resto del sito non ne è bloccato.</li>
+      <li><strong>I dati dell'associazione</strong> per l'informativa privacy: denominazione completa, sede, indirizzo email del titolare del trattamento.</li>
+      <li><strong>I testi di «Chi siamo»</strong>: cosa fa il CRAL, i nomi e i ruoli del consiglio direttivo.</li>
+      <li><strong>Le regole di iscrizione</strong>: chi può iscriversi, quanto costa, come si fa.</li>
+      <li><strong>L'elenco definitivo delle categorie.</strong> Si parte da cinema, teatri, assicurazione auto e pneumatici: aggiungerne altre è immediato e non richiede interventi tecnici.</li>
+      <li><strong>Il via libera sul dominio</strong> cralares.it, che risulta libero.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>CRAL ARES &middot; documento di presentazione del progetto del sito</p>
+  <p>Redatto il 25 agosto 2026. Le scelte descritte qui sono discutibili e modificabili: serve a mettere tutti d'accordo prima di cominciare.</p>
+</footer>

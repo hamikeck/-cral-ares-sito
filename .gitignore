@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Dipendenze e build (per quando arriverà il codice)
+node_modules/
+.next/
+out/
+dist/
+
+# Variabili d'ambiente: mai nel repository
+.env
+.env.*
+!.env.example
+
+# Log
+*.log
