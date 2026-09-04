@@ -542,6 +542,12 @@ bisogno di un elenco su cui confrontare.
 ## 16. Questioni aperte
 
 - Indirizzi email esatti dei direttori destinatari delle notifiche.
+- **Indirizzo email a cui i soci devono scrivere oggi.** Il sito invita a
+  scrivere a `info@cralares.it` in tre punti, ma il dominio non è ancora
+  registrato: quella casella non esiste. In attesa della risposta l'indirizzo
+  è marcato come provvisorio nel sito. Da chiarire anche se, registrando
+  `cralares.it`, il piano Aruba scelto includa una casella di posta: nei costi
+  ricorrenti è previsto il solo dominio.
 - File Excel dell'elenco soci, e conferma delle colonne disponibili (servono
   almeno nome, cognome, email, codice dipendente).
 - Testo dell'informativa privacy con i dati reali del titolare (denominazione
