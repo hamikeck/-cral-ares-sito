@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+@theme {
+  --color-azzurro: #73D1EA;
+  --color-arancione: #EAA256;
+  --color-blu-profondo: #0E5C74;
+  --color-blu-notte: #0A3D4D;
+  --color-ambra-scura: #96591B;
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,8 +19,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
