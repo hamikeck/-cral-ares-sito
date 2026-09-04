@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CRAL ARES — sito web
 
-## Getting Started
+Sito dell'associazione ricreativa dei dipendenti dell'Agenzia delle Entrate.
+Questa è la fase 1: le pagine pubbliche (home, chi siamo, iscriviti, privacy,
+cookie).
 
-First, run the development server:
+## Comandi
+
+Tutti i comandi vanno eseguiti dalla cartella `web/`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # server di sviluppo
+npm test        # test automatici
+npm run lint    # controllo di stile del codice
+npm run build   # build di produzione
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Testi e contenuti
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+I testi delle pagine vivono in `src/contenuti/pagine.ts`, le voci di menu in
+`src/contenuti/navigazione.ts`. I testi attuali sono provvisori: quelli
+definitivi arriveranno dal direttivo dell'associazione. Sostituirli è
+un'operazione che riguarda solo questi due file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Colori del marchio
 
-## Learn More
+I colori del marchio sono definiti in `src/lib/marchio.ts`, con un test che
+ne verifica il contrasto secondo WCAG.
 
-To learn more about Next.js, take a look at the following resources:
+## Distribuzione
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Il sito è distribuito su Netlify tramite il file `netlify.toml` nella radice
+del repository, che imposta `base = "web"`.
