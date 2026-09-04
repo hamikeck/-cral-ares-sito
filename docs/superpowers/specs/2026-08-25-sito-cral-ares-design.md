@@ -81,7 +81,12 @@ ping settimanale che eviti la pausa per inattività di Supabase.
 | `/privacy` | Informativa sul trattamento dei dati |
 | `/cookie` | Informativa cookie (solo tecnici) |
 
-Le offerte scadute (`valida_al` passata) spariscono da sole dal sito pubblico.
+Le offerte scadute (`valida_al` passata) spariscono da sole dall'elenco, ma la
+loro scheda resta raggiungibile: chi apre un vecchio link — dall'email del
+lunedì riletta tre settimane dopo — trova "Questa offerta è terminata il
+20 settembre", il pulsante di richiesta disattivato e un rimando alle offerte in
+corso. Un link morto farebbe sembrare rotto il sito, e i dati ci sono comunque
+perché le offerte scadute restano in tabella.
 
 ### 5.2 Area riservata (`/area-riservata`)
 
