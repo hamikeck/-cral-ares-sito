@@ -14,12 +14,37 @@
 /**
  * Anello di fuoco per il focus da tastiera, definito una sola volta.
  * Requisito di conformità: WCAG 2.4.7 (fuoco visibile) e 1.4.11 (contrasto
- * degli elementi non testuali). Usa currentColor: l'anello prende il colore
- * del testo dell'elemento a cui è applicato.
+ * degli elementi non testuali).
+ *
+ * Con outline-offset positivo l'anello cade FUORI dal bordo dell'elemento,
+ * cioè sopra ciò che gli sta dietro nella pagina — che non è detto sia lo
+ * sfondo dell'elemento stesso. Due casi:
+ *
+ * - `fuoco`: per testo e collegamenti che poggiano direttamente sullo
+ *   sfondo della pagina o del contenitore (intestazione, piè di pagina,
+ *   testo su bianco). Lì il colore del testo È il colore adatto anche per
+ *   l'anello, quindi si usa currentColor.
+ * - `fuoco-scuro`: per elementi con un proprio sfondo pieno diverso da
+ *   quello della pagina circostante (bottoni), il cui colore di testo è
+ *   tarato su QUELLO sfondo e non su quello della pagina dietro l'anello.
+ *   Con currentColor l'anello erediterebbe quel colore di testo e potrebbe
+ *   sparire contro lo sfondo della pagina (es. bottone bianco-su-blu su
+ *   pagina bianca → anello bianco su bianco). Usa un colore scuro fisso,
+ *   pensato per contrastare con lo sfondo chiaro della pagina.
  */
 @utility fuoco {
   &:focus-visible {
     outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+/* Anello di fuoco per elementi il cui testo non contrasta con il fondo della
+   pagina che sta dietro l'anello: pulsanti pieni su fondo chiaro, dove
+   currentColor sarebbe bianco su bianco. */
+@utility fuoco-scuro {
+  &:focus-visible {
+    outline: 2px solid var(--color-blu-notte);
     outline-offset: 2px;
   }
 }
