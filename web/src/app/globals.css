@@ -1,51 +1,134 @@
 @import "tailwindcss";
 
+/**
+ * Caratteri del sito, installati in locale e serviti dal nostro dominio.
+ *
+ * Sono gli stessi della presentazione approvata dal direttivo: Saira
+ * Condensed per i titoli — condensato e maiuscolo, da cartello — e Titillium
+ * Web per il testo corrente, che è il carattere ufficiale della pubblica
+ * amministrazione italiana.
+ *
+ * Non arrivano da Google Fonts di proposito: una richiesta a un server
+ * esterno trasferirebbe l'indirizzo IP del visitatore a un terzo, e sarebbe
+ * un trattamento da dichiarare nell'informativa. Qui i file stanno in
+ * public/font/ e nessuno esce dal nostro dominio. Sottoinsieme latino di
+ * base, che copre tutte le lettere accentate italiane: 64 KB in tutto.
+ */
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/font/saira-condensed-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/font/saira-condensed-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/font/titillium-web-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/font/titillium-web-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/font/titillium-web-700.woff2') format('woff2');
+}
+
 @theme {
+  /* I cinque colori del marchio, estratti dal logo. */
   --color-azzurro: #73D1EA;
   --color-arancione: #EAA256;
   --color-blu-profondo: #0E5C74;
   --color-blu-notte: #0A3D4D;
   --color-ambra-scura: #96591B;
 
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
+  /* Superfici e testo, ripresi dalla presentazione approvata. Il fondo non è
+     bianco puro: un azzurrino appena percettibile che stacca le schede
+     bianche senza bisogno di ombre. */
+  --color-fondo: #F6FAFC;
+  --color-superficie: #FFFFFF;
+  --color-fascia: #EDF5F8;
+  --color-inchiostro: #0A3D4D;
+  --color-inchiostro-tenue: #4E7180;
+  --color-linea: #D5E5EA;
+
+  --font-titolo: 'Saira Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Titillium Web', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* Scala tipografica fluida: cresce con la larghezza senza scatti. */
+  --text-titolo-pagina: clamp(2.1rem, 1.5rem + 2.6vw, 3.4rem);
+  --text-titolo-pagina--line-height: 1.02;
+  --text-titolo-sezione: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+  --text-titolo-sezione--line-height: 1.12;
+  --text-vantaggio: clamp(1.8rem, 1.2rem + 2.4vw, 3rem);
+  --text-vantaggio--line-height: 1;
+  --text-corpo: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  --text-corpo--line-height: 1.6;
 }
 
-/**
- * Anello di fuoco per il focus da tastiera, definito una sola volta.
- * Requisito di conformità: WCAG 2.4.7 (fuoco visibile) e 1.4.11 (contrasto
- * degli elementi non testuali).
- *
- * Con outline-offset positivo l'anello cade FUORI dal bordo dell'elemento,
- * cioè sopra ciò che gli sta dietro nella pagina — che non è detto sia lo
- * sfondo dell'elemento stesso. Due casi:
- *
- * - `fuoco`: per testo e collegamenti che poggiano direttamente sullo
- *   sfondo della pagina o del contenitore (intestazione, piè di pagina,
- *   testo su bianco). Lì il colore del testo È il colore adatto anche per
- *   l'anello, quindi si usa currentColor.
- * - `fuoco-scuro`: per elementi con un proprio sfondo pieno diverso da
- *   quello della pagina circostante (bottoni), il cui colore di testo è
- *   tarato su QUELLO sfondo e non su quello della pagina dietro l'anello.
- *   Con currentColor l'anello erediterebbe quel colore di testo e potrebbe
- *   sparire contro lo sfondo della pagina (es. bottone bianco-su-blu su
- *   pagina bianca → anello bianco su bianco). Usa un colore scuro fisso,
- *   pensato per contrastare con lo sfondo chiaro della pagina.
- */
-@utility fuoco {
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+@layer base {
+  /* I titoli sono in Saira Condensed maiuscolo, come nella presentazione.
+     Il maiuscolo su un condensato regge perché le parole sono corte e i
+     titoli non superano mai le poche parole: non si usa mai su un paragrafo. */
+  h1, h2, h3 {
+    font-family: var(--font-titolo);
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  /* Il maiuscolo va solo ai titoli strutturali, dove le parole sono poche e
+     grandi. Su un h3 piccolo produce l'effetto etichetta, e i nomi dei
+     partner si leggono meglio in tondo. */
+  h1, h2 {
+    text-transform: uppercase;
   }
 }
 
-/* Anello di fuoco per elementi il cui testo non contrasta con il fondo della
-   pagina che sta dietro l'anello: pulsanti pieni su fondo chiaro, dove
-   currentColor sarebbe bianco su bianco. */
-@utility fuoco-scuro {
+/**
+ * Anello di fuoco per il focus da tastiera, definito una volta sola.
+ * Requisito di conformità: WCAG 2.4.7 (fuoco visibile) e 1.4.11 (contrasto
+ * degli elementi non testuali, minimo 3:1).
+ *
+ * La regola è una sola, e vale la pena scriverla per esteso perché è
+ * controintuitiva: **l'anello deve contrastare con ciò che gli sta dietro,
+ * non con l'elemento a cui appartiene.** Con outline-offset positivo
+ * l'anello cade fuori dal bordo dell'elemento, quindi finisce sopra lo
+ * sfondo della pagina o della fascia che lo contiene.
+ *
+ * Da qui i due nomi: si sceglie in base al FONDO su cui l'anello cade, non
+ * in base all'elemento. Un pulsante azzurro dentro una fascia blu-notte
+ * vuole `fuoco-su-scuro`, anche se il pulsante in sé è chiaro.
+ *
+ *   fuoco-su-chiaro   anello blu-notte  su fondo pagina  11,3:1
+ *   fuoco-su-scuro    anello azzurro    su blu-notte      6,7:1
+ */
+@utility fuoco-su-chiaro {
   &:focus-visible {
     outline: 2px solid var(--color-blu-notte);
     outline-offset: 2px;
   }
 }
 
+@utility fuoco-su-scuro {
+  &:focus-visible {
+    outline: 2px solid var(--color-azzurro);
+    outline-offset: 2px;
+  }
+}

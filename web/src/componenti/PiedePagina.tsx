@@ -14,7 +14,7 @@ export function PiedePagina() {
           <p className="mt-2 text-sm">
             <a
               href={`mailto:${email}`}
-              className="fuoco rounded underline underline-offset-4"
+              className="fuoco-su-scuro rounded underline underline-offset-4"
             >
               {email}
             </a>
@@ -26,7 +26,7 @@ export function PiedePagina() {
               <li key={voce.percorso}>
                 <Link
                   href={voce.percorso}
-                  className="fuoco rounded underline underline-offset-4"
+                  className="fuoco-su-scuro rounded underline underline-offset-4"
                 >
                   {voce.etichetta}
                 </Link>

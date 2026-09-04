@@ -17,8 +17,35 @@ export const contenutiPagine = {
   home: {
     titolo: "Il circolo dei dipendenti dell'Agenzia delle Entrate",
     occhiello:
-      'Biglietti del cinema, convenzioni e offerte riservate ai soci del CRAL ARES.',
-    invito: 'Scopri come iscriverti',
+      "Biglietti del cinema, convenzioni con i negozi della zona e offerte riservate ai soci.",
+    avvisoDimostrativo:
+      "Le offerte qui sotto sono esempi: servono a mostrare che aspetto avrà il sito. Quelle vere le pubblicheranno i direttori dall'area riservata.",
+    titoloEvidenza: "In corso questa settimana",
+    titoloAltre: "Altre offerte aperte",
+    nessunaOfferta:
+      "Questa settimana non ci sono offerte in corso. Le pubblichiamo qui appena arrivano.",
+    titoloCosaTrovi: "Cosa trovi qui",
+    cosaTrovi: [
+      {
+        titolo: "Biglietti del cinema",
+        testo:
+          "Il CRAL acquista biglietti dei circuiti convenzionati a prezzo ridotto. Li richiedi dal sito e i direttori ti dicono come ritirarli.",
+      },
+      {
+        titolo: "Convenzioni",
+        testo:
+          "Sconti concordati con negozi e professionisti della zona. In molti casi basta mostrare la tessera del CRAL alla cassa.",
+      },
+      {
+        titolo: "Offerte della settimana",
+        testo:
+          "Teatro, eventi e occasioni che durano poco. Restano qui finché sono valide, poi spariscono da sole.",
+      },
+    ],
+    titoloIscrizione: "Non sei ancora socio?",
+    testoIscrizione:
+      "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate.",
+    invito: "Scopri come iscriverti",
   },
   chiSiamo: {
     titolo: 'Chi siamo',
