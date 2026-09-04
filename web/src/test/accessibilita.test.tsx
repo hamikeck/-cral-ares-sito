@@ -7,6 +7,7 @@ describe('violazioniAccessibilita', () => {
     const { container } = render(
       <main>
         <h1>Titolo</h1>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo-cral-ares.svg" alt="CRAL ARES" />
       </main>,
     )
