@@ -12,7 +12,7 @@ export default function Home() {
         <div>
           <Link
             href="/iscriviti"
-            className="inline-block rounded-lg bg-blu-profondo px-5 py-3 font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blu-profondo hover:bg-blu-notte"
+            className="fuoco inline-block rounded-lg bg-blu-profondo px-5 py-3 font-semibold text-white hover:bg-blu-notte"
           >
             {invito}
           </Link>

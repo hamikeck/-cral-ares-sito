@@ -11,3 +11,16 @@
     Arial, sans-serif;
 }
 
+/**
+ * Anello di fuoco per il focus da tastiera, definito una sola volta.
+ * Requisito di conformità: WCAG 2.4.7 (fuoco visibile) e 1.4.11 (contrasto
+ * degli elementi non testuali). Usa currentColor: l'anello prende il colore
+ * del testo dell'elemento a cui è applicato.
+ */
+@utility fuoco {
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+

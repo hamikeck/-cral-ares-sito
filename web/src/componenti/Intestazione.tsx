@@ -27,7 +27,7 @@ export function Intestazione() {
               <li key={voce.percorso}>
                 <Link
                   href={voce.percorso}
-                  className="rounded text-azzurro underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-azzurro"
+                  className="fuoco rounded text-azzurro underline-offset-4 hover:underline"
                 >
                   {voce.etichetta}
                 </Link>

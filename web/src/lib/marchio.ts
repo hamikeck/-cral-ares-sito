@@ -15,7 +15,14 @@ export const colori = {
   bianco: '#FFFFFF',
 } as const
 
+const FORMATO_ESADECIMALE = /^#[0-9a-fA-F]{6}$/
+
 function luminanzaRelativa(colore: string): number {
+  if (!FORMATO_ESADECIMALE.test(colore)) {
+    throw new Error(
+      `Formato colore non valido: "${colore}". È richiesto un esadecimale a sei cifre con il cancelletto, ad esempio "#73D1EA".`,
+    )
+  }
   const esadecimale = colore.replace('#', '')
   const canali = [0, 2, 4].map((posizione) => {
     const valore = parseInt(esadecimale.slice(posizione, posizione + 2), 16) / 255

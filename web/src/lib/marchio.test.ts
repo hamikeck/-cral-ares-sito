@@ -11,6 +11,15 @@ describe('rapportoDiContrasto', () => {
   test('vale 1:1 fra un colore e se stesso', () => {
     expect(rapportoDiContrasto('#73D1EA', '#73D1EA')).toBeCloseTo(1, 2)
   })
+
+  test('rifiuta un ingresso che non è un esadecimale a sei cifre', () => {
+    expect(() => rapportoDiContrasto('#FFF', '#000000')).toThrow(
+      /esadecimale a sei cifre/,
+    )
+    expect(() => rapportoDiContrasto('rgb(255, 255, 255)', '#000000')).toThrow(
+      /esadecimale a sei cifre/,
+    )
+  })
 })
 
 describe('palette del marchio', () => {
