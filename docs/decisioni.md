@@ -134,3 +134,35 @@ l'indirizzo vero appena il direttivo lo comunica.
 - **Niente gruppi di rotte** `(pubblico)` / `(riservato)`: serviranno in fase 2
   per dare all'area riservata un guscio diverso. Farlo ora sarebbe stato più
   economico, ma non è urgente.
+
+### Sicurezza: cosa vale oggi e cosa scade con le fasi successive
+
+Le intestazioni di sicurezza stanno in `netlify.toml`. La politica dei
+contenuti è severa perché il sito non carica nulla da fuori, e questo le dà un
+ruolo in più: **è il browser che fa rispettare quello che la pagina cookie
+dichiara.** Un font di Google aggiunto per distrazione non funzionerebbe,
+invece di funzionare in silenzio rendendo falsa l'informativa.
+
+Una revisione di sicurezza del 6 settembre 2026 non ha trovato vulnerabilità.
+Ha però individuato tre punti che **scadono** quando arriveranno database,
+autenticazione e moduli:
+
+1. **`script-src 'unsafe-inline'` regge solo finché non esistono contenuti
+   scritti dagli utenti.** Next lo impone per i suoi dati di idratazione, e
+   toglierlo richiede i nonce e un middleware, che costringerebbe ogni pagina a
+   essere generata su richiesta invece che staticamente. Oggi non c'è nulla da
+   iniettare; **dalla fase 4 sì.** Va rivalutato prima che i moduli vadano
+   online, non dopo.
+2. **`form-action 'self'` e `connect-src 'self'` andranno rivisti** con
+   l'autenticazione Supabase: se il flusso di accesso passa da un'origine
+   diversa, vanno aggiunte quelle origini in modo stretto e nominato, mai
+   allargando la direttiva.
+3. **Il criterio con cui si filtra la categoria è il modello da mantenere:**
+   confronto esatto con un elenco chiuso, e scarto di tutto il resto. Quando i
+   dati arriveranno dal database, la tentazione sarà passare a una ricerca
+   libera sul testo. Non farlo.
+
+Le pagine di errore non mostrano il messaggio tecnico né la traccia dello
+stack: è il modo classico in cui un sito rivela la struttura del proprio
+database mentre si scusa. Va mantenuto così anche quando gli errori
+diventeranno reali.
