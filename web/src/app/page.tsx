@@ -32,6 +32,9 @@ export default function Home() {
     invito,
   } = contenutiPagine.home
 
+  const inEvidenza = offertaInEvidenza()
+  const altre = altreOfferte()
+
   return (
     <>
       <section className="flex flex-col gap-6">
@@ -44,24 +47,32 @@ export default function Home() {
           {avvisoDimostrativo}
         </p>
 
-        {offertaInEvidenza ? (
+        {inEvidenza ? (
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl text-inchiostro">{titoloEvidenza}</h2>
-            <SchedaOfferta offerta={offertaInEvidenza} inEvidenza />
+            <SchedaOfferta offerta={inEvidenza} inEvidenza />
           </div>
         ) : (
           <p className="max-w-prose text-corpo">{nessunaOfferta}</p>
         )}
       </section>
 
-      {altreOfferte.length > 0 && (
+      {altre.length > 0 && (
         <section className="mt-14 flex flex-col gap-5">
           <h2 className="text-2xl text-inchiostro">{titoloAltre}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {altreOfferte.map((offerta) => (
+            {altre.map((offerta) => (
               <SchedaOfferta key={offerta.slug} offerta={offerta} />
             ))}
           </div>
+          <p>
+            <Link
+              href="/offerte"
+              className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+            >
+              {contenutiPagine.offerte.vediTutte}
+            </Link>
+          </p>
         </section>
       )}
 

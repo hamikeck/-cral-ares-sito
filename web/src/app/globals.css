@@ -132,3 +132,18 @@
     outline-offset: 2px;
   }
 }
+
+/* L'anello di fuoco di una scheda cliccabile. Il collegamento vero è il nome
+   del partner, esteso al riquadro: senza questa regola il fuoco disegnerebbe
+   l'anello attorno alle sole parole del titolo, non attorno alla scheda che
+   l'utente vede evidenziata. */
+@utility fuoco-scheda {
+  &:has(a:focus-visible) {
+    outline: 2px solid var(--color-blu-notte);
+    outline-offset: 2px;
+  }
+
+  & a:focus-visible {
+    outline: none;
+  }
+}

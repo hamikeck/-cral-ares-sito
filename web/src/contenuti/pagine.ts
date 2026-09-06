@@ -47,6 +47,24 @@ export const contenutiPagine = {
       "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate.",
     invito: "Scopri come iscriverti",
   },
+  offerte: {
+    titolo: "Offerte e convenzioni",
+    occhiello:
+      "Tutto quello che il CRAL ha aperto in questo momento. Le offerte scadute spariscono da sole.",
+    filtroEtichetta: "Filtra per categoria",
+    tutte: "Tutte",
+    nessuna: "Non ci sono offerte in questa categoria.",
+    vediTutte: "Vedi tutte le offerte",
+  },
+  offerta: {
+    titoloCondizioni: "Condizioni",
+    titoloComeFunziona: "Come si ottiene",
+    titoloRichiesta: "Come si richiede",
+    richiestaNonAncora:
+      "Il modulo di richiesta arriverà con la prossima fase del sito. Per ora scrivi ai direttori all'indirizzo dell'associazione.",
+    torna: "Torna a tutte le offerte",
+    scaduta: "Questa offerta è terminata.",
+  },
   chiSiamo: {
     titolo: 'Chi siamo',
     paragrafi: [

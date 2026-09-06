@@ -1,18 +1,23 @@
+import Link from 'next/link'
 import type { Offerta } from '@/contenuti/offerteEsempio'
 
 /**
- * La scheda di un'offerta.
+ * La scheda di un'offerta negli elenchi.
  *
  * È il pezzo di interfaccia che il socio incontra più spesso, quindi ha una
  * gerarchia sola: il vantaggio è l'elemento grande, tutto il resto sta
  * intorno in silenzio. Il partner è il titolo, la categoria e la scadenza
  * sono servizio.
  *
+ * Tutta la scheda è cliccabile, ma il collegamento vero è solo sul nome del
+ * partner, esteso al riquadro con uno pseudo-elemento. È la differenza fra
+ * una scheda che si può usare col mouse e una che, letta da uno screen
+ * reader, annuncia un collegamento chiamato "UCI Cinemas" invece di
+ * rileggere l'intero contenuto della scheda.
+ *
  * Nella variante `inEvidenza` la scheda prende un filo arancione a sinistra —
  * il richiamo dell'avviso appeso in bacheca — e su schermo largo si apre su
- * due colonne: a sinistra il vantaggio, a destra il dettaglio. Serve a due
- * cose: distinguere l'offerta della settimana dalle altre senza etichette, e
- * non lasciare mezza scheda vuota quando c'è spazio.
+ * due colonne: a sinistra il vantaggio, a destra il dettaglio.
  */
 export function SchedaOfferta({
   offerta,
@@ -23,14 +28,23 @@ export function SchedaOfferta({
   inEvidenza?: boolean
   titolo?: 'h2' | 'h3'
 }) {
+  const collegamento = (
+    <Link
+      href={`/offerte/${offerta.slug}`}
+      className="after:absolute after:inset-0 after:content-[''] hover:underline"
+    >
+      {offerta.partner}
+    </Link>
+  )
+
   if (inEvidenza) {
     return (
-      <article className="border-l-4 border-arancione bg-superficie px-5 py-6 sm:px-8 sm:py-8">
+      <article className="fuoco-scheda relative border-l-4 border-arancione bg-superficie px-5 py-6 sm:px-8 sm:py-8">
         <div className="grid gap-x-10 gap-y-5 lg:grid-cols-[5fr_6fr]">
           <div>
             <p className="text-sm text-inchiostro-tenue">{offerta.categoria}</p>
-            <Titolo className="mt-1 text-titolo-sezione text-inchiostro">
-              {offerta.partner}
+            <Titolo className="mt-1 text-titolo-sezione normal-case text-inchiostro">
+              {collegamento}
             </Titolo>
             <p className="mt-4 font-titolo text-vantaggio font-bold text-blu-profondo">
               {offerta.vantaggio}
@@ -48,9 +62,9 @@ export function SchedaOfferta({
   }
 
   return (
-    <article className="flex flex-col border border-linea bg-superficie px-5 py-6">
+    <article className="fuoco-scheda relative flex flex-col border border-linea bg-superficie px-5 py-6 transition-colors hover:border-blu-profondo">
       <p className="text-sm text-inchiostro-tenue">{offerta.categoria}</p>
-      <Titolo className="mt-1 text-xl text-inchiostro">{offerta.partner}</Titolo>
+      <Titolo className="mt-1 text-xl normal-case text-inchiostro">{collegamento}</Titolo>
       <p className="mt-3 font-titolo text-2xl font-bold text-blu-profondo">
         {offerta.vantaggio}
       </p>

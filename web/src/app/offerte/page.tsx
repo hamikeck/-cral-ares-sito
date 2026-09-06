@@ -1,0 +1,96 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { SchedaOfferta } from '@/componenti/SchedaOfferta'
+import { contenutiPagine } from '@/contenuti/pagine'
+import { categorie, offertePerCategoria } from '@/contenuti/offerteEsempio'
+
+export const metadata: Metadata = {
+  title: contenutiPagine.offerte.titolo,
+}
+
+/**
+ * L'elenco completo delle offerte.
+ *
+ * Il filtro per categoria passa dall'indirizzo (`?categoria=Cinema`) invece
+ * che da uno stato nel browser. Costa una ricarica, ma in cambio ogni filtro
+ * è un indirizzo che si può salvare o mandare per messaggio — «guarda le
+ * convenzioni auto» diventa un link — funziona senza JavaScript, e la
+ * navigazione col tasto indietro si comporta come chiunque si aspetta.
+ */
+export default async function Offerte({
+  searchParams,
+}: {
+  searchParams: Promise<{ [chiave: string]: string | string[] | undefined }>
+}) {
+  const { titolo, occhiello, filtroEtichetta, tutte, nessuna } =
+    contenutiPagine.offerte
+  const { avvisoDimostrativo } = contenutiPagine.home
+
+  const parametri = await searchParams
+  const richiesta = parametri.categoria
+  const categoriaScelta =
+    typeof richiesta === 'string' && categorie().includes(richiesta)
+      ? richiesta
+      : undefined
+
+  const elenco = offertePerCategoria(categoriaScelta)
+
+  return (
+    <>
+      <div className="flex max-w-2xl flex-col gap-3">
+        <h1 className="text-titolo-pagina text-inchiostro">{titolo}</h1>
+        <p className="text-corpo text-inchiostro-tenue">{occhiello}</p>
+      </div>
+
+      <p className="mt-6 max-w-2xl border-l-2 border-azzurro bg-fascia px-4 py-3 text-sm text-inchiostro-tenue">
+        {avvisoDimostrativo}
+      </p>
+
+      <nav className="mt-8" aria-label={filtroEtichetta}>
+        <ul className="flex flex-wrap gap-2">
+          <li>
+            <Link
+              href="/offerte"
+              aria-current={categoriaScelta ? undefined : 'true'}
+              className={
+                categoriaScelta
+                  ? 'fuoco-su-chiaro inline-block border border-linea bg-superficie px-3 py-1.5 text-sm hover:border-blu-profondo'
+                  : 'fuoco-su-chiaro inline-block border border-blu-profondo bg-blu-profondo px-3 py-1.5 text-sm font-semibold text-white'
+              }
+            >
+              {tutte}
+            </Link>
+          </li>
+          {categorie().map((categoria) => {
+            const attiva = categoria === categoriaScelta
+            return (
+              <li key={categoria}>
+                <Link
+                  href={`/offerte?categoria=${encodeURIComponent(categoria)}`}
+                  aria-current={attiva ? 'true' : undefined}
+                  className={
+                    attiva
+                      ? 'fuoco-su-chiaro inline-block border border-blu-profondo bg-blu-profondo px-3 py-1.5 text-sm font-semibold text-white'
+                      : 'fuoco-su-chiaro inline-block border border-linea bg-superficie px-3 py-1.5 text-sm hover:border-blu-profondo'
+                  }
+                >
+                  {categoria}
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+
+      {elenco.length > 0 ? (
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {elenco.map((offerta) => (
+            <SchedaOfferta key={offerta.slug} offerta={offerta} titolo="h2" />
+          ))}
+        </div>
+      ) : (
+        <p className="mt-8 text-corpo">{nessuna}</p>
+      )}
+    </>
+  )
+}

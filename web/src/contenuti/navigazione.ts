@@ -6,6 +6,7 @@ export type VoceDiMenu = {
 /** Menu principale, mostrato nell'intestazione. */
 export const vociDiMenu: VoceDiMenu[] = [
   { percorso: '/', etichetta: 'Home' },
+  { percorso: '/offerte', etichetta: 'Offerte' },
   { percorso: '/chi-siamo', etichetta: 'Chi siamo' },
   { percorso: '/iscriviti', etichetta: 'Iscriviti' },
 ]
