@@ -3,6 +3,17 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { contenutiPagine } from '@/contenuti/pagine'
 import { offerte, offertaDaSlug } from '@/contenuti/offerteEsempio'
+import { formattaData, scaduta } from '@/lib/date'
+
+/**
+ * Le pagine si rigenerano ogni ora.
+ *
+ * Senza questo, una pagina statica congela il giorno della build: un'offerta
+ * scaduta ieri resterebbe in elenco finché qualcuno non ripubblica il sito.
+ * È la riga che rende vera la promessa «le offerte scadute spariscono da
+ * sole» senza chiedere niente a nessuno.
+ */
+export const revalidate = 3600
 
 /** Una pagina statica per ogni offerta, generata alla build. */
 export async function generateStaticParams() {
@@ -41,7 +52,10 @@ export default async function PaginaOfferta({
 
   if (!offerta) notFound()
 
+  const terminata = scaduta(offerta.validaAl)
+
   const {
+    scaduta: testoScaduta,
     titoloCondizioni,
     titoloComeFunziona,
     titoloRichiesta,
@@ -57,12 +71,20 @@ export default async function PaginaOfferta({
         <h1 className="mt-1 text-titolo-pagina text-inchiostro">
           {offerta.partner}
         </h1>
-        <p className="mt-4 font-titolo text-vantaggio font-bold text-blu-profondo">
+        <p
+          className={
+            terminata
+              ? 'mt-4 font-titolo text-vantaggio font-bold text-inchiostro-tenue'
+              : 'mt-4 font-titolo text-vantaggio font-bold text-blu-profondo'
+          }
+        >
           {offerta.vantaggio}
         </p>
         <p className="mt-4 text-corpo">{offerta.descrizioneCompleta}</p>
         <p className="mt-5 border-t border-linea pt-3 text-sm text-inchiostro-tenue">
-          Valida fino al {offerta.validaAl}
+          {terminata
+            ? `Era valida fino al ${formattaData(offerta.validaAl)}`
+            : `Valida fino al ${formattaData(offerta.validaAl)}`}
         </p>
       </div>
 
@@ -80,6 +102,18 @@ export default async function PaginaOfferta({
         </ul>
       </section>
 
+      {terminata ? (
+        <p className="border-l-4 border-arancione bg-fascia px-5 py-6 text-corpo sm:px-8">
+          {testoScaduta} Guarda{' '}
+          <Link
+            href="/offerte"
+            className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+          >
+            le offerte in corso
+          </Link>
+          .
+        </p>
+      ) : (
       <section className="bg-fascia px-5 py-6 sm:px-8">
         {offerta.modalita === 'solo_sconto' ? (
           <>
@@ -101,6 +135,7 @@ export default async function PaginaOfferta({
           </>
         )}
       </section>
+      )}
 
       <p>
         <Link

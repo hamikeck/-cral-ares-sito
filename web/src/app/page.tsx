@@ -4,6 +4,16 @@ import { contenutiPagine } from '@/contenuti/pagine'
 import { altreOfferte, offertaInEvidenza } from '@/contenuti/offerteEsempio'
 
 /**
+ * Le pagine si rigenerano ogni ora.
+ *
+ * Senza questo, una pagina statica congela il giorno della build: un'offerta
+ * scaduta ieri resterebbe in elenco finché qualcuno non ripubblica il sito.
+ * È la riga che rende vera la promessa «le offerte scadute spariscono da
+ * sole» senza chiedere niente a nessuno.
+ */
+export const revalidate = 3600
+
+/**
  * La home.
  *
  * L'ordine non è quello consueto — prima chi siamo, poi cosa offriamo — ma

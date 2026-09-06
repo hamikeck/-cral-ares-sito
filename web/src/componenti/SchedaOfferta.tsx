@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Offerta } from '@/contenuti/offerteEsempio'
+import { formattaData } from '@/lib/date'
 
 /**
  * La scheda di un'offerta negli elenchi.
@@ -53,7 +54,7 @@ export function SchedaOfferta({
           <div className="flex flex-col lg:border-l lg:border-linea lg:pl-10">
             <p className="max-w-prose text-corpo">{offerta.descrizione}</p>
             <p className="mt-4 border-t border-linea pt-3 text-sm text-inchiostro-tenue lg:mt-auto">
-              Valida fino al {offerta.validaAl}
+              Valida fino al {formattaData(offerta.validaAl)}
             </p>
           </div>
         </div>
@@ -70,7 +71,7 @@ export function SchedaOfferta({
       </p>
       <p className="mt-3 max-w-prose text-corpo">{offerta.descrizione}</p>
       <p className="mt-4 border-t border-linea pt-3 text-sm text-inchiostro-tenue sm:mt-auto">
-        Valida fino al {offerta.validaAl}
+        Valida fino al {formattaData(offerta.validaAl)}
       </p>
     </article>
   )

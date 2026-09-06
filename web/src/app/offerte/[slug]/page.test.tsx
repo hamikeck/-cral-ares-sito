@@ -2,11 +2,16 @@ import { describe, expect, test } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { offerte } from '@/contenuti/offerteEsempio'
+import { offerte, offerteValide } from '@/contenuti/offerteEsempio'
+import { formattaData } from '@/lib/date'
 import PaginaOfferta, { generateStaticParams } from './page'
 
-const conRichiesta = offerte.find((o) => o.modalita !== 'solo_sconto')!
-const soloSconto = offerte.find((o) => o.modalita === 'solo_sconto')!
+const valide = offerteValide()
+const conRichiesta = valide.find((o) => o.modalita !== 'solo_sconto')!
+const soloSconto = valide.find((o) => o.modalita === 'solo_sconto')!
+const terminata = offerte.find(
+  (o) => !valide.some((v) => v.slug === o.slug),
+)!
 
 describe('Pagina di una singola offerta', () => {
   test('genera una pagina statica per ogni offerta', async () => {
@@ -31,7 +36,7 @@ describe('Pagina di una singola offerta', () => {
     )
     expect(screen.getByText(conRichiesta.vantaggio)).toBeInTheDocument()
     expect(
-      screen.getByText(`Valida fino al ${conRichiesta.validaAl}`),
+      screen.getByText(`Valida fino al ${formattaData(conRichiesta.validaAl)}`),
     ).toBeInTheDocument()
     for (const condizione of conRichiesta.condizioni) {
       expect(screen.getByText(condizione)).toBeInTheDocument()
@@ -92,5 +97,40 @@ describe('Pagina di una singola offerta', () => {
       await PaginaOfferta({ params: Promise.resolve({ slug: conRichiesta.slug }) }),
     )
     expect(await violazioniAccessibilita(container)).toEqual([])
+  })
+
+  test("un'offerta terminata resta raggiungibile e lo dichiara", async () => {
+    render(
+      await PaginaOfferta({ params: Promise.resolve({ slug: terminata.slug }) }),
+    )
+    expect(
+      screen.getAllByText(new RegExp(contenutiPagine.offerta.scaduta)).length,
+    ).toBeGreaterThan(0)
+    expect(
+      screen.getByText(new RegExp(formattaData(terminata.validaAl))),
+    ).toBeInTheDocument()
+  })
+
+  test("un'offerta terminata non propone più di richiederla", async () => {
+    render(
+      await PaginaOfferta({ params: Promise.resolve({ slug: terminata.slug }) }),
+    )
+    for (const titolo of [
+      contenutiPagine.offerta.titoloRichiesta,
+      contenutiPagine.offerta.titoloComeFunziona,
+    ]) {
+      expect(
+        screen.queryByRole('heading', { level: 2, name: titolo }),
+      ).not.toBeInTheDocument()
+    }
+  })
+
+  test("un'offerta terminata rimanda a quelle in corso", async () => {
+    render(
+      await PaginaOfferta({ params: Promise.resolve({ slug: terminata.slug }) }),
+    )
+    expect(
+      screen.getByRole('link', { name: 'le offerte in corso' }),
+    ).toHaveAttribute('href', '/offerte')
   })
 })

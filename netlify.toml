@@ -8,3 +8,59 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# ---------------------------------------------------------------------------
+# Intestazioni di sicurezza
+#
+# Il sito non carica nulla da fuori: i caratteri sono installati in
+# public/font/, non c'è analisi del traffico, non ci sono servizi esterni.
+# Questo permette una politica dei contenuti molto più stretta di quella che
+# quasi tutti i siti possono permettersi, e le dà un valore in più: non è solo
+# una difesa, è il browser che fa rispettare quello che la pagina cookie
+# dichiara. Se un domani qualcuno aggiungesse per distrazione un font di
+# Google o uno script di statistiche, non funzionerebbe — invece di funzionare
+# in silenzio e rendere falsa l'informativa.
+#
+# Nota per la fase 4: `script-src` ammette 'unsafe-inline' perché Next
+# inserisce nella pagina i dati di idratazione come script in linea.
+# Toglierlo richiede i nonce e un middleware, che costringerebbe ogni pagina a
+# essere generata su richiesta invece che staticamente. Oggi il compromesso è
+# accettabile — non c'è un solo contenuto scritto dagli utenti — ma quando
+# arriveranno i moduli di richiesta va rivalutato.
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; upgrade-insecure-requests"
+
+    # Il sito non va incorniciato in pagine altrui: è la difesa contro il
+    # clickjacking, e vale doppio su un sito legato alla pubblica
+    # amministrazione, dove una copia incorniciata è un ottimo inganno.
+    X-Frame-Options = "DENY"
+
+    # Il browser non deve indovinare il tipo di un file: se diciamo che è
+    # un'immagine, va trattata come tale e mai eseguita.
+    X-Content-Type-Options = "nosniff"
+
+    # Uscendo verso il sito di un convenzionato non gli diciamo da quale
+    # pagina arriva il socio, solo che arriva dal nostro dominio.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Nessuna di queste capacità serve al sito. Dichiararlo impedisce che una
+    # pagina compromessa possa chiederle.
+    Permissions-Policy = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+
+    # Un anno di sola HTTPS. Il flag `preload` si aggiunge quando il sito sarà
+    # sul dominio definitivo: è una decisione difficile da annullare.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# I caratteri hanno un nome che non cambia mai e un contenuto che non cambia
+# mai: si possono tenere in cache per sempre. È la differenza fra un sito che
+# al secondo accesso è istantaneo e uno che riscarica 64 KB ogni volta.
+[[headers]]
+  for = "/font/*"
+
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

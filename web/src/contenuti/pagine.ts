@@ -47,6 +47,15 @@ export const contenutiPagine = {
       "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate.",
     invito: "Scopri come iscriverti",
   },
+  errore: {
+    titolo: "Qualcosa non ha funzionato",
+    testo:
+      "Non siamo riusciti a caricare questa pagina. Non è colpa tua: riprova fra qualche istante.",
+    riprova: "Riprova",
+    tornaHome: "Torna alla home",
+    seContinua:
+      "Se continua a succedere, scrivilo ai direttori indicando cosa stavi facendo.",
+  },
   offerte: {
     titolo: "Offerte e convenzioni",
     occhiello:

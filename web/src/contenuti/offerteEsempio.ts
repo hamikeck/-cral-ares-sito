@@ -1,3 +1,5 @@
+import { nonAncoraIniziata, oggi, scaduta } from '@/lib/date'
+
 /**
  * Offerte dimostrative, usate finché non esiste il database.
  *
@@ -26,6 +28,8 @@ export type Offerta = {
   descrizioneCompleta: string
   /** Le regole che il socio deve conoscere prima di chiedere. */
   condizioni: string[]
+  /** Date ISO `AAAA-MM-GG`: servono a calcolare la validità, non a essere lette. */
+  validaDal: string
   validaAl: string
   modalita: ModalitaOfferta
   /** Per `solo_sconto`: cosa deve fare il socio, senza passare da noi. */
@@ -48,7 +52,8 @@ export const offerte: Offerta[] = [
       'I biglietti si ritirano in sede negli orari di apertura.',
       'Non sono rimborsabili, ma non hanno scadenza entro l’anno solare.',
     ],
-    validaAl: '30 settembre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-09-30',
     modalita: 'biglietti',
     inEvidenza: true,
   },
@@ -66,7 +71,8 @@ export const offerte: Offerta[] = [
       'Valido dodici mesi dalla data di emissione.',
       'Non utilizzabile per anteprime ed eventi speciali.',
     ],
-    validaAl: '31 dicembre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-12-31',
     modalita: 'biglietti',
     inEvidenza: false,
   },
@@ -84,7 +90,8 @@ export const offerte: Offerta[] = [
       'La richiesta va inviata almeno dieci giorni prima della data.',
       'Il pagamento avviene al ritiro dei biglietti.',
     ],
-    validaAl: '15 ottobre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-10-15',
     modalita: 'biglietti',
     inEvidenza: false,
   },
@@ -101,7 +108,8 @@ export const offerte: Offerta[] = [
       'Sconto non cumulabile con altre promozioni in corso.',
       'Occorre esibire la tessera del CRAL prima del preventivo.',
     ],
-    validaAl: '30 novembre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-11-30',
     modalita: 'solo_sconto',
     istruzioni:
       'Presentati in officina con la tessera del CRAL e chiedi il preventivo convenzionato. Non serve prenotare dal sito.',
@@ -120,7 +128,8 @@ export const offerte: Offerta[] = [
       'La convenzione vale anche per i familiari conviventi.',
       'Il preventivo viene inviato entro due giorni lavorativi.',
     ],
-    validaAl: '31 dicembre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-12-31',
     modalita: 'convenzione',
     inEvidenza: false,
   },
@@ -137,7 +146,8 @@ export const offerte: Offerta[] = [
       'Sconto applicato direttamente alla cassa.',
       'Esclusi i farmaci con obbligo di ricetta.',
     ],
-    validaAl: '31 dicembre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-12-31',
     modalita: 'solo_sconto',
     istruzioni:
       'Mostra la tessera del CRAL alla cassa prima del pagamento. Lo sconto viene applicato subito.',
@@ -156,11 +166,44 @@ export const offerte: Offerta[] = [
       'Sconto valido su abbonamenti trimestrali e annuali.',
       'Il certificato medico sportivo resta a carico del socio.',
     ],
-    validaAl: '31 ottobre',
+    validaDal: '2026-09-01',
+    validaAl: '2026-10-31',
     modalita: 'convenzione',
+    inEvidenza: false,
+  },  {
+    slug: 'mostra-caravaggio-terminata',
+    partner: 'Palazzo Reale',
+    categoria: 'Teatro',
+    vantaggio: 'Ingresso 5 € invece di 13 €',
+    descrizione:
+      'Riduzione sulla mostra estiva, riservata ai soci e a un accompagnatore.',
+    descrizioneCompleta:
+      'La convenzione valeva per l’intera durata della mostra, con ingresso ridotto per il socio e per un accompagnatore. È terminata con la chiusura dell’esposizione.',
+    condizioni: ['Ingresso ridotto valido anche per un accompagnatore.'],
+    validaDal: '2026-06-01',
+    validaAl: '2026-08-31',
+    modalita: 'solo_sconto',
+    istruzioni:
+      'La mostra è chiusa. La scheda resta consultabile per chi arriva da un vecchio collegamento.',
     inEvidenza: false,
   },
 ]
+
+/**
+ * Le offerte che il socio deve vedere: iniziate e non ancora scadute.
+ *
+ * È la promessa dello spec — «le offerte scadute spariscono da sole» — e non
+ * si mantiene con la buona volontà di chi pubblica: si mantiene qui, in una
+ * funzione che nessuno può dimenticare di chiamare, perché è l'unica porta
+ * da cui gli elenchi passano.
+ */
+export function offerteValide(adesso = oggi()): Offerta[] {
+  return offerte.filter(
+    (offerta) =>
+      !scaduta(offerta.validaAl, adesso) &&
+      !nonAncoraIniziata(offerta.validaDal, adesso),
+  )
+}
 
 /**
  * L'offerta della settimana, quella che apre la home.
@@ -168,28 +211,40 @@ export const offerte: Offerta[] = [
  * Restituisce `undefined` quando non ce n'è nessuna: è una settimana come
  * un'altra e le pagine devono saperlo gestire, non rompersi.
  */
-export function offertaInEvidenza(): Offerta | undefined {
-  return offerte.find((offerta) => offerta.inEvidenza)
+export function offertaInEvidenza(adesso = oggi()): Offerta | undefined {
+  return offerteValide(adesso).find((offerta) => offerta.inEvidenza)
 }
 
-/** Tutte le altre, nell'ordine in cui sono state pubblicate. */
-export function altreOfferte(): Offerta[] {
-  return offerte.filter((offerta) => !offerta.inEvidenza)
+/** Tutte le altre valide, nell'ordine in cui sono state pubblicate. */
+export function altreOfferte(adesso = oggi()): Offerta[] {
+  return offerteValide(adesso).filter((offerta) => !offerta.inEvidenza)
 }
 
-/** Le categorie effettivamente presenti, in ordine alfabetico. */
-export function categorie(): string[] {
-  return [...new Set(offerte.map((offerta) => offerta.categoria))].sort(
-    (prima, seconda) => prima.localeCompare(seconda, 'it'),
-  )
+/** Le categorie che hanno almeno un'offerta valida, in ordine alfabetico. */
+export function categorie(adesso = oggi()): string[] {
+  return [
+    ...new Set(offerteValide(adesso).map((offerta) => offerta.categoria)),
+  ].sort((prima, seconda) => prima.localeCompare(seconda, 'it'))
 }
 
-/** Le offerte di una categoria, oppure tutte se non se ne indica nessuna. */
-export function offertePerCategoria(categoria?: string): Offerta[] {
-  if (!categoria) return offerte
-  return offerte.filter((offerta) => offerta.categoria === categoria)
+/** Le offerte valide di una categoria, o tutte se non se ne indica nessuna. */
+export function offertePerCategoria(
+  categoria?: string,
+  adesso = oggi(),
+): Offerta[] {
+  const valide = offerteValide(adesso)
+  if (!categoria) return valide
+  return valide.filter((offerta) => offerta.categoria === categoria)
 }
 
+/**
+ * Cerca fra TUTTE le offerte, comprese le scadute.
+ *
+ * Deliberato: la scheda di un'offerta finita resta raggiungibile, perché chi
+ * apre un vecchio collegamento ricevuto per email deve trovare «questa offerta
+ * è terminata» e non una pagina di errore. Un link morto fa sembrare rotto il
+ * sito.
+ */
 export function offertaDaSlug(slug: string): Offerta | undefined {
   return offerte.find((offerta) => offerta.slug === slug)
 }
