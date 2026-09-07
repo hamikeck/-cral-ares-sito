@@ -13,29 +13,9 @@ import { nonAncoraIniziata, oggi, scaduta } from '@/lib/date'
  * Non sono offerte reali. Il sito lo dichiara apertamente dove le mostra.
  */
 
-/** Come il socio ottiene il vantaggio. Rispecchia l'enum `modalita_offerta`. */
-export type ModalitaOfferta = 'biglietti' | 'convenzione' | 'solo_sconto'
+import type { Offerta, ModalitaOfferta } from '@/dominio/offerta'
 
-export type Offerta = {
-  slug: string
-  partner: string
-  categoria: string
-  /** Il motivo per cui il socio si ferma a leggere. Va scritto corto. */
-  vantaggio: string
-  /** Una riga, per le schede negli elenchi. */
-  descrizione: string
-  /** Il testo completo, mostrato solo nella pagina dell'offerta. */
-  descrizioneCompleta: string
-  /** Le regole che il socio deve conoscere prima di chiedere. */
-  condizioni: string[]
-  /** Date ISO `AAAA-MM-GG`: servono a calcolare la validità, non a essere lette. */
-  validaDal: string
-  validaAl: string
-  modalita: ModalitaOfferta
-  /** Per `solo_sconto`: cosa deve fare il socio, senza passare da noi. */
-  istruzioni?: string
-  inEvidenza: boolean
-}
+export type { Offerta, ModalitaOfferta }
 
 export const offerte: Offerta[] = [
   {
@@ -56,6 +36,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-09-30',
     modalita: 'biglietti',
     inEvidenza: true,
+    contatti: {},
   },
   {
     slug: 'the-space-carnet',
@@ -75,6 +56,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-12-31',
     modalita: 'biglietti',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'teatro-diana-stagione-prosa',
@@ -94,6 +76,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-10-15',
     modalita: 'biglietti',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'pneumatici-esposito',
@@ -114,6 +97,7 @@ export const offerte: Offerta[] = [
     istruzioni:
       'Presentati in officina con la tessera del CRAL e chiedi il preventivo convenzionato. Non serve prenotare dal sito.',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'assicurazione-auto-convenzione',
@@ -132,6 +116,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-12-31',
     modalita: 'convenzione',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'farmacia-vesuvio-parafarmaco',
@@ -152,6 +137,7 @@ export const offerte: Offerta[] = [
     istruzioni:
       'Mostra la tessera del CRAL alla cassa prima del pagamento. Lo sconto viene applicato subito.',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'palestra-acquachiara-abbonamento',
@@ -170,6 +156,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-10-31',
     modalita: 'convenzione',
     inEvidenza: false,
+    contatti: {},
   },  {
     slug: 'mostra-caravaggio-terminata',
     partner: 'Palazzo Reale',
@@ -186,6 +173,7 @@ export const offerte: Offerta[] = [
     istruzioni:
       'La mostra è chiusa. La scheda resta consultabile per chi arriva da un vecchio collegamento.',
     inEvidenza: false,
+    contatti: {},
   },
 ]
 
