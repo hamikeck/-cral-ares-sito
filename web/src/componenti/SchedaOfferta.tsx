@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Offerta } from '@/contenuti/offerteEsempio'
+import type { Offerta } from '@/dominio/offerta'
 import { formattaData } from '@/lib/date'
 
 /**

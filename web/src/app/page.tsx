@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { SchedaOfferta } from '@/componenti/SchedaOfferta'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { altreOfferte, offertaInEvidenza } from '@/contenuti/offerteEsempio'
+import { offerteValide } from '@/dati/offerte'
+import { altre, inEvidenza } from '@/dominio/selezione'
 
 /**
  * Le pagine si rigenerano ogni ora.
@@ -23,11 +24,12 @@ export const revalidate = 3600
  * l'elemento grande. La gerarchia del codice resta corretta (un solo h1),
  * quella visiva segue ciò che il lettore cerca davvero.
  *
- * In fase 2 `offertaInEvidenza` e `altreOfferte` arriveranno dal database.
- * Il caso in cui non ci sia alcuna offerta è già gestito qui, perché è una
+ * `offertaPrincipale` e `altreDaMostrare` arrivano da un'unica lettura del
+ * database, filtrata in memoria da `dominio/selezione`. Il caso in cui non
+ * ci sia alcuna offerta in evidenza è già gestito qui, perché è una
  * settimana come un'altra e non deve produrre una pagina rotta.
  */
-export default function Home() {
+export default async function Home() {
   const {
     titolo,
     occhiello,
@@ -42,8 +44,9 @@ export default function Home() {
     invito,
   } = contenutiPagine.home
 
-  const inEvidenza = offertaInEvidenza()
-  const altre = altreOfferte()
+  const valide = await offerteValide()
+  const offertaPrincipale = inEvidenza(valide)
+  const altreDaMostrare = altre(valide)
 
   return (
     <>
@@ -57,21 +60,21 @@ export default function Home() {
           {avvisoDimostrativo}
         </p>
 
-        {inEvidenza ? (
+        {offertaPrincipale ? (
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl text-inchiostro">{titoloEvidenza}</h2>
-            <SchedaOfferta offerta={inEvidenza} inEvidenza />
+            <SchedaOfferta offerta={offertaPrincipale} inEvidenza />
           </div>
         ) : (
           <p className="max-w-prose text-corpo">{nessunaOfferta}</p>
         )}
       </section>
 
-      {altre.length > 0 && (
+      {altreDaMostrare.length > 0 && (
         <section className="mt-14 flex flex-col gap-5">
           <h2 className="text-2xl text-inchiostro">{titoloAltre}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {altre.map((offerta) => (
+            {altreDaMostrare.map((offerta) => (
               <SchedaOfferta key={offerta.slug} offerta={offerta} />
             ))}
           </div>

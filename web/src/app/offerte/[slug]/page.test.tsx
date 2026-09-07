@@ -1,15 +1,24 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { offerteFinte } from '@/test/offerteFinte'
+
+vi.mock('@/dati/offerte', () => ({
+  offerteValide: async () => offerteFinte.filter((o) => o.validaAl >= '2026-09-15'),
+  offertaDaSlug: async (slug: string) =>
+    offerteFinte.find((offerta) => offerta.slug === slug),
+  slugPubblicati: async () => offerteFinte.map((offerta) => offerta.slug),
+}))
+
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { offerte, offerteValide } from '@/contenuti/offerteEsempio'
 import { formattaData } from '@/lib/date'
 import PaginaOfferta, { generateStaticParams } from './page'
 
-const valide = offerteValide()
+/** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
+const valide = offerteFinte.filter((o) => o.validaAl >= '2026-09-15')
 const conRichiesta = valide.find((o) => o.modalita !== 'solo_sconto')!
 const soloSconto = valide.find((o) => o.modalita === 'solo_sconto')!
-const terminata = offerte.find(
+const terminata = offerteFinte.find(
   (o) => !valide.some((v) => v.slug === o.slug),
 )!
 
@@ -17,7 +26,7 @@ describe('Pagina di una singola offerta', () => {
   test('genera una pagina statica per ogni offerta', async () => {
     const generati = await generateStaticParams()
     expect(generati.map((p) => p.slug).sort()).toEqual(
-      offerte.map((o) => o.slug).sort(),
+      offerteFinte.map((o) => o.slug).sort(),
     )
   })
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { offerte, offertaDaSlug } from '@/contenuti/offerteEsempio'
+import { offertaDaSlug, slugPubblicati } from '@/dati/offerte'
 import { formattaData, scaduta } from '@/lib/date'
 
 /**
@@ -17,7 +17,7 @@ export const revalidate = 3600
 
 /** Una pagina statica per ogni offerta, generata alla build. */
 export async function generateStaticParams() {
-  return offerte.map((offerta) => ({ slug: offerta.slug }))
+  return (await slugPubblicati()).map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
@@ -26,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const offerta = offertaDaSlug(slug)
+  const offerta = await offertaDaSlug(slug)
   if (!offerta) return {}
   return {
     title: `${offerta.partner} — ${offerta.vantaggio}`,
@@ -48,7 +48,7 @@ export default async function PaginaOfferta({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const offerta = offertaDaSlug(slug)
+  const offerta = await offertaDaSlug(slug)
 
   if (!offerta) notFound()
 
