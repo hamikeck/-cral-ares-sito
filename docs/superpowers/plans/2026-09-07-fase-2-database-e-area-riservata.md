@@ -85,13 +85,14 @@ web/src/
 │   └── offertaSchema.ts                 validazione Zod, condivisa da modulo e server
 ├── app/
 │   ├── area-riservata/
-│   │   ├── layout.tsx                   guscio protetto: fuori chi non è redattore
-│   │   ├── page.tsx                     elenco delle offerte, con stato e scadenza
-│   │   ├── accedi/page.tsx              richiesta del link monouso
+│   │   ├── accedi/page.tsx              richiesta del link monouso (fuori dal guscio)
 │   │   ├── callback/route.ts            scambio del codice con la sessione
-│   │   └── offerte/
-│   │       ├── nuova/page.tsx           creazione con anteprima dal vivo
-│   │       └── [id]/page.tsx            modifica
+│   │   └── (interno)/                   gruppo di rotte: non compare nell'indirizzo
+│   │       ├── layout.tsx               guscio protetto: fuori chi non è redattore
+│   │       ├── page.tsx                 elenco delle offerte, con stato e scadenza
+│   │       └── offerte/
+│   │           ├── nuova/page.tsx       creazione con anteprima dal vivo
+│   │           └── [id]/page.tsx        modifica
 │   └── azioni/
 │       └── offerte.ts                   Server Action: salva bozza, pubblica, elimina
 ├── componenti/
@@ -1309,7 +1310,7 @@ comunque a una sessione non passa il guscio dell'area riservata.
 - Create: `web/src/app/area-riservata/accedi/page.tsx`
 - Create: `web/src/app/area-riservata/accedi/ModuloAccesso.tsx`
 - Create: `web/src/app/area-riservata/callback/route.ts`
-- Create: `web/src/app/area-riservata/layout.tsx`
+- Create: `web/src/app/area-riservata/(interno)/layout.tsx`
 - Create: `web/src/middleware.ts`
 - Test: `web/src/app/area-riservata/accedi/page.test.tsx`
 - Modify: `netlify.toml` (politica dei contenuti), `web/src/contenuti/pagine.ts` (testi), `web/src/app/cookie/page.tsx` (cookie di sessione)
@@ -1604,7 +1605,7 @@ export async function GET(richiesta: Request) {
 }
 ```
 
-Crea `web/src/app/area-riservata/layout.tsx`:
+Crea `web/src/app/area-riservata/(interno)/layout.tsx`:
 
 ```tsx
 import { redirect } from 'next/navigation'
@@ -1644,12 +1645,28 @@ export default async function GuscioRiservato({
 }
 ```
 
-> Il guscio **non** protegge `/area-riservata/accedi` e
-> `/area-riservata/callback`: sono fuori dalla cartella protetta perché devono
-> restare raggiungibili da chi non è ancora entrato. Verifica che i due file
-> stiano in `accedi/` e `callback/`, che hanno un layout proprio: se una pagina
-> di accesso finisse dentro il guscio, il rimando su sé stessa girerebbe
-> all'infinito.
+> **Il guscio sta dentro un gruppo di rotte `(interno)`, e non direttamente in
+> `area-riservata/`.** Un `layout.tsx` in `app/area-riservata/` avvolgerebbe
+> *tutto* ciò che sta sotto, pagina di accesso compresa: chi non è entrato
+> verrebbe rimandato ad `/area-riservata/accedi`, che essendo dentro il guscio
+> lo rimanderebbe di nuovo, all'infinito.
+>
+> Un gruppo di rotte — le parentesi nel nome della cartella — raggruppa i file
+> **senza comparire nell'indirizzo**. Quindi:
+>
+> ```
+> app/area-riservata/
+> ├── accedi/page.tsx          → /area-riservata/accedi     (fuori dal guscio)
+> ├── callback/route.ts        → /area-riservata/callback   (fuori dal guscio)
+> └── (interno)/
+>     ├── layout.tsx           il guscio protetto
+>     ├── page.tsx             → /area-riservata
+>     └── offerte/…            → /area-riservata/offerte/…
+> ```
+>
+> Gli indirizzi restano quelli dello spec. È anche il gruppo di rotte che il
+> verbale del 6 settembre aveva rimandato alla fase 2 fra le cose «non
+> urgenti»: qui diventa necessario.
 
 Crea `web/src/middleware.ts`:
 
@@ -1787,8 +1804,8 @@ pubblicato, cosa è ancora in bozza, cosa sta per scadere.
 - Create: `web/src/dominio/statoOfferta.ts`
 - Test: `web/src/dominio/statoOfferta.test.ts`
 - Create: `web/src/dati/offerteRiservate.ts`
-- Create: `web/src/app/area-riservata/page.tsx`
-- Test: `web/src/app/area-riservata/page.test.tsx`
+- Create: `web/src/app/area-riservata/(interno)/page.tsx`
+- Test: `web/src/app/area-riservata/(interno)/page.test.tsx`
 - Modify: `web/src/app/azioni/accesso.ts` (aggiunta di `esci`)
 
 **Interfaces:**
@@ -1945,7 +1962,7 @@ export async function esci(): Promise<void> {
 
 - [ ] **Step 6: Scrivere l'elenco**
 
-Crea `web/src/app/area-riservata/page.tsx`:
+Crea `web/src/app/area-riservata/(interno)/page.tsx`:
 
 ```tsx
 import type { Metadata } from 'next'
@@ -2029,7 +2046,7 @@ export default async function AreaRiservata() {
 
 - [ ] **Step 7: Scrivere il test dell'elenco**
 
-Crea `web/src/app/area-riservata/page.test.tsx`:
+Crea `web/src/app/area-riservata/(interno)/page.test.tsx`:
 
 ```tsx
 import { describe, expect, test, vi } from 'vitest'
@@ -2097,7 +2114,7 @@ mentre lo fa, invece di scoprirlo dopo aver pubblicato.
 - Test: `web/src/dominio/slug.test.ts`
 - Create: `web/src/componenti/ModuloOfferta.tsx`
 - Create: `web/src/app/azioni/offerte.ts`
-- Create: `web/src/app/area-riservata/offerte/nuova/page.tsx`
+- Create: `web/src/app/area-riservata/(interno)/offerte/nuova/page.tsx`
 - Modify: `web/package.json` (dipendenza `zod`)
 
 **Interfaces:**
@@ -2612,7 +2629,7 @@ function Campo({
 
 - [ ] **Step 8: Scrivere la pagina**
 
-Crea `web/src/app/area-riservata/offerte/nuova/page.tsx`:
+Crea `web/src/app/area-riservata/(interno)/offerte/nuova/page.tsx`:
 
 ```tsx
 import type { Metadata } from 'next'
@@ -2661,7 +2678,7 @@ git commit -m "Modulo di pubblicazione delle offerte, con anteprima dal vivo"
 ## Task 7: Modifica, pubblicazione e ritiro di un'offerta
 
 **Files:**
-- Create: `web/src/app/area-riservata/offerte/[id]/page.tsx`
+- Create: `web/src/app/area-riservata/(interno)/offerte/[id]/page.tsx`
 - Modify: `web/src/componenti/ModuloOfferta.tsx` (accetta un'offerta esistente)
 - Modify: `web/src/app/azioni/offerte.ts` (aggiornamento, ritiro, eliminazione)
 
@@ -2800,7 +2817,7 @@ export async function eliminaOfferta(datiModulo: FormData): Promise<void> {
 
 - [ ] **Step 3: Scrivere la pagina di modifica**
 
-Crea `web/src/app/area-riservata/offerte/[id]/page.tsx`:
+Crea `web/src/app/area-riservata/(interno)/offerte/[id]/page.tsx`:
 
 ```tsx
 import type { Metadata } from 'next'
@@ -2894,7 +2911,7 @@ Aruba.
 - Create: `web/src/dominio/testoEmail.ts`
 - Test: `web/src/dominio/testoEmail.test.ts`
 - Create: `web/src/componenti/CopiaTestoEmail.tsx`
-- Modify: `web/src/app/area-riservata/offerte/[id]/page.tsx`
+- Modify: `web/src/app/area-riservata/(interno)/offerte/[id]/page.tsx`
 
 **Interfaces:**
 - Produces: `testoPerEmail(offerta: Offerta, indirizzoSito: string): string`
@@ -3042,7 +3059,7 @@ export function CopiaTestoEmail({ testo }: { testo: string }) {
 
 - [ ] **Step 4: Mostrarlo dopo la pubblicazione**
 
-In `web/src/app/area-riservata/offerte/[id]/page.tsx`, quando l'offerta è
+In `web/src/app/area-riservata/(interno)/offerte/[id]/page.tsx`, quando l'offerta è
 `pubblicata`, mostra `<CopiaTestoEmail testo={testoPerEmail(offerta,
 process.env.NEXT_PUBLIC_SITO_URL ?? 'http://localhost:3000')} />` sotto alla
 conferma di salvataggio.
