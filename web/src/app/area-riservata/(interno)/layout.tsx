@@ -19,10 +19,10 @@ export default async function GuscioRiservato({
 
   if (!data.user) redirect('/area-riservata/accedi')
 
-  if (!(await redattoreAttivo())) {
-    await client.auth.signOut()
-    redirect('/area-riservata/accedi?nonAutorizzato=1')
-  }
+  // La chiusura della sessione non sta qui: un Server Component non può
+  // scrivere i cookie, quindi un signOut() chiamato da qui non ripulirebbe
+  // quello nel browser. Se ne occupa il Route Handler /area-riservata/uscita.
+  if (!(await redattoreAttivo())) redirect('/area-riservata/uscita')
 
   return (
     <div className="flex flex-col gap-6">
