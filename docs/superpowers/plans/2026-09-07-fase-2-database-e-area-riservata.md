@@ -14,7 +14,7 @@
 
 Valgono per ogni task del piano.
 
-- **Lingua: italiano.** Ogni testo visibile all'utente è in italiano, accenti compresi. Nomi di variabili, funzioni, tabelle e colonne in italiano dove descrivono il dominio (`offerte`, `redattori`, `valida_al`), in inglese dove sono convenzioni del framework (`page.tsx`, `layout.tsx`, `middleware.ts`).
+- **Lingua: italiano.** Ogni testo visibile all'utente è in italiano, accenti compresi. Nomi di variabili, funzioni, tabelle e colonne in italiano dove descrivono il dominio (`offerte`, `redattori`, `valida_al`), in inglese dove sono convenzioni del framework (`page.tsx`, `layout.tsx`, `proxy.ts`).
 - **Accessibilità: WCAG 2.1 AA.** Ogni pagina naviga da tastiera, ha un solo `<h1>`, usa elementi di riferimento e supera il controllo axe strutturale. Vale anche per le pagine dell'area riservata.
 - **Mobile-first.** Ogni schermata si progetta prima a 360 px. L'area riservata è l'unica eccezione tollerata: i direttori pubblicano dal computer, ma le pagine restano comunque utilizzabili dal telefono.
 - **Palette del marchio**, valori esatti:
@@ -23,6 +23,12 @@ Valgono per ogni task del piano.
 - **Hosting: Netlify, mai Vercel.**
 - **Nessun cookie di profilazione.** I cookie di sessione dell'area riservata sono tecnici e vanno dichiarati nella pagina cookie.
 - **Comandi npm dalla cartella `web/`.** Il repository ha la sua radice un livello sopra.
+- **Next 16 non è il Next che conosci.** `web/AGENTS.md` lo dice esplicitamente:
+  API, convenzioni e struttura dei file differiscono da quanto un modello ha
+  imparato. Prima di scrivere codice che usa un'API di Next, leggi la guida
+  corrispondente in `web/node_modules/next/dist/docs/`. Una differenza già
+  accertata: **`middleware.ts` è deprecato e si chiama `proxy.ts`**, con la
+  funzione esportata `proxy`.
 - **Nessuna chiave `service_role` nel codice, nei test o nel repository.** Il browser e il server usano solo la chiave anonima; ciò che l'anonimo non deve poter fare lo impedisce RLS, non la reticenza del codice.
 - **RLS attiva su ogni tabella creata.** Una tabella senza politiche è una tabella leggibile da chiunque conosca l'indirizzo del progetto.
 - **Dati su server nell'Unione Europea:** alla creazione del progetto Supabase si sceglie una regione UE (`eu-central-1` oppure `eu-west-1`). Non è modificabile dopo.
@@ -98,7 +104,7 @@ web/src/
 ├── componenti/
 │   ├── ModuloOfferta.tsx                il modulo, con anteprima affiancata
 │   └── CopiaTestoEmail.tsx              «copia il testo per l'email»
-├── middleware.ts                        rinnovo della sessione, solo su /area-riservata
+├── proxy.ts                             rinnovo della sessione, solo su /area-riservata
 └── test/
     └── offerteFinte.ts                  le otto offerte di esempio, ora fixture dei test
 ```
@@ -689,7 +695,7 @@ export async function clientServer() {
           )
         } catch {
           // In un Server Component i cookie sono in sola lettura: il rinnovo
-          // della sessione lo fa il middleware, che può scriverli.
+          // della sessione lo fa il proxy, che può scriverli.
         }
       },
     },
@@ -1311,7 +1317,7 @@ comunque a una sessione non passa il guscio dell'area riservata.
 - Create: `web/src/app/area-riservata/accedi/ModuloAccesso.tsx`
 - Create: `web/src/app/area-riservata/callback/route.ts`
 - Create: `web/src/app/area-riservata/(interno)/layout.tsx`
-- Create: `web/src/middleware.ts`
+- Create: `web/src/proxy.ts`
 - Test: `web/src/app/area-riservata/accedi/page.test.tsx`
 - Modify: `netlify.toml` (politica dei contenuti), `web/src/contenuti/pagine.ts` (testi), `web/src/app/cookie/page.tsx` (cookie di sessione)
 
@@ -1668,7 +1674,7 @@ export default async function GuscioRiservato({
 > verbale del 6 settembre aveva rimandato alla fase 2 fra le cose «non
 > urgenti»: qui diventa necessario.
 
-Crea `web/src/middleware.ts`:
+Crea `web/src/proxy.ts`:
 
 ```ts
 import { createServerClient } from '@supabase/ssr'
@@ -1679,10 +1685,14 @@ import { NextResponse, type NextRequest } from 'next/server'
  *
  * Serve perché un Server Component può leggere i cookie ma non scriverli: se
  * il token scade mentre il direttore compila un'offerta, è qui che viene
- * rinnovato. Il `matcher` limita il middleware all'area riservata, così le
- * pagine pubbliche restano statiche.
+ * rinnovato. Il `matcher` limita il proxy all'area riservata, così le pagine
+ * pubbliche restano statiche.
+ *
+ * Si chiama `proxy` e non `middleware`: in Next 16 il file `middleware.ts` è
+ * deprecato e rinominato `proxy.ts`, con la funzione esportata che segue il
+ * nome del file. Il comportamento è identico.
  */
-export async function middleware(richiesta: NextRequest) {
+export async function proxy(richiesta: NextRequest) {
   let risposta = NextResponse.next({ request: richiesta })
 
   const client = createServerClient(
