@@ -25,13 +25,19 @@ export default async function AreaRiservata() {
           </Link>
           {/* Un Route Handler, non una Server Action: solo lui può scrivere
               i cookie della risposta e chiudere la sessione per davvero.
-              Vedi web/src/app/area-riservata/uscita/route.ts. */}
-          <Link
-            href="/area-riservata/uscita"
-            className="fuoco-su-chiaro rounded text-sm underline underline-offset-4"
-          >
-            Esci
-          </Link>
+              Ed è un <form method="post">, non un <Link>: un <Link> verso
+              un indirizzo che chiude la sessione via GET verrebbe precaricato
+              da Next appena entra nel viewport — cioè da solo, in produzione,
+              dal primo istante di ogni visita a questa pagina. Vedi
+              web/src/app/area-riservata/uscita/route.ts. */}
+          <form action="/area-riservata/uscita" method="post">
+            <button
+              type="submit"
+              className="fuoco-su-chiaro rounded text-sm underline underline-offset-4"
+            >
+              Esci
+            </button>
+          </form>
         </div>
       </div>
 

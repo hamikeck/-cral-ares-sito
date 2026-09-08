@@ -45,13 +45,20 @@ describe('elenco in area riservata', () => {
     )
   })
 
-  test('il pulsante «Esci» porta al Route Handler che chiude la sessione', async () => {
+  test('il pulsante «Esci» invia un POST al Route Handler che chiude la sessione, non un link', async () => {
     render(await AreaRiservata())
 
-    expect(screen.getByRole('link', { name: /esci/i })).toHaveAttribute(
-      'href',
-      '/area-riservata/uscita',
-    )
+    // Un <Link> verrebbe precaricato da Next appena entra nel viewport, in
+    // produzione — cioè chiuderebbe la sessione da solo. Deve restare un
+    // form inviato via POST, con un vero pulsante raggiungibile da tastiera.
+    expect(screen.queryByRole('link', { name: /esci/i })).not.toBeInTheDocument()
+
+    const pulsante = screen.getByRole('button', { name: /esci/i })
+    expect(pulsante).toHaveAttribute('type', 'submit')
+
+    const modulo = pulsante.closest('form')
+    expect(modulo).toHaveAttribute('action', '/area-riservata/uscita')
+    expect(modulo).toHaveAttribute('method', 'post')
   })
 
   test('non ha problemi di accessibilità', async () => {
