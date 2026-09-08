@@ -4,7 +4,7 @@
 -- in web/src/contenuti/offerteEsempio.ts.
 
 insert into redattori (email, nome, ruolo) values
-  ('michelecacciapuotipiccolo@gmail.com', 'Michele Cacciapuoti', 'Sviluppatore');
+  ('ilmiogestoreattivita@gmail.com', 'Michele Cacciapuoti', 'Sviluppatore');
 
 insert into circuiti (nome, ordine) values
   ('UCI Cinemas', 1),
