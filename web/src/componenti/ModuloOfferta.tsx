@@ -102,7 +102,19 @@ export function ModuloOfferta() {
           campi.inEvidenza ? 'flex flex-col gap-5' : 'grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]'
         }
       >
-        <form action={azione} className="flex flex-col gap-5">
+        {/*
+          `noValidate`: `required` resta sugli input — serve a chi usa uno
+          screen reader e tiene in piedi la distinzione con le etichette
+          «(facoltativo)» — ma non deve più intercettare l'invio al posto
+          nostro. Senza, il browser blocca il click su «Pubblica» con un
+          proprio messaggio nativo prima ancora che React veda l'evento: il
+          direttore vedrebbe due sistemi d'errore diversi nello stesso
+          modulo, uno nostro e uno del browser. Con un solo canale, ogni
+          errore — «campo vuoto» compreso — passa dalla Server Action e
+          arriva scritto nelle nostre parole, nello stesso posto sotto al
+          campo.
+        */}
+        <form action={azione} noValidate className="flex flex-col gap-5">
           {errori.modulo ? (
             <p role="alert" className="border-l-4 border-arancione bg-fascia px-4 py-3">
               {errori.modulo}
