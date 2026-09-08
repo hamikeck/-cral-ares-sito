@@ -28,16 +28,22 @@ beforeEach(() => {
   offerteRestituite.valore = offerteComplete
 })
 
+function rendiPagina(erroreEliminazione?: string) {
+  return AreaRiservata({
+    searchParams: Promise.resolve(erroreEliminazione ? { erroreEliminazione } : {}),
+  })
+}
+
 describe('elenco in area riservata', () => {
   test('mostra ogni offerta con il suo stato', async () => {
-    render(await AreaRiservata())
+    render(await rendiPagina())
 
     expect(screen.getAllByRole('row')).toHaveLength(offerteFinte.length + 1)
     expect(screen.getByText('Bozza')).toBeInTheDocument()
   })
 
   test('offre di creare una nuova offerta', async () => {
-    render(await AreaRiservata())
+    render(await rendiPagina())
 
     expect(screen.getByRole('link', { name: /nuova offerta/i })).toHaveAttribute(
       'href',
@@ -46,7 +52,7 @@ describe('elenco in area riservata', () => {
   })
 
   test('il pulsante «Esci» invia un POST al Route Handler che chiude la sessione, non un link', async () => {
-    render(await AreaRiservata())
+    render(await rendiPagina())
 
     // Un <Link> verrebbe precaricato da Next appena entra nel viewport, in
     // produzione — cioè chiuderebbe la sessione da solo. Deve restare un
@@ -62,7 +68,7 @@ describe('elenco in area riservata', () => {
   })
 
   test('non ha problemi di accessibilità', async () => {
-    const { container } = render(await AreaRiservata())
+    const { container } = render(await rendiPagina())
 
     expect(await violazioniAccessibilita(container)).toEqual([])
   })
@@ -70,9 +76,29 @@ describe('elenco in area riservata', () => {
   test('un’offerta senza data di fine mostra un trattino, non una data inventata o un errore', async () => {
     // `pneumatici-esposito`, nella fixture, è la convenzione permanente:
     // `formattaData` su una data assente solleverebbe un `RangeError`.
-    render(await AreaRiservata())
+    render(await rendiPagina())
 
     expect(screen.getByText('—')).toBeInTheDocument()
+  })
+
+  test('senza il parametro «erroreEliminazione» non mostra alcun avviso', async () => {
+    render(await rendiPagina())
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  test('con «erroreEliminazione» avvisa che l’eliminazione non è riuscita e che l’offerta è ancora lì', async () => {
+    render(await rendiPagina('1'))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Non è stato possibile eliminare l’offerta',
+    )
+  })
+
+  test('con «erroreEliminazione», nessun problema di accessibilità', async () => {
+    const { container } = render(await rendiPagina('1'))
+
+    expect(await violazioniAccessibilita(container)).toEqual([])
   })
 })
 
@@ -82,7 +108,7 @@ describe('elenco vuoto', () => {
   test('senza offerte, invita a crearne una e non mostra una tabella vuota', async () => {
     offerteRestituite.valore = []
 
-    render(await AreaRiservata())
+    render(await rendiPagina())
 
     expect(
       screen.getByText('Non c’è ancora nessuna offerta. Comincia da «Nuova offerta».'),
@@ -97,7 +123,7 @@ describe('elenco vuoto', () => {
   test('senza offerte, non ha problemi di accessibilità', async () => {
     offerteRestituite.valore = []
 
-    const { container } = render(await AreaRiservata())
+    const { container } = render(await rendiPagina())
 
     expect(await violazioniAccessibilita(container)).toEqual([])
   })

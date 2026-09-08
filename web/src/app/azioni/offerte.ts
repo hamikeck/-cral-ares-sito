@@ -205,6 +205,13 @@ export async function aggiornaOfferta(
  * scritta e ripubblicabile. L'eliminazione serve solo a togliere di mezzo una
  * bozza sbagliata, e in pagina è dietro una conferma a due gesti — non un
  * `confirm()` del browser — che nomina l'offerta prima di lasciar premere.
+ *
+ * Niente qui limita l'eliminazione alle bozze: il pannello compare anche per
+ * un'offerta pubblicata, la cui scheda **è** stata generata. Per questo lo
+ * slug si legge dalla riga appena eliminata — `.select('slug').single()`
+ * sulla stessa `delete`, come `aggiornaOfferta` fa sulla `update` — e non si
+ * ricostruisce dai dati del modulo: è la garanzia di rigenerare l'indirizzo
+ * vero, non quello che si crede sia vero.
  */
 export async function eliminaOfferta(datiModulo: FormData): Promise<void> {
   const client = await clientServer()
@@ -213,13 +220,26 @@ export async function eliminaOfferta(datiModulo: FormData): Promise<void> {
   }
 
   const id = String(datiModulo.get('id') ?? '')
-  const { error } = await client.from('offerte').delete().eq('id', id)
+  const { data, error } = await client
+    .from('offerte')
+    .delete()
+    .eq('id', id)
+    .select('slug')
+    .single()
 
   if (error) {
+    // Il dettaglio serve a chi legge i log, non al direttore. Sulla pagina
+    // l'offerta resta al suo posto — la delete non è andata a buon fine — e
+    // l'avviso lo dice: senza, il direttore non saprebbe se ha sbagliato lui,
+    // se deve riprovare, o se il sito è rotto.
     console.error('Errore nell’eliminazione di un’offerta:', error)
+    redirect('/area-riservata?erroreEliminazione=1')
   }
 
+  // Senza queste tre righe la scheda eliminata resterebbe servita fino a
+  // un'ora: un socio potrebbe aprire quella di un'offerta appena ritirata.
   revalidatePath('/offerte')
   revalidatePath('/')
+  revalidatePath(`/offerte/${data.slug}`)
   redirect('/area-riservata')
 }

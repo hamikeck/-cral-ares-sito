@@ -9,11 +9,26 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default async function AreaRiservata() {
+export default async function AreaRiservata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [chiave: string]: string | string[] | undefined }>
+}) {
+  const { erroreEliminazione } = await searchParams
   const offerte = await tutteLeOfferte()
 
   return (
     <section>
+      {erroreEliminazione ? (
+        <p
+          role="alert"
+          className="mb-6 border-l-4 border-arancione bg-fascia px-4 py-3 text-corpo"
+        >
+          Non è stato possibile eliminare l’offerta: è ancora qui sotto.
+          Riprova, o avvisa chi si occupa del sito se il problema continua.
+        </p>
+      ) : null}
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-titolo-pagina text-inchiostro">Le offerte</h1>
         <div className="flex items-center gap-4">

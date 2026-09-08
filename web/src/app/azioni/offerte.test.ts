@@ -12,6 +12,7 @@ const {
   updateSingleMock,
   deleteMock,
   deleteEqMock,
+  deleteSingleMock,
 } = vi.hoisted(() => {
   const singleMock = vi.fn()
   const selectMock = vi.fn(() => ({ single: singleMock }))
@@ -22,9 +23,9 @@ const {
   const updateEqMock = vi.fn(() => ({ select: updateSelectMock }))
   const updateMock = vi.fn(() => ({ eq: updateEqMock }))
 
-  const deleteEqMock = vi.fn(async (): Promise<{ error: { code: string; message: string } | null }> => ({
-    error: null,
-  }))
+  const deleteSingleMock = vi.fn()
+  const deleteSelectMock = vi.fn(() => ({ single: deleteSingleMock }))
+  const deleteEqMock = vi.fn(() => ({ select: deleteSelectMock }))
   const deleteMock = vi.fn(() => ({ eq: deleteEqMock }))
 
   const fromMock = vi.fn(() => ({
@@ -49,6 +50,7 @@ const {
     updateSingleMock,
     deleteMock,
     deleteEqMock,
+    deleteSingleMock,
   }
 })
 
@@ -272,7 +274,12 @@ describe('eliminaOfferta', () => {
     expect(deleteMock).not.toHaveBeenCalled()
   })
 
-  test('elimina la riga giusta e rimanda all’elenco', async () => {
+  test('elimina la riga giusta, rimanda all’elenco e rigenera anche la scheda eliminata', async () => {
+    deleteSingleMock.mockResolvedValueOnce({
+      data: { slug: 'teatro-diana-poltronissima-2026' },
+      error: null,
+    })
+
     await expect(eliminaOfferta(moduloElimina('off-2'))).rejects.toThrow(
       'redirect:/area-riservata',
     )
@@ -281,15 +288,20 @@ describe('eliminaOfferta', () => {
     expect(deleteEqMock).toHaveBeenCalledWith('id', 'off-2')
     expect(revalidatePath).toHaveBeenCalledWith('/offerte')
     expect(revalidatePath).toHaveBeenCalledWith('/')
+    expect(revalidatePath).toHaveBeenCalledWith('/offerte/teatro-diana-poltronissima-2026')
   })
 
-  test('un errore del database resta nei log ma non impedisce comunque il redirect', async () => {
-    deleteEqMock.mockResolvedValueOnce({
+  test('un errore del database rimanda all’elenco con un avviso, senza rigenerare nulla: l’offerta è ancora lì', async () => {
+    deleteSingleMock.mockResolvedValueOnce({
+      data: null,
       error: { code: '42501', message: 'new row violates row-level security policy for table "offerte"' },
     })
+    const chiamateRevalidatePrima = revalidatePath.mock.calls.length
 
     await expect(eliminaOfferta(moduloElimina('off-3'))).rejects.toThrow(
-      'redirect:/area-riservata',
+      'redirect:/area-riservata?erroreEliminazione=1',
     )
+
+    expect(revalidatePath.mock.calls.length).toBe(chiamateRevalidatePrima)
   })
 })
