@@ -51,7 +51,7 @@ nelle migrazioni, non la segretezza della chiave. La chiave *secret*
 
 In `supabase/semi/offerte-dimostrative.sql` ci sono le otto offerte
 dimostrative e il primo redattore, gli stessi dati oggi in
-`src/contenuti/offerteEsempio.ts`, usati per popolare il database in fase di
+`src/test/offerteFinte.ts`, usati per popolare il database in fase di
 sviluppo. Sono dati **di sviluppo, non di produzione**: prima di pubblicare
 il sito sul dominio vero vanno cancellati dal SQL Editor del pannello
 Supabase con `delete from offerte;` (a cascata restano circuiti e redattore,

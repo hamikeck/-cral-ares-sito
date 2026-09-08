@@ -2,7 +2,8 @@
 --
 -- Le colonne qui sono quelle stabili: presenti in ogni ipotesi sui campi
 -- dell'offerta. Titolo separato, prezzi strutturati e immagine restano fuori
--- in attesa del direttivo (migrazione 0002).
+-- in attesa del direttivo, in una migrazione futura non ancora numerata: la
+-- 0002 è diventata 0002_accesso.sql e non li tocca.
 
 create type modalita_offerta as enum ('solo_sconto', 'biglietti', 'convenzione');
 create type stato_offerta    as enum ('bozza', 'pubblicata');

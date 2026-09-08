@@ -1,7 +1,7 @@
 -- Dati di sviluppo, NON di produzione. Prima di andare online su cralares.it:
 --   delete from offerte;
 -- Le otto offerte sono le stesse mostrate al direttivo il 3 settembre, oggi
--- in web/src/contenuti/offerteEsempio.ts.
+-- in web/src/test/offerteFinte.ts.
 
 insert into redattori (email, nome, ruolo) values
   ('ilmiogestoreattivita@gmail.com', 'Michele Cacciapuoti', 'Sviluppatore');

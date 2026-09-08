@@ -61,5 +61,3 @@ export const schemaOfferta = z
     message: 'Per uno sconto da esibire, scrivi cosa deve fare il socio alla cassa.',
     path: ['istruzioni'],
   })
-
-export type DatiOfferta = z.infer<typeof schemaOfferta>
