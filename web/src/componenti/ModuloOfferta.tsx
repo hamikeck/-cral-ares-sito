@@ -3,7 +3,8 @@
 import { useActionState, useState } from 'react'
 import { SchedaOfferta } from '@/componenti/SchedaOfferta'
 import type { ModalitaOfferta, Offerta } from '@/dominio/offerta'
-import { salvaOfferta, type EsitoSalvataggio } from '@/app/azioni/offerte'
+import type { OffertaRiservata } from '@/dati/offerteRiservate'
+import { aggiornaOfferta, salvaOfferta, type EsitoSalvataggio } from '@/app/azioni/offerte'
 
 // Elenco provvisorio: il direttivo non l'ha ancora confermato. Il punto di
 // partenza discusso in riunione è cinema, teatri, assicurazione auto,
@@ -12,27 +13,29 @@ import { salvaOfferta, type EsitoSalvataggio } from '@/app/azioni/offerte'
 // risposta.
 const CATEGORIE = ['Cinema', 'Teatro', 'Auto', 'Salute', 'Sport'] as const
 
-export function ModuloOfferta() {
+export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
   const [stato, azione, inCorso] = useActionState<EsitoSalvataggio | null, FormData>(
-    salvaOfferta,
+    offerta ? aggiornaOfferta : salvaOfferta,
     null,
   )
   const [campi, aggiorna] = useState({
-    partner: '',
-    categoria: 'Cinema',
-    vantaggio: '',
-    descrizione: '',
-    descrizioneCompleta: '',
-    condizioni: '',
-    validaDal: '',
-    validaAl: '',
-    modalita: 'biglietti' as ModalitaOfferta,
-    istruzioni: '',
-    indirizzo: '',
-    telefono: '',
-    sito: '',
-    codiceSconto: '',
-    inEvidenza: false,
+    partner: offerta?.partner ?? '',
+    categoria: offerta?.categoria ?? 'Cinema',
+    vantaggio: offerta?.vantaggio ?? '',
+    descrizione: offerta?.descrizione ?? '',
+    descrizioneCompleta: offerta?.descrizioneCompleta ?? '',
+    // Nel database le condizioni sono un elenco, nel modulo una riga per
+    // condizione: è la forma in cui è naturale scriverle.
+    condizioni: offerta?.condizioni.join('\n') ?? '',
+    validaDal: offerta?.validaDal ?? '',
+    validaAl: offerta?.validaAl ?? '',
+    modalita: offerta?.modalita ?? ('biglietti' as ModalitaOfferta),
+    istruzioni: offerta?.istruzioni ?? '',
+    indirizzo: offerta?.contatti.indirizzo ?? '',
+    telefono: offerta?.contatti.telefono ?? '',
+    sito: offerta?.contatti.sito ?? '',
+    codiceSconto: offerta?.contatti.codiceSconto ?? '',
+    inEvidenza: offerta?.inEvidenza ?? false,
   })
 
   // Gli errori arrivano dalla Server Action, ma vivono in uno stato proprio:
@@ -115,6 +118,7 @@ export function ModuloOfferta() {
           campo.
         */}
         <form action={azione} noValidate className="flex flex-col gap-5">
+          {offerta ? <input type="hidden" name="id" value={offerta.id} /> : null}
           {errori.modulo ? (
             <p role="alert" className="border-l-4 border-arancione bg-fascia px-4 py-3">
               {errori.modulo}
@@ -210,7 +214,7 @@ export function ModuloOfferta() {
               Salva bozza
             </button>
             <button type="submit" name="azione" value="pubblica" disabled={inCorso} className="fuoco-su-chiaro border border-blu-profondo bg-blu-profondo px-4 py-2 font-semibold text-white">
-              Pubblica
+              {offerta?.stato === 'pubblicata' ? 'Salva e ripubblica' : 'Pubblica'}
             </button>
           </div>
         </form>

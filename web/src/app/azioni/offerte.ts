@@ -118,3 +118,99 @@ export async function salvaOfferta(
   revalidatePath('/')
   redirect(`/area-riservata/offerte/${data.id}?salvata=1`)
 }
+
+/**
+ * Aggiorna un'offerta esistente.
+ *
+ * Stesso schema, stesso controllo d'autorizzazione di `salvaOfferta` — senza,
+ * questa sarebbe una seconda porta aperta sul fianco di quella appena chiusa.
+ *
+ * Lo slug **non** si tocca: è l'indirizzo che i soci hanno già ricevuto per
+ * email. Cambiarlo perché è cambiato il vantaggio romperebbe ogni vecchio
+ * collegamento, che è esattamente ciò che lo spec vuole evitare.
+ */
+export async function aggiornaOfferta(
+  _statoPrecedente: EsitoSalvataggio | null,
+  datiModulo: FormData,
+): Promise<EsitoSalvataggio> {
+  const id = String(datiModulo.get('id') ?? '')
+  if (!id) return { errori: { modulo: MESSAGGIO_ERRORE_GENERICO } }
+
+  const client = await clientServer()
+  if (!(await redattoreAttivoCon(client))) {
+    return { errori: { modulo: MESSAGGIO_SESSIONE_SCADUTA } }
+  }
+
+  const esito = schemaOfferta.safeParse(leggiModulo(datiModulo))
+  if (!esito.success) return { errori: raccogliErrori(esito) }
+
+  const dati = esito.data
+  const stato = datiModulo.get('azione') === 'pubblica' ? 'pubblicata' : 'bozza'
+
+  const { data, error } = await client
+    .from('offerte')
+    .update({
+      partner: dati.partner,
+      categoria: dati.categoria,
+      vantaggio: dati.vantaggio,
+      descrizione_breve: dati.descrizione,
+      descrizione: dati.descrizioneCompleta,
+      condizioni: dati.condizioni,
+      valida_dal: dati.validaDal,
+      valida_al: dati.validaAl,
+      in_evidenza: dati.inEvidenza,
+      modalita: dati.modalita,
+      istruzioni: dati.istruzioni || null,
+      indirizzo: dati.indirizzo || null,
+      telefono: dati.telefono || null,
+      link_partner: dati.sito || null,
+      codice_sconto: dati.codiceSconto || null,
+      stato,
+    })
+    .eq('id', id)
+    .select('slug')
+    .single()
+
+  if (error) {
+    // Il dettaglio serve a chi legge i log, non al direttore: sulla pagina
+    // resta solo il messaggio fisso.
+    console.error('Errore nell’aggiornamento di un’offerta:', error)
+    return { errori: { modulo: MESSAGGIO_ERRORE_GENERICO } }
+  }
+
+  // Senza queste tre righe la pubblicazione non sarebbe immediata: la home,
+  // l'elenco e la scheda resterebbero quelli generati fino a un'ora prima, e
+  // il direttore penserebbe di aver sbagliato qualcosa. La scheda si
+  // rigenera con lo slug vero appena letto dal database, non ricostruito qui
+  // — è la garanzia che non si stia invalidando l'indirizzo sbagliato.
+  revalidatePath('/offerte')
+  revalidatePath('/')
+  revalidatePath(`/offerte/${data.slug}`)
+  redirect(`/area-riservata/offerte/${id}?salvata=1`)
+}
+
+/**
+ * Elimina un'offerta.
+ *
+ * Il ritiro normale è «Salva bozza»: l'offerta sparisce dal sito ma resta
+ * scritta e ripubblicabile. L'eliminazione serve solo a togliere di mezzo una
+ * bozza sbagliata, e in pagina è dietro una conferma a due gesti — non un
+ * `confirm()` del browser — che nomina l'offerta prima di lasciar premere.
+ */
+export async function eliminaOfferta(datiModulo: FormData): Promise<void> {
+  const client = await clientServer()
+  if (!(await redattoreAttivoCon(client))) {
+    redirect('/area-riservata/uscita?nonAutorizzato=1')
+  }
+
+  const id = String(datiModulo.get('id') ?? '')
+  const { error } = await client.from('offerte').delete().eq('id', id)
+
+  if (error) {
+    console.error('Errore nell’eliminazione di un’offerta:', error)
+  }
+
+  revalidatePath('/offerte')
+  revalidatePath('/')
+  redirect('/area-riservata')
+}

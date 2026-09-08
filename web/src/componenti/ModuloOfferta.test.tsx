@@ -1,13 +1,22 @@
 import { describe, expect, test, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ModuloOfferta } from './ModuloOfferta'
 import { violazioniAccessibilita } from '@/test/accessibilita'
+import { offerteFinte } from '@/test/offerteFinte'
 
 vi.mock('@/app/azioni/offerte', () => ({
   salvaOfferta: vi.fn(async () => ({})),
+  aggiornaOfferta: vi.fn(async () => ({})),
 }))
 
-import { salvaOfferta } from '@/app/azioni/offerte'
+import { aggiornaOfferta, salvaOfferta } from '@/app/azioni/offerte'
+
+/** Un'offerta esistente, come la restituirebbe `offertaPerId`. */
+const offertaEsistente = {
+  ...offerteFinte[0],
+  id: 'off-1',
+  stato: 'bozza' as const,
+}
 
 describe('ModuloOfferta', () => {
   test('si renderizza a campi vuoti senza rompersi', () => {
@@ -111,5 +120,57 @@ describe('ModuloOfferta', () => {
       screen.queryByText('La data di fine deve venire dopo la data di inizio.'),
     ).not.toBeInTheDocument()
     expect(campoValidaAl).not.toHaveAttribute('aria-invalid')
+  })
+})
+
+describe('ModuloOfferta con un’offerta esistente', () => {
+  test('precompila i campi con i dati dell’offerta', () => {
+    render(<ModuloOfferta offerta={offertaEsistente} />)
+
+    expect(screen.getByLabelText('Partner')).toHaveValue(offertaEsistente.partner)
+    expect(screen.getByLabelText('Vantaggio')).toHaveValue(offertaEsistente.vantaggio)
+    expect(screen.getByLabelText('Categoria')).toHaveValue(offertaEsistente.categoria)
+  })
+
+  test('porta l’id dell’offerta in un campo nascosto', () => {
+    const { container } = render(<ModuloOfferta offerta={offertaEsistente} />)
+
+    expect(container.querySelector('input[name="id"][type="hidden"]')).toHaveValue(
+      offertaEsistente.id,
+    )
+  })
+
+  test('senza offerta non c’è alcun campo id nascosto', () => {
+    const { container } = render(<ModuloOfferta />)
+
+    expect(container.querySelector('input[name="id"]')).not.toBeInTheDocument()
+  })
+
+  test('invia le modifiche con aggiornaOfferta, non con salvaOfferta', async () => {
+    render(<ModuloOfferta offerta={offertaEsistente} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Pubblica' }))
+
+    await waitFor(() => expect(aggiornaOfferta).toHaveBeenCalled())
+    expect(salvaOfferta).not.toHaveBeenCalled()
+  })
+
+  test('un’offerta già pubblicata non lascia credere che si stia pubblicando di nuovo da zero', () => {
+    render(<ModuloOfferta offerta={{ ...offertaEsistente, stato: 'pubblicata' }} />)
+
+    expect(screen.getByRole('button', { name: 'Salva e ripubblica' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Pubblica' })).not.toBeInTheDocument()
+  })
+
+  test('una bozza mostra ancora «Pubblica»', () => {
+    render(<ModuloOfferta offerta={offertaEsistente} />)
+
+    expect(screen.getByRole('button', { name: 'Pubblica' })).toBeInTheDocument()
+  })
+
+  test('non ha problemi di accessibilità con un’offerta esistente', async () => {
+    const { container } = render(<ModuloOfferta offerta={offertaEsistente} />)
+
+    expect(await violazioniAccessibilita(container)).toEqual([])
   })
 })
