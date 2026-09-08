@@ -34,7 +34,7 @@ describe('GuscioRiservato', () => {
     redattoreAttivo.mockResolvedValueOnce(false)
 
     await expect(GuscioRiservato({ children: null })).rejects.toThrow(
-      'redirect:/area-riservata/uscita',
+      'redirect:/area-riservata/uscita?nonAutorizzato=1',
     )
   })
 })
