@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { ambiente } from '@/dati/ambiente'
 
 /**
  * Rinnova la sessione a ogni visita dell'area riservata.
@@ -16,22 +17,19 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function proxy(richiesta: NextRequest) {
   let risposta = NextResponse.next({ request: richiesta })
 
-  const client = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => richiesta.cookies.getAll(),
-        setAll: (biscotti) => {
-          biscotti.forEach(({ name, value }) => richiesta.cookies.set(name, value))
-          risposta = NextResponse.next({ request: richiesta })
-          biscotti.forEach(({ name, value, options }) =>
-            risposta.cookies.set(name, value, options),
-          )
-        },
+  const { url, chiaveAnonima } = ambiente()
+  const client = createServerClient(url, chiaveAnonima, {
+    cookies: {
+      getAll: () => richiesta.cookies.getAll(),
+      setAll: (biscotti) => {
+        biscotti.forEach(({ name, value }) => richiesta.cookies.set(name, value))
+        risposta = NextResponse.next({ request: richiesta })
+        biscotti.forEach(({ name, value, options }) =>
+          risposta.cookies.set(name, value, options),
+        )
       },
     },
-  )
+  })
 
   await client.auth.getUser()
 

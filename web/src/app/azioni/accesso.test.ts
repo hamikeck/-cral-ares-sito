@@ -5,6 +5,13 @@ const { signInWithOtp } = vi.hoisted(() => ({ signInWithOtp: vi.fn() }))
 vi.mock('@/dati/supabaseServer', () => ({
   clientServer: async () => ({ auth: { signInWithOtp } }),
 }))
+vi.mock('@/dati/ambiente', () => ({
+  ambiente: () => ({
+    url: 'https://esempio.supabase.co',
+    chiaveAnonima: 'chiave-finta',
+    sitoUrl: 'https://esempio.it',
+  }),
+}))
 
 import { richiediAccesso } from './accesso'
 

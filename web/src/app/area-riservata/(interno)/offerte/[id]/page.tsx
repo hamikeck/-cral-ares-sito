@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { eliminaOfferta } from '@/app/azioni/offerte'
 import { CopiaTestoEmail } from '@/componenti/CopiaTestoEmail'
 import { ModuloOfferta } from '@/componenti/ModuloOfferta'
+import { ambiente } from '@/dati/ambiente'
 import { offertaPerId } from '@/dati/offerteRiservate'
 import { testoPerEmail } from '@/dominio/testoEmail'
 
@@ -37,9 +38,7 @@ export default async function ModificaOfferta({
       ) : null}
 
       {offerta.stato === 'pubblicata' ? (
-        <CopiaTestoEmail
-          testo={testoPerEmail(offerta, process.env.NEXT_PUBLIC_SITO_URL ?? 'http://localhost:3000')}
-        />
+        <CopiaTestoEmail testo={testoPerEmail(offerta, ambiente().sitoUrl)} />
       ) : null}
 
       <div className="mt-8">

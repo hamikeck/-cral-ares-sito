@@ -13,6 +13,13 @@ const { offertaRestituita } = vi.hoisted(() => ({
 vi.mock('@/dati/offerteRiservate', () => ({
   offertaPerId: async () => offertaRestituita.valore,
 }))
+vi.mock('@/dati/ambiente', () => ({
+  ambiente: () => ({
+    url: 'https://esempio.supabase.co',
+    chiaveAnonima: 'chiave-finta',
+    sitoUrl: 'https://esempio.it',
+  }),
+}))
 
 // ModuloOfferta importa da qui, quindi mockare questo modulo basta anche per
 // il modulo di modifica: niente chiamata vera a Supabase durante il render.

@@ -1,5 +1,6 @@
 'use server'
 
+import { ambiente } from '@/dati/ambiente'
 import { clientServer } from '@/dati/supabaseServer'
 
 const RISPOSTA_NEUTRA =
@@ -29,7 +30,7 @@ export async function richiediAccesso(
       // Nessun account nuovo: i direttori si invitano dal pannello Supabase.
       // Un indirizzo sconosciuto riceve un errore, che qui viene ignorato.
       shouldCreateUser: false,
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITO_URL ?? 'http://localhost:3000'}/area-riservata/callback`,
+      emailRedirectTo: `${ambiente().sitoUrl}/area-riservata/callback`,
     },
   })
 
