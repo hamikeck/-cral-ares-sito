@@ -104,7 +104,8 @@ export const contenutiPagine = {
   cookie: {
     titolo: 'Cookie',
     paragrafi: [
-      'Questo sito utilizza esclusivamente cookie tecnici, necessari al suo funzionamento.',
+      'Le pagine pubbliche di questo sito non installano alcun cookie.',
+      "L'area riservata ai direttori, a cui si accede con un link ricevuto per email, usa un cookie tecnico di sessione: serve soltanto a mantenere l'accesso di chi è già entrato. Non profila e non segue la navigazione, ed è necessario al funzionamento dell'area riservata.",
       'Non sono presenti cookie di profilazione, né strumenti di analisi che ne installino. Per questo motivo non viene mostrato alcun banner di consenso.',
     ],
   },

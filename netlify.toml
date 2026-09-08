@@ -13,7 +13,9 @@
 # Intestazioni di sicurezza
 #
 # Il sito non carica nulla da fuori: i caratteri sono installati in
-# public/font/, non c'è analisi del traffico, non ci sono servizi esterni.
+# public/font/, non c'è analisi del traffico. L'unico servizio esterno è il
+# progetto Supabase dell'area riservata, nominato per esteso in `connect-src`
+# — mai con un carattere jolly, che vanificherebbe il senso della direttiva.
 # Questo permette una politica dei contenuti molto più stretta di quella che
 # quasi tutti i siti possono permettersi, e le dà un valore in più: non è solo
 # una difesa, è il browser che fa rispettare quello che la pagina cookie
@@ -24,16 +26,22 @@
 # Nota per la fase 4: `script-src` ammette 'unsafe-inline' perché Next
 # inserisce nella pagina i dati di idratazione come script in linea.
 # Toglierlo richiede i nonce e un middleware, che costringerebbe ogni pagina a
-# essere generata su richiesta invece che staticamente. Oggi il compromesso è
-# accettabile — non c'è un solo contenuto scritto dagli utenti — ma quando
-# arriveranno i moduli di richiesta va rivalutato.
+# essere generata su richiesta invece che staticamente. Da questa fase non è
+# più vero che non c'è alcun contenuto scritto dagli utenti: descrizioni,
+# condizioni, istruzioni e recapiti delle offerte sono scritti dai direttori e
+# resi sulle pagine pubbliche. Il compromesso resta accettabile perché il
+# rischio è comunque basso — chi scrive è autenticato e nominato in
+# `redattori`, React fa l'escape di tutto ciò che rende, e non c'è un solo
+# `dangerouslySetInnerHTML` nel progetto — ma quando in fase 4 a scrivere sarà
+# il pubblico, e non più tre persone nominate a mano in una tabella, questa
+# valutazione va rifatta da capo.
 # ---------------------------------------------------------------------------
 
 [[headers]]
   for = "/*"
 
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://mfwtepgynxcypzetblwc.supabase.co; upgrade-insecure-requests"
 
     # Il sito non va incorniciato in pagine altrui: è la difesa contro il
     # clickjacking, e vale doppio su un sito legato alla pubblica

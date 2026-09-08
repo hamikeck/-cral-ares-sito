@@ -1,5 +1,15 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { offerteFinte } from '@/test/offerteFinte'
+
+// Un'offerta senza `validaAl` è una convenzione permanente: non scade mai.
+vi.mock('@/dati/offerte', () => ({
+  offerteValide: async () => offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15'),
+  offertaDaSlug: async (slug: string) =>
+    offerteFinte.find((offerta) => offerta.slug === slug),
+  slugPubblicati: async () => offerteFinte.map((offerta) => offerta.slug),
+}))
+
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { Intestazione } from '@/componenti/Intestazione'
 import { PiedePagina } from '@/componenti/PiedePagina'
@@ -7,7 +17,6 @@ import Home from '@/app/page'
 import ChiSiamo from '@/app/chi-siamo/page'
 import NonTrovata from '@/app/not-found'
 import PaginaOfferta from '@/app/offerte/[slug]/page'
-import { offerteValide } from '@/contenuti/offerteEsempio'
 
 /**
  * Le pagine messe insieme al loro contorno.
@@ -35,15 +44,17 @@ function conContorno(pagina: React.ReactNode) {
   )
 }
 
-const primaOfferta = offerteValide()[0]
+/** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
+const offerteValideAttese = offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15')
+const primaOfferta = offerteValideAttese[0]
 
 describe('pagine assemblate con intestazione e piè di pagina', () => {
   test.each([
-    ['home', <Home key="home" />],
-    ['chi siamo', <ChiSiamo key="chi-siamo" />],
-    ['pagina non trovata', <NonTrovata key="404" />],
-  ])('%s non presenta violazioni di accessibilità', async (_nome, pagina) => {
-    const { container } = render(conContorno(pagina))
+    ['home', () => Home()],
+    ['chi siamo', () => <ChiSiamo key="chi-siamo" />],
+    ['pagina non trovata', () => <NonTrovata key="404" />],
+  ])('%s non presenta violazioni di accessibilità', async (_nome, ottieniPagina) => {
+    const { container } = render(conContorno(await ottieniPagina()))
     expect(await violazioniAccessibilita(container)).toEqual([])
   })
 
@@ -55,13 +66,13 @@ describe('pagine assemblate con intestazione e piè di pagina', () => {
     expect(await violazioniAccessibilita(container)).toEqual([])
   })
 
-  test('esiste un solo titolo di primo livello per pagina', () => {
-    render(conContorno(<Home />))
+  test('esiste un solo titolo di primo livello per pagina', async () => {
+    render(conContorno(await Home()))
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
   })
 
-  test('i punti di riferimento sono unici e nominati', () => {
-    render(conContorno(<Home />))
+  test('i punti di riferimento sono unici e nominati', async () => {
+    render(conContorno(await Home()))
     expect(screen.getAllByRole('banner')).toHaveLength(1)
     expect(screen.getAllByRole('main')).toHaveLength(1)
     expect(screen.getAllByRole('contentinfo')).toHaveLength(1)
@@ -76,8 +87,8 @@ describe('pagine assemblate con intestazione e piè di pagina', () => {
     for (const nome of nomi) expect(nome?.trim()).toBeTruthy()
   })
 
-  test('il salta-al-contenuto punta a un elemento che esiste', () => {
-    const { container } = render(conContorno(<Home />))
+  test('il salta-al-contenuto punta a un elemento che esiste', async () => {
+    const { container } = render(conContorno(await Home()))
     const salta = screen.getByRole('link', { name: 'Salta al contenuto' })
     const bersaglio = salta.getAttribute('href')!.slice(1)
     expect(container.querySelector(`#${bersaglio}`)).not.toBeNull()

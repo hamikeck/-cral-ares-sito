@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SchedaOfferta } from '@/componenti/SchedaOfferta'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { categorie, offertePerCategoria } from '@/contenuti/offerteEsempio'
+import { offerteValide } from '@/dati/offerte'
+import { categorieDi, perCategoria } from '@/dominio/selezione'
 
 export const metadata: Metadata = {
   title: contenutiPagine.offerte.titolo,
@@ -26,14 +27,17 @@ export default async function Offerte({
     contenutiPagine.offerte
   const { avvisoDimostrativo } = contenutiPagine.home
 
+  const valide = await offerteValide()
+  const elencoCategorie = categorieDi(valide)
+
   const parametri = await searchParams
   const richiesta = parametri.categoria
   const categoriaScelta =
-    typeof richiesta === 'string' && categorie().includes(richiesta)
+    typeof richiesta === 'string' && elencoCategorie.includes(richiesta)
       ? richiesta
       : undefined
 
-  const elenco = offertePerCategoria(categoriaScelta)
+  const elenco = perCategoria(valide, categoriaScelta)
 
   return (
     <>
@@ -61,7 +65,7 @@ export default async function Offerte({
               {tutte}
             </Link>
           </li>
-          {categorie().map((categoria) => {
+          {elencoCategorie.map((categoria) => {
             const attiva = categoria === categoriaScelta
             return (
               <li key={categoria}>

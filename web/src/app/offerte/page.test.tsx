@@ -1,9 +1,23 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { offerteFinte } from '@/test/offerteFinte'
+
+// Un'offerta senza `validaAl` è una convenzione permanente: non scade mai.
+vi.mock('@/dati/offerte', () => ({
+  offerteValide: async () => offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15'),
+  offertaDaSlug: async (slug: string) =>
+    offerteFinte.find((offerta) => offerta.slug === slug),
+  slugPubblicati: async () => offerteFinte.map((offerta) => offerta.slug),
+}))
+
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { categorie, offerte, offerteValide } from '@/contenuti/offerteEsempio'
+import { categorieDi } from '@/dominio/selezione'
 import Offerte from './page'
+
+/** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
+const offerteValideAttese = offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15')
+const categorieAttese = categorieDi(offerteValideAttese)
 
 /** Le pagine di Next ricevono i parametri come promessa. */
 function parametri(valori: Record<string, string> = {}) {
@@ -20,7 +34,7 @@ describe('Elenco delle offerte', () => {
 
   test('elenca le offerte valide, ciascuna cliccabile', async () => {
     render(await Offerte({ searchParams: parametri() }))
-    for (const offerta of offerteValide()) {
+    for (const offerta of offerteValideAttese) {
       expect(
         screen.getByRole('link', { name: offerta.partner }),
       ).toHaveAttribute('href', `/offerte/${offerta.slug}`)
@@ -29,8 +43,8 @@ describe('Elenco delle offerte', () => {
 
   test('le offerte scadute non compaiono', async () => {
     render(await Offerte({ searchParams: parametri() }))
-    const valide = new Set(offerteValide().map((o) => o.slug))
-    const scadute = offerte.filter((o) => !valide.has(o.slug))
+    const valide = new Set(offerteValideAttese.map((o) => o.slug))
+    const scadute = offerteFinte.filter((o) => !valide.has(o.slug))
     expect(scadute.length).toBeGreaterThan(0)
     for (const offerta of scadute) {
       expect(
@@ -40,9 +54,9 @@ describe('Elenco delle offerte', () => {
   })
 
   test('con una categoria mostra solo le offerte di quella categoria', async () => {
-    const categoria = categorie()[0]
+    const categoria = categorieAttese[0]
     render(await Offerte({ searchParams: parametri({ categoria }) }))
-    for (const offerta of offerteValide()) {
+    for (const offerta of offerteValideAttese) {
       const collegamento = screen.queryByRole('link', {
         name: offerta.partner,
       })
@@ -55,7 +69,7 @@ describe('Elenco delle offerte', () => {
   })
 
   test('la categoria attiva è dichiarata come tale', async () => {
-    const categoria = categorie()[0]
+    const categoria = categorieAttese[0]
     render(await Offerte({ searchParams: parametri({ categoria }) }))
     expect(screen.getByRole('link', { name: categoria })).toHaveAttribute(
       'aria-current',
@@ -66,7 +80,7 @@ describe('Elenco delle offerte', () => {
   test('una categoria inventata non filtra nulla e non rompe la pagina', async () => {
     render(await Offerte({ searchParams: parametri({ categoria: 'Astronautica' }) }))
     expect(
-      screen.getAllByRole('link', { name: offerteValide()[0].partner }),
+      screen.getAllByRole('link', { name: offerteValideAttese[0].partner }),
     ).toHaveLength(1)
   })
 

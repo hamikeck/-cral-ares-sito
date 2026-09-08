@@ -17,3 +17,6 @@ dist/
 
 # Spazio di lavoro degli agenti
 .superpowers/
+
+# Creata da `supabase link`
+supabase/.temp/

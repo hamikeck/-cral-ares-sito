@@ -32,9 +32,15 @@ export function formattaData(iso: string): string {
   }).format(new Date(anno, mese - 1, giorno))
 }
 
-/** Vero se la data è già passata: il giorno indicato è ancora valido. */
-export function scaduta(iso: string, adesso = oggi()): boolean {
-  return iso < adesso
+/**
+ * Vero se la data è già passata.
+ *
+ * Una data assente non è mai scaduta: è la convenzione permanente, che non ha
+ * una fine da confrontare e resta valida finché non la ritira a mano un
+ * direttore.
+ */
+export function scaduta(iso: string | undefined, adesso = oggi()): boolean {
+  return iso !== undefined && iso < adesso
 }
 
 /** Vero se la data non è ancora arrivata. */

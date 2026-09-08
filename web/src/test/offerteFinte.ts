@@ -1,43 +1,7 @@
-import { nonAncoraIniziata, oggi, scaduta } from '@/lib/date'
+import type { Offerta } from '@/dominio/offerta'
 
-/**
- * Offerte dimostrative, usate finché non esiste il database.
- *
- * Servono a due cose: far vedere al direttivo che aspetto avrà il sito, e
- * dare alle pagine delle offerte un contenuto vero su cui essere progettate.
- *
- * In fase 2 questo file sparisce e i dati arrivano dalla tabella `offerte`.
- * Il tipo e le funzioni qui sotto sono modellati su quella query, così a
- * cambiare sarà soltanto da dove arrivano i dati, non le pagine che li usano.
- *
- * Non sono offerte reali. Il sito lo dichiara apertamente dove le mostra.
- */
-
-/** Come il socio ottiene il vantaggio. Rispecchia l'enum `modalita_offerta`. */
-export type ModalitaOfferta = 'biglietti' | 'convenzione' | 'solo_sconto'
-
-export type Offerta = {
-  slug: string
-  partner: string
-  categoria: string
-  /** Il motivo per cui il socio si ferma a leggere. Va scritto corto. */
-  vantaggio: string
-  /** Una riga, per le schede negli elenchi. */
-  descrizione: string
-  /** Il testo completo, mostrato solo nella pagina dell'offerta. */
-  descrizioneCompleta: string
-  /** Le regole che il socio deve conoscere prima di chiedere. */
-  condizioni: string[]
-  /** Date ISO `AAAA-MM-GG`: servono a calcolare la validità, non a essere lette. */
-  validaDal: string
-  validaAl: string
-  modalita: ModalitaOfferta
-  /** Per `solo_sconto`: cosa deve fare il socio, senza passare da noi. */
-  istruzioni?: string
-  inEvidenza: boolean
-}
-
-export const offerte: Offerta[] = [
+/** Le otto offerte mostrate al direttivo, ora fixture dei test e dei semi SQL. */
+export const offerteFinte: Offerta[] = [
   {
     slug: 'uci-cinemas-ingresso-ridotto',
     partner: 'UCI Cinemas',
@@ -56,6 +20,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-09-30',
     modalita: 'biglietti',
     inEvidenza: true,
+    contatti: {},
   },
   {
     slug: 'the-space-carnet',
@@ -75,6 +40,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-12-31',
     modalita: 'biglietti',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'teatro-diana-stagione-prosa',
@@ -94,6 +60,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-10-15',
     modalita: 'biglietti',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'pneumatici-esposito',
@@ -109,11 +76,14 @@ export const offerte: Offerta[] = [
       'Occorre esibire la tessera del CRAL prima del preventivo.',
     ],
     validaDal: '2026-09-01',
-    validaAl: '2026-11-30',
+    // Convenzione permanente, senza data di fine: è l'esempio di offerta che
+    // non scade da sola, e i test delle pagine si appoggiano a questa
+    // fixture per coprire il caso.
     modalita: 'solo_sconto',
     istruzioni:
       'Presentati in officina con la tessera del CRAL e chiedi il preventivo convenzionato. Non serve prenotare dal sito.',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'assicurazione-auto-convenzione',
@@ -132,6 +102,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-12-31',
     modalita: 'convenzione',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'farmacia-vesuvio-parafarmaco',
@@ -152,6 +123,7 @@ export const offerte: Offerta[] = [
     istruzioni:
       'Mostra la tessera del CRAL alla cassa prima del pagamento. Lo sconto viene applicato subito.',
     inEvidenza: false,
+    contatti: {},
   },
   {
     slug: 'palestra-acquachiara-abbonamento',
@@ -170,6 +142,7 @@ export const offerte: Offerta[] = [
     validaAl: '2026-10-31',
     modalita: 'convenzione',
     inEvidenza: false,
+    contatti: {},
   },  {
     slug: 'mostra-caravaggio-terminata',
     partner: 'Palazzo Reale',
@@ -186,65 +159,6 @@ export const offerte: Offerta[] = [
     istruzioni:
       'La mostra è chiusa. La scheda resta consultabile per chi arriva da un vecchio collegamento.',
     inEvidenza: false,
+    contatti: {},
   },
 ]
-
-/**
- * Le offerte che il socio deve vedere: iniziate e non ancora scadute.
- *
- * È la promessa dello spec — «le offerte scadute spariscono da sole» — e non
- * si mantiene con la buona volontà di chi pubblica: si mantiene qui, in una
- * funzione che nessuno può dimenticare di chiamare, perché è l'unica porta
- * da cui gli elenchi passano.
- */
-export function offerteValide(adesso = oggi()): Offerta[] {
-  return offerte.filter(
-    (offerta) =>
-      !scaduta(offerta.validaAl, adesso) &&
-      !nonAncoraIniziata(offerta.validaDal, adesso),
-  )
-}
-
-/**
- * L'offerta della settimana, quella che apre la home.
- *
- * Restituisce `undefined` quando non ce n'è nessuna: è una settimana come
- * un'altra e le pagine devono saperlo gestire, non rompersi.
- */
-export function offertaInEvidenza(adesso = oggi()): Offerta | undefined {
-  return offerteValide(adesso).find((offerta) => offerta.inEvidenza)
-}
-
-/** Tutte le altre valide, nell'ordine in cui sono state pubblicate. */
-export function altreOfferte(adesso = oggi()): Offerta[] {
-  return offerteValide(adesso).filter((offerta) => !offerta.inEvidenza)
-}
-
-/** Le categorie che hanno almeno un'offerta valida, in ordine alfabetico. */
-export function categorie(adesso = oggi()): string[] {
-  return [
-    ...new Set(offerteValide(adesso).map((offerta) => offerta.categoria)),
-  ].sort((prima, seconda) => prima.localeCompare(seconda, 'it'))
-}
-
-/** Le offerte valide di una categoria, o tutte se non se ne indica nessuna. */
-export function offertePerCategoria(
-  categoria?: string,
-  adesso = oggi(),
-): Offerta[] {
-  const valide = offerteValide(adesso)
-  if (!categoria) return valide
-  return valide.filter((offerta) => offerta.categoria === categoria)
-}
-
-/**
- * Cerca fra TUTTE le offerte, comprese le scadute.
- *
- * Deliberato: la scheda di un'offerta finita resta raggiungibile, perché chi
- * apre un vecchio collegamento ricevuto per email deve trovare «questa offerta
- * è terminata» e non una pagina di errore. Un link morto fa sembrare rotto il
- * sito.
- */
-export function offertaDaSlug(slug: string): Offerta | undefined {
-  return offerte.find((offerta) => offerta.slug === slug)
-}

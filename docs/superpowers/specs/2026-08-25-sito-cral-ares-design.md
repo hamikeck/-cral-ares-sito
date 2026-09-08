@@ -1,8 +1,8 @@
 # Sito CRAL ARES — Documento di progettazione
 
 **Prima stesura:** 25 agosto 2026
-**Ultima revisione:** 4 settembre 2026
-**Stato:** approvato dal direttivo il 3 settembre 2026, pronto per il piano di implementazione
+**Ultima revisione:** 8 settembre 2026
+**Stato:** approvato dal direttivo il 3 settembre 2026, aggiornato con la riunione dell'8 settembre 2026
 
 ## Revisioni
 
@@ -12,6 +12,7 @@
 | 02/09/2026 | Scope semplificato: fuori l'invio automatico degli avvisi ai 400 soci (lo fanno i direttori da Aruba) e il flusso strutturato di approvazione delle richieste (rispondono a mano). Netlify al posto di Vercel |
 | 04/09/2026 | Richiesta del direttivo in riunione: anagrafica soci gestibile dall'area riservata e riscontro obbligatorio sulle richieste |
 | 04/09/2026 | Le richieste partono anche dalla home con due moduli dedicati (biglietti cinema per circuito, convenzioni). La scheda di un'offerta scaduta resta raggiungibile |
+| 08/09/2026 | Riunione del direttivo: il modulo cinema chiede anche la sede e mostra l'importo, il socio sceglie dove ricevere i biglietti, il pagamento è cedolino o trattenuta in busta paga con l'IBAN nella conferma. Confermati gli otto campi dell'offerta e il no alle immagini |
 
 ---
 
@@ -166,15 +167,30 @@ create table offerte (
 
 -- Circuiti cinematografici convenzionati (UCI, The Space, ...)
 create table circuiti (
-  id      uuid primary key default gen_random_uuid(),
-  nome    text unique not null,
-  ordine  integer not null default 0,
-  attivo  boolean not null default true
+  id           uuid primary key default gen_random_uuid(),
+  nome         text unique not null,
+  prezzo_socio numeric(8,2),                  -- prezzo di un biglietto per i soci
+  ordine       integer not null default 0,
+  attivo       boolean not null default true
 );
+
+-- Sale di ogni circuito, con il link alla programmazione
+create table sedi (
+  id                  uuid primary key default gen_random_uuid(),
+  circuito_id         uuid not null references circuiti(id) on delete cascade,
+  nome                text not null,          -- "UCI Casoria"
+  citta               text,
+  link_programmazione text,
+  ordine              integer not null default 0,
+  attiva              boolean not null default true
+);
+create unique index sedi_circuito_nome_key on sedi (circuito_id, lower(nome));
 
 -- Richieste dei soci
 create type tipo_richiesta     as enum ('cinema', 'convenzione', 'offerta');
+-- 'bonifico' è il «cedolino» del direttivo, 'busta_paga' la trattenuta
 create type modalita_pagamento as enum ('bonifico', 'busta_paga');
+create type recapito_consegna  as enum ('email_aziendale', 'email_personale', 'whatsapp');
 
 create table richieste (
   id                 uuid primary key default gen_random_uuid(),
@@ -184,13 +200,18 @@ create table richieste (
   -- dati del socio, copiati al momento dell'invio
   nome               text not null,
   cognome            text not null,
-  codice_dipendente  text not null,
-  email              text not null,
-  telefono           text not null,
+  codice_dipendente  text not null,                 -- la «matricola» del direttivo
+  email              text not null,                 -- aziendale: è quella del riscontro
+  telefono           text,                          -- obbligatorio solo se consegna = 'whatsapp'
+  consegna           recapito_consegna,             -- dove il socio vuole ricevere i biglietti
+  email_personale    text,                          -- solo se consegna = 'email_personale'
   pagamento          modalita_pagamento,            -- non chiesto per le convenzioni
+  importo            numeric(8,2),                  -- quantità × prezzo, congelato all'invio
   -- tipo = 'cinema'
   circuito_id        uuid references circuiti(id),
   circuito           text,                          -- copiato, sopravvive alla modifica dell'elenco
+  sede_id            uuid references sedi(id),      -- facoltativa
+  sede               text,                          -- copiata, per la stessa ragione del circuito
   -- tipo = 'convenzione'
   convenzione        text,                          -- campo libero scritto dal socio
   -- tipo = 'cinema' oppure offerta con modalita = 'biglietti'
@@ -224,6 +245,15 @@ create table richieste (
   un circuito, le richieste passate devono restare leggibili.
 - `pagamento` è nullo per le richieste di convenzione: lì non c'è ancora nulla
   da pagare, e chiederlo sarebbe un campo senza senso da compilare.
+- **`importo` è congelato al momento dell'invio**, non ricalcolato leggendo il
+  prezzo del circuito. Se fra sei mesi il biglietto UCI aumenta, la vecchia
+  richiesta deve continuare a raccontare la cifra che il socio ha letto e
+  bonificato, non quella di oggi.
+- `prezzo_socio` sta sul circuito e non sulla sede: il biglietto costa uguale in
+  tutte le sale dello stesso circuito. Come l'elenco dei circuiti, lo aggiorna a
+  mano lo sviluppatore — è un numero che cambia una volta l'anno.
+- Il `telefono` non è più obbligatorio per tutti: lo diventa per chi sceglie di
+  ricevere i biglietti su WhatsApp, dove è il recapito della consegna.
 - `convenzione` è un campo di testo libero, per scelta del direttivo. La
   conseguenza va messa in conto: "gommista", "Gommista" e "cambio gomme"
   arriveranno come voci distinte, e contarle richiederà una lettura a occhio.
@@ -274,30 +304,52 @@ non si capirebbe che sono due cose distinte.
 Tutti e tre i percorsi condividono lo stesso blocco di dati del socio, la stessa
 validazione e lo stesso riscontro (sezione 9). Cambia solo cosa si chiede sopra.
 
-**Dati del socio, comuni a tutte le richieste:** nome, cognome, codice
-dipendente, email, telefono, consenso privacy. La modalità di pagamento
-(bonifico oppure addebito in busta paga) si chiede solo dove c'è qualcosa da
-pagare, cioè per i biglietti.
+**Dati del socio, comuni a tutte le richieste:** nome, cognome, matricola (il
+`codice_dipendente` del modello dati), email aziendale, consenso privacy. Il
+telefono si chiede solo a chi vuole i biglietti su WhatsApp. La modalità di
+pagamento — **cedolino** (bonifico) oppure **trattenuta in busta paga** — si
+chiede solo dove c'è qualcosa da pagare, cioè per i biglietti.
+
+**L'email aziendale resta obbligatoria** anche per chi i biglietti li vuole
+altrove: è il campo su cui l'anagrafica riconosce il socio (sezione 9). Dove
+riceverli è una domanda separata, con tre risposte — email aziendale, email
+personale, WhatsApp — e la scelta apre il campo che serve, uno solo.
 
 ### 8.1 Modulo biglietti cinema — `/richiesta/cinema`
 
-Il modulo più corto del sito, due sole scelte:
+Il modulo più corto del sito:
 
 - **circuito**, da un menu a tendina con i circuiti convenzionati (UCI, The
   Space, ...);
-- **quantità** di biglietti;
+- **sede**, *facoltativa*, da un secondo menu che mostra solo le sale del
+  circuito scelto, ciascuna col link alla programmazione;
+- **quantità** di biglietti, con l'**importo** che si aggiorna mentre si sceglie
+  — *4 biglietti UCI — 32,00 €*;
 - messaggio libero, facoltativo.
 
-Il socio sceglie il circuito, non la singola sala: i biglietti sono validi su
-tutto il circuito, e chiedere data, orario o titolo del film significherebbe far
-compilare campi che non vogliono dire niente. Al direttore arriva ciò che gli
-serve per ordinare: *"4 biglietti UCI"*.
+La sede è facoltativa perché i biglietti valgono su tutto il circuito: al
+direttore serve come indicazione, non come vincolo, e chi non sa ancora dove
+andrà invia lo stesso. Data, orario e titolo del film restano fuori: per un
+servizio permanente sono campi che non vogliono dire niente. Al direttore arriva
+ciò che gli serve per ordinare: *"4 biglietti UCI, di solito Casoria — 32,00 €,
+cedolino"*.
 
-L'elenco dei circuiti vive nella tabella `circuiti`. Cambia raramente — una
-volta l'anno, quando va bene — quindi **non ha una pagina di gestione**: lo
-carica e lo aggiorna lo sviluppatore. Se col tempo dovesse cambiare spesso, la
-pagina si aggiunge; farla ora sarebbe manutenzione costruita per un problema
-che non esiste.
+Il **link alla programmazione** sta sulla sede, non sull'offerta: è lì che il
+socio guarda cosa danno prima di decidere quanti biglietti chiedere. Per i
+teatri non serve nulla di nuovo — non sono circuiti ma offerte in modalità
+`biglietti`, e il link alla stagione va nel campo `link_partner`, che esiste già.
+
+L'elenco dei circuiti e delle sedi vive nelle tabelle `circuiti` e `sedi`, e con
+esso il prezzo del biglietto. Cambia raramente — una volta l'anno, quando va
+bene — quindi **non ha una pagina di gestione**: lo carica e lo aggiorna lo
+sviluppatore, sull'elenco fornito dal direttivo. Se col tempo dovesse cambiare
+spesso, la pagina si aggiunge; farla ora sarebbe manutenzione costruita per un
+problema che non esiste.
+
+**Dopo l'invio**, chi ha scelto il cedolino legge l'IBAN dell'associazione,
+l'importo e la causale già scritti, e li ritrova identici nell'email di presa in
+carico: non deve tornare sul sito per pagare. Chi ha scelto la trattenuta in
+busta paga non vede mai l'IBAN.
 
 ### 8.2 Modulo convenzioni — `/richiesta/convenzione`
 
@@ -452,6 +504,12 @@ risposta al socio si dà rispondendo all'email.
 - **Richieste** — base giuridica: consenso, raccolto con checkbox non
   preselezionata prima dell'invio, con data e ora registrate. Cancellazione
   automatica dopo 24 mesi (job pianificato settimanale).
+- **Recapiti personali** — l'indirizzo privato e il numero WhatsApp sono
+  facoltativi, li scrive il socio che sceglie di ricevere lì i biglietti, e
+  servono solo a quella consegna. Vivono dentro la richiesta e spariscono con
+  lei ai 24 mesi: non entrano nell'anagrafica soci, che continua a conoscere
+  solo l'indirizzo comunicato al CRAL. L'informativa deve dirlo, perché è un
+  dato personale in senso stretto, dato per una comodità e non per un obbligo.
 - **Nomina a responsabile del trattamento** (art. 28 GDPR) del CRAL nei
   confronti dello sviluppatore, che come amministratore tecnico accede ai dati
   dei soci. Documento di una pagina, da firmare una volta.
@@ -552,20 +610,25 @@ bisogno di un elenco su cui confrontare.
   almeno nome, cognome, email, codice dipendente).
 - Testo dell'informativa privacy con i dati reali del titolare (denominazione
   completa, sede, email del titolare del trattamento).
-- **Elenco dei circuiti cinematografici convenzionati** (UCI, The Space, ...):
-  da definire con il direttivo, serve per il menu del modulo cinema.
+- **Elenco dei circuiti, delle sedi e dei prezzi.** Lo fornisce il direttivo:
+  per ogni circuito convenzionato (UCI, The Space, ...) le sale, il link alla
+  programmazione di ciascuna e il prezzo del biglietto riservato ai soci. Senza
+  il prezzo il modulo cinema non può mostrare l'importo da bonificare.
 - Elenco definitivo delle **categorie delle offerte**, quelle che filtrano
   `/offerte`. Punto di partenza concordato: cinema, teatri, assicurazione auto,
   pneumatici. Da non confondere con il campo libero del modulo convenzioni, che
   non ha elenco.
 - Contenuti di "Chi siamo", direttivo e procedura di iscrizione.
-- **Coordinate bancarie** per chi sceglie il bonifico.
+- **IBAN dell'associazione**, per chi sceglie il cedolino. Finché non arriva, la
+  conferma di invio e l'email di presa in carico restano senza: non si pubblica
+  un IBAN provvisorio.
 - **Addebito in busta paga:** con quale procedura l'amministrazione accetta le
   trattenute e quali dati servono per attivarle. È l'unico punto che dipende da
   un accordo esterno all'associazione, quindi conviene chiarirlo presto; il
   resto del sito non ne è bloccato.
-- Se il socio debba poter scegliere liberamente la modalità di pagamento o se
-  alcune offerte ne ammettano una sola.
+- Se il socio debba poter scegliere liberamente la modalità di pagamento sulle
+  offerte diverse dai biglietti del cinema, dove il direttivo ha già detto che
+  sono ammesse entrambe.
 - **Limiti di invio di Aruba**: 400 destinatari in copia nascosta da webmail
   possono far scattare i filtri antispam o essere rifiutati. Da verificare prima
   del primo avviso.
