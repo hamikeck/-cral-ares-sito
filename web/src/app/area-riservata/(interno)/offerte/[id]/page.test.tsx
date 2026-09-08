@@ -73,10 +73,15 @@ describe('Pagina di modifica offerta', () => {
 
     // Da qui in poi la pagina di un'offerta pubblicata mostra anche il
     // blocco del Task 8, che ha un secondo `role="status"` (l'esito della
-    // copia): getByText resta univoco dove getByRole('status') non lo è più.
+    // copia): getByRole('status') non basta più a trovarne uno solo, ma il
+    // test deve continuare a cadere sia se sparisce il messaggio sia se
+    // sparisce il ruolo — non solo il testo nel DOM.
     render(await rendiPagina('off-2', '1'))
 
-    expect(screen.getByText('Salvata. È già visibile sul sito.')).toBeInTheDocument()
+    const conferme = screen.getAllByRole('status')
+    expect(
+      conferme.some((elemento) => elemento.textContent === 'Salvata. È già visibile sul sito.'),
+    ).toBe(true)
   })
 
   test('il pulsante «Pubblica» cambia parola perché l’offerta è già online', async () => {
