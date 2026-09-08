@@ -24,12 +24,21 @@ export function SchedaOfferta({
   offerta,
   inEvidenza = false,
   titolo: Titolo = 'h3',
+  collegamentoDisabilitato = false,
 }: {
   offerta: Offerta
   inEvidenza?: boolean
   titolo?: 'h2' | 'h3'
+  /**
+   * Per l'anteprima del modulo di pubblicazione: lo slug lì è un segnaposto
+   * («anteprima»), quindi un collegamento vero porterebbe a un 404. Qui la
+   * scheda resta leggibile ma non cliccabile.
+   */
+  collegamentoDisabilitato?: boolean
 }) {
-  const collegamento = (
+  const collegamento = collegamentoDisabilitato ? (
+    <span>{offerta.partner}</span>
+  ) : (
     <Link
       href={`/offerte/${offerta.slug}`}
       className="after:absolute after:inset-0 after:content-[''] hover:underline"
@@ -37,6 +46,15 @@ export function SchedaOfferta({
       {offerta.partner}
     </Link>
   )
+
+  // Sul database `valida_al` è obbligatoria: una scheda pubblicata ce l'ha
+  // sempre. Una stringa vuota si presenta solo nell'anteprima del modulo,
+  // prima che il direttore scelga la data — e formattarla comunque
+  // produrrebbe una scadenza inventata (o, con `Intl.DateTimeFormat`, un
+  // errore) invece di un segnaposto riconoscibile come tale.
+  const scadenza = offerta.validaAl
+    ? `Valida fino al ${formattaData(offerta.validaAl)}`
+    : 'Scadenza da indicare'
 
   if (inEvidenza) {
     return (
@@ -54,7 +72,7 @@ export function SchedaOfferta({
           <div className="flex flex-col lg:border-l lg:border-linea lg:pl-10">
             <p className="max-w-prose text-corpo">{offerta.descrizione}</p>
             <p className="mt-4 border-t border-linea pt-3 text-sm text-inchiostro-tenue lg:mt-auto">
-              Valida fino al {formattaData(offerta.validaAl)}
+              {scadenza}
             </p>
           </div>
         </div>
@@ -71,7 +89,7 @@ export function SchedaOfferta({
       </p>
       <p className="mt-3 max-w-prose text-corpo">{offerta.descrizione}</p>
       <p className="mt-4 border-t border-linea pt-3 text-sm text-inchiostro-tenue sm:mt-auto">
-        Valida fino al {formattaData(offerta.validaAl)}
+        {scadenza}
       </p>
     </article>
   )

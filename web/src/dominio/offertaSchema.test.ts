@@ -56,6 +56,13 @@ describe('schemaOfferta', () => {
     expect(esito.error?.issues[0].message).toMatch(/160 caratteri/)
   })
 
+  test('una modalità sconosciuta ha un messaggio in italiano, non il testo predefinito di Zod', () => {
+    const esito = schemaOfferta.safeParse({ ...valida, modalita: 'boh' })
+
+    expect(esito.success).toBe(false)
+    expect(esito.error?.issues[0].message).toBe('Scegli come il socio ottiene il vantaggio.')
+  })
+
   test('trasforma le condizioni scritte a righe in un elenco', () => {
     const esito = schemaOfferta.parse(valida)
 

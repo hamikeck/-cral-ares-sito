@@ -33,7 +33,9 @@ export const schemaOfferta = z
       ),
     validaDal: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Indica la data di inizio.'),
     validaAl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Indica la data di fine.'),
-    modalita: z.enum(['solo_sconto', 'biglietti', 'convenzione']),
+    modalita: z.enum(['solo_sconto', 'biglietti', 'convenzione'], {
+      error: 'Scegli come il socio ottiene il vantaggio.',
+    }),
     istruzioni: z.string().trim().optional().default(''),
     indirizzo: z.string().trim().optional().default(''),
     telefono: z.string().trim().optional().default(''),
