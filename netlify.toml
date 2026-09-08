@@ -26,9 +26,15 @@
 # Nota per la fase 4: `script-src` ammette 'unsafe-inline' perché Next
 # inserisce nella pagina i dati di idratazione come script in linea.
 # Toglierlo richiede i nonce e un middleware, che costringerebbe ogni pagina a
-# essere generata su richiesta invece che staticamente. Oggi il compromesso è
-# accettabile — non c'è un solo contenuto scritto dagli utenti — ma quando
-# arriveranno i moduli di richiesta va rivalutato.
+# essere generata su richiesta invece che staticamente. Da questa fase non è
+# più vero che non c'è alcun contenuto scritto dagli utenti: descrizioni,
+# condizioni, istruzioni e recapiti delle offerte sono scritti dai direttori e
+# resi sulle pagine pubbliche. Il compromesso resta accettabile perché il
+# rischio è comunque basso — chi scrive è autenticato e nominato in
+# `redattori`, React fa l'escape di tutto ciò che rende, e non c'è un solo
+# `dangerouslySetInnerHTML` nel progetto — ma quando in fase 4 a scrivere sarà
+# il pubblico, e non più tre persone nominate a mano in una tabella, questa
+# valutazione va rifatta da capo.
 # ---------------------------------------------------------------------------
 
 [[headers]]
