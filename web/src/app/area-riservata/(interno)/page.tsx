@@ -60,7 +60,9 @@ export default async function AreaRiservata() {
                   <td className="py-3 pr-4 font-semibold">{offerta.partner}</td>
                   <td className="py-3 pr-4">{offerta.categoria}</td>
                   <td className="py-3 pr-4">{statoLeggibile(offerta)}</td>
-                  <td className="py-3 pr-4">{formattaData(offerta.validaAl)}</td>
+                  <td className="py-3 pr-4">
+                    {offerta.validaAl ? formattaData(offerta.validaAl) : '—'}
+                  </td>
                   <td className="py-3">
                     <Link
                       href={`/area-riservata/offerte/${offerta.id}`}

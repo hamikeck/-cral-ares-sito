@@ -38,6 +38,32 @@ describe('schemaOfferta', () => {
     expect(esito.error?.issues[0].message).toMatch(/dopo la data di inizio/)
   })
 
+  test('senza «senza scadenza» la data di fine resta obbligatoria', () => {
+    const esito = schemaOfferta.safeParse({ ...valida, validaAl: '' })
+
+    expect(esito.success).toBe(false)
+    expect(esito.error?.issues[0].message).toBe('Indica la data di fine.')
+  })
+
+  test('con «senza scadenza» spuntato, la data di fine vuota è accettata', () => {
+    const esito = schemaOfferta.safeParse({ ...valida, validaAl: '', senzaScadenza: true })
+
+    expect(esito.success).toBe(true)
+  })
+
+  test('con «senza scadenza» spuntato, il controllo incrociato fra le date si salta', () => {
+    // Senza questo, una data di inizio compilata prima di spuntare la
+    // casella farebbe fallire il confronto con una fine ormai vuota.
+    const esito = schemaOfferta.safeParse({
+      ...valida,
+      validaDal: '2027-01-01',
+      validaAl: '',
+      senzaScadenza: true,
+    })
+
+    expect(esito.success).toBe(true)
+  })
+
   test('per «solo sconto» le istruzioni sono obbligatorie: senza, il socio non sa cosa fare', () => {
     const esito = schemaOfferta.safeParse({ ...valida, modalita: 'solo_sconto', istruzioni: '' })
 

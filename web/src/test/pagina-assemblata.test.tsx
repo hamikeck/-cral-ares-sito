@@ -2,8 +2,9 @@ import { describe, expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { offerteFinte } from '@/test/offerteFinte'
 
+// Un'offerta senza `validaAl` è una convenzione permanente: non scade mai.
 vi.mock('@/dati/offerte', () => ({
-  offerteValide: async () => offerteFinte.filter((o) => o.validaAl >= '2026-09-15'),
+  offerteValide: async () => offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15'),
   offertaDaSlug: async (slug: string) =>
     offerteFinte.find((offerta) => offerta.slug === slug),
   slugPubblicati: async () => offerteFinte.map((offerta) => offerta.slug),
@@ -44,7 +45,7 @@ function conContorno(pagina: React.ReactNode) {
 }
 
 /** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
-const offerteValideAttese = offerteFinte.filter((o) => o.validaAl >= '2026-09-15')
+const offerteValideAttese = offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15')
 const primaOfferta = offerteValideAttese[0]
 
 describe('pagine assemblate con intestazione e piè di pagina', () => {

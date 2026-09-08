@@ -32,7 +32,8 @@ export type Offerta = {
   condizioni: string[]
   /** Date ISO `AAAA-MM-GG`: servono a calcolare la validità, non a essere lette. */
   validaDal: string
-  validaAl: string
+  /** Assente per le convenzioni permanenti: non hanno una data di fine. */
+  validaAl?: string
   modalita: ModalitaOfferta
   /** Per `solo_sconto`: cosa deve fare il socio, senza passare da noi. */
   istruzioni?: string

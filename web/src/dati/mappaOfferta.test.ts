@@ -62,4 +62,10 @@ describe('mappaOfferta', () => {
 
     expect(offerta.condizioni).toEqual([])
   })
+
+  test('valida_al nullo diventa validaAl assente, non una stringa vuota: è una convenzione permanente', () => {
+    const offerta = mappaOfferta({ ...riga, valida_al: null })
+
+    expect(offerta.validaAl).toBeUndefined()
+  })
 })

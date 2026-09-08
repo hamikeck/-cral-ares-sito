@@ -59,6 +59,14 @@ describe('elenco in area riservata', () => {
 
     expect(await violazioniAccessibilita(container)).toEqual([])
   })
+
+  test('un’offerta senza data di fine mostra un trattino, non una data inventata o un errore', async () => {
+    // `pneumatici-esposito`, nella fixture, è la convenzione permanente:
+    // `formattaData` su una data assente solleverebbe un `RangeError`.
+    render(await AreaRiservata())
+
+    expect(screen.getByText('—')).toBeInTheDocument()
+  })
 })
 
 describe('elenco vuoto', () => {

@@ -38,6 +38,10 @@ describe('scaduta', () => {
     expect(scaduta('2026-12-31', '2027-01-01')).toBe(true)
     expect(scaduta('2027-01-01', '2026-12-31')).toBe(false)
   })
+
+  test('una data assente non è mai scaduta: le convenzioni permanenti restano sempre in corso', () => {
+    expect(scaduta(undefined, '2026-12-31')).toBe(false)
+  })
 })
 
 describe('nonAncoraIniziata', () => {

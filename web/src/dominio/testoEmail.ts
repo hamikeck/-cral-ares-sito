@@ -16,7 +16,9 @@ export function testoPerEmail(offerta: Offerta, indirizzoSito: string): string {
     '',
     offerta.descrizione,
     '',
-    `Valida fino al ${formattaData(offerta.validaAl)}.`,
+    offerta.validaAl
+      ? `Valida fino al ${formattaData(offerta.validaAl)}.`
+      : 'Offerta senza scadenza.',
     `Tutti i dettagli: ${radice}/offerte/${offerta.slug}`,
   ].join('\n')
 }

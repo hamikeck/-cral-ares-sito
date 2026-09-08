@@ -41,6 +41,21 @@ describe('SchedaOfferta', () => {
     expect(screen.getByText('Scadenza da indicare')).toBeInTheDocument()
   })
 
+  test('senza data di fine dice che è sempre valida, senza tentare di formattare una data assente', () => {
+    // È il caso di una convenzione permanente: sul database `valida_al` è
+    // nullo, e diventa `validaAl` assente nel dominio. `Intl.DateTimeFormat`
+    // solleverebbe un errore se lo chiamassimo comunque.
+    render(<SchedaOfferta offerta={{ ...offerta, validaAl: undefined }} />)
+
+    expect(screen.getByText('Sempre valida')).toBeInTheDocument()
+  })
+
+  test('senza data di fine, anche in evidenza', () => {
+    render(<SchedaOfferta offerta={{ ...offerta, validaAl: undefined }} inEvidenza />)
+
+    expect(screen.getByText('Sempre valida')).toBeInTheDocument()
+  })
+
   test('con il collegamento disabilitato il partner non è più un link', () => {
     render(<SchedaOfferta offerta={offerta} collegamentoDisabilitato />)
 

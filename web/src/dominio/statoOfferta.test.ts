@@ -25,4 +25,8 @@ describe('statoLeggibile', () => {
   test('pubblicata e con la validità passata è scaduta', () => {
     expect(statoLeggibile(base, '2026-10-01')).toBe('Scaduta')
   })
+
+  test('pubblicata e senza data di fine non è mai scaduta: resta in corso', () => {
+    expect(statoLeggibile({ ...base, validaAl: undefined }, '2030-01-01')).toBe('In corso')
+  })
 })

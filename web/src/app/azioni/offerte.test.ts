@@ -144,6 +144,21 @@ describe('salvaOfferta', () => {
     expect(esito.errori?.modulo).toMatch(/Non è stato possibile salvare/)
     expect(esito.errori?.modulo).not.toMatch(/row-level security/)
   })
+
+  test('«Senza scadenza» salva valida_al nullo, non una stringa vuota', async () => {
+    singleMock.mockResolvedValueOnce({ data: { id: 'off-3' }, error: null })
+
+    await expect(
+      salvaOfferta(
+        null,
+        modulo({ validaAl: '', senzaScadenza: 'on' }, 'pubblica'),
+      ),
+    ).rejects.toThrow('redirect:')
+
+    expect(insertMock).toHaveBeenCalledWith(
+      expect.objectContaining({ valida_al: null }),
+    )
+  })
 })
 
 describe('aggiornaOfferta', () => {
@@ -220,6 +235,24 @@ describe('aggiornaOfferta', () => {
 
     expect(esito.errori?.modulo).toMatch(/Non è stato possibile salvare/)
     expect(esito.errori?.modulo).not.toMatch(/row-level security/)
+  })
+
+  test('ritirando la scadenza di un’offerta esistente, valida_al torna nullo', async () => {
+    updateSingleMock.mockResolvedValueOnce({
+      data: { slug: 'pneumatici-esposito' },
+      error: null,
+    })
+
+    await expect(
+      aggiornaOfferta(
+        null,
+        modulo({ id: 'off-1', validaAl: '', senzaScadenza: 'on' }, 'pubblica'),
+      ),
+    ).rejects.toThrow('redirect:')
+
+    expect(updateMock).toHaveBeenCalledWith(
+      expect.objectContaining({ valida_al: null }),
+    )
   })
 })
 

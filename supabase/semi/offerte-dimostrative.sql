@@ -47,6 +47,8 @@ values
    ],
    '2026-09-01', '2026-10-15', false, 'biglietti', null, 'pubblicata'),
 
+  -- Convenzione permanente, senza data di fine: `valida_al` nullo, non una
+  -- scadenza inventata. È l'esempio giusto per una convenzione col gommista.
   ('pneumatici-esposito', 'Pneumatici Esposito', 'Auto',
    '20% sul cambio stagionale',
    'Sconto su pneumatici, montaggio ed equilibratura mostrando la tessera.',
@@ -55,7 +57,7 @@ values
      'Sconto non cumulabile con altre promozioni in corso.',
      'Occorre esibire la tessera del CRAL prima del preventivo.'
    ],
-   '2026-09-01', '2026-11-30', false, 'solo_sconto',
+   '2026-09-01', null, false, 'solo_sconto',
    'Presentati in officina con la tessera del CRAL e chiedi il preventivo convenzionato. Non serve prenotare dal sito.',
    'pubblicata'),
 

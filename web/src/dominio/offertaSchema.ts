@@ -32,7 +32,13 @@ export const schemaOfferta = z
           .filter((riga) => riga.length > 0),
       ),
     validaDal: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Indica la data di inizio.'),
-    validaAl: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Indica la data di fine.'),
+    // Niente regex qui: una convenzione permanente non ha una data di fine, e
+    // il campo arriva vuoto dal modulo quando il direttore spunta «senza
+    // scadenza». Se la stringa è vuota e la casella non è spuntata, il
+    // controllo sta nel refine sotto — così il messaggio resta lo stesso sia
+    // che manchi la data sia che il formato sia sbagliato.
+    validaAl: z.string(),
+    senzaScadenza: z.boolean().default(false),
     modalita: z.enum(['solo_sconto', 'biglietti', 'convenzione'], {
       error: 'Scegli come il socio ottiene il vantaggio.',
     }),
@@ -43,7 +49,11 @@ export const schemaOfferta = z
     codiceSconto: z.string().trim().optional().default(''),
     inEvidenza: z.boolean().default(false),
   })
-  .refine((dati) => dati.validaAl >= dati.validaDal, {
+  .refine((dati) => dati.senzaScadenza || /^\d{4}-\d{2}-\d{2}$/.test(dati.validaAl), {
+    message: 'Indica la data di fine.',
+    path: ['validaAl'],
+  })
+  .refine((dati) => dati.senzaScadenza || dati.validaAl >= dati.validaDal, {
     message: 'La data di fine deve venire dopo la data di inizio.',
     path: ['validaAl'],
   })

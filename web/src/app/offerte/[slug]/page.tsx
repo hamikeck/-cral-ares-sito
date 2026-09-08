@@ -82,9 +82,15 @@ export default async function PaginaOfferta({
         </p>
         <p className="mt-4 text-corpo">{offerta.descrizioneCompleta}</p>
         <p className="mt-5 border-t border-linea pt-3 text-sm text-inchiostro-tenue">
+          {/* `terminata` è vero solo quando `validaAl` è una data passata:
+              `scaduta()` risponde sempre falso a una data assente, quindi il
+              ramo «Era valida» non chiama mai `formattaData` su un'offerta
+              permanente. */}
           {terminata
-            ? `Era valida fino al ${formattaData(offerta.validaAl)}`
-            : `Valida fino al ${formattaData(offerta.validaAl)}`}
+            ? `Era valida fino al ${formattaData(offerta.validaAl!)}`
+            : offerta.validaAl
+              ? `Valida fino al ${formattaData(offerta.validaAl)}`
+              : 'Sempre valida'}
         </p>
       </div>
 

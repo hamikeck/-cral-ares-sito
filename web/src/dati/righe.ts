@@ -22,7 +22,8 @@ export type RigaOfferta = {
   descrizione: string
   condizioni: string[]
   valida_dal: string
-  valida_al: string
+  /** Assente per le convenzioni permanenti, dalla migrazione 0003. */
+  valida_al: string | null
   in_evidenza: boolean
   modalita: ModalitaRiga
   istruzioni: string | null

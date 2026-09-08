@@ -18,7 +18,10 @@ function leggiModulo(datiModulo: FormData) {
     descrizioneCompleta: String(datiModulo.get('descrizioneCompleta') ?? ''),
     condizioni: String(datiModulo.get('condizioni') ?? ''),
     validaDal: String(datiModulo.get('validaDal') ?? ''),
+    // Un campo disabilitato non viaggia nel FormData: quando «Senza
+    // scadenza» è spuntata, `validaAl` arriva già vuota da sola.
     validaAl: String(datiModulo.get('validaAl') ?? ''),
+    senzaScadenza: datiModulo.get('senzaScadenza') === 'on',
     modalita: String(datiModulo.get('modalita') ?? 'biglietti'),
     istruzioni: String(datiModulo.get('istruzioni') ?? ''),
     indirizzo: String(datiModulo.get('indirizzo') ?? ''),
@@ -85,7 +88,10 @@ export async function salvaOfferta(
       descrizione: dati.descrizioneCompleta,
       condizioni: dati.condizioni,
       valida_dal: dati.validaDal,
-      valida_al: dati.validaAl,
+      // Stringa vuota diventa nullo: sul database `valida_al` assente è
+      // l'unico modo corretto di dire «nessuna scadenza», mai un valore
+      // convenzionale che diventerebbe una data vera per chi la legge.
+      valida_al: dati.validaAl || null,
       in_evidenza: dati.inEvidenza,
       modalita: dati.modalita,
       istruzioni: dati.istruzioni || null,
@@ -157,7 +163,10 @@ export async function aggiornaOfferta(
       descrizione: dati.descrizioneCompleta,
       condizioni: dati.condizioni,
       valida_dal: dati.validaDal,
-      valida_al: dati.validaAl,
+      // Stringa vuota diventa nullo: sul database `valida_al` assente è
+      // l'unico modo corretto di dire «nessuna scadenza», mai un valore
+      // convenzionale che diventerebbe una data vera per chi la legge.
+      valida_al: dati.validaAl || null,
       in_evidenza: dati.inEvidenza,
       modalita: dati.modalita,
       istruzioni: dati.istruzioni || null,

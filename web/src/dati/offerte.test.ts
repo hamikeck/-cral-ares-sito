@@ -14,6 +14,7 @@ function clientFinto(righe: RigaOfferta[], errore: { message: string } | null = 
     eq: vi.fn(() => catena),
     lte: vi.fn(() => catena),
     gte: vi.fn(() => catena),
+    or: vi.fn(() => catena),
     order: vi.fn(() => Promise.resolve({ data: righe, error: errore })),
     maybeSingle: vi.fn(() => Promise.resolve({ data: righe[0] ?? null, error: errore })),
   }
@@ -41,7 +42,7 @@ const riga: RigaOfferta = {
 }
 
 describe('offerteValide', () => {
-  test('chiede solo le offerte pubblicate e in corso alla data indicata', async () => {
+  test('chiede solo le offerte pubblicate e iniziate alla data indicata', async () => {
     const finto = clientFinto([riga])
 
     await offerteValide('2026-09-15', finto as never)
@@ -49,7 +50,21 @@ describe('offerteValide', () => {
     expect(finto.from).toHaveBeenCalledWith('offerte')
     expect(finto.catena.eq).toHaveBeenCalledWith('stato', 'pubblicata')
     expect(finto.catena.lte).toHaveBeenCalledWith('valida_dal', '2026-09-15')
-    expect(finto.catena.gte).toHaveBeenCalledWith('valida_al', '2026-09-15')
+  })
+
+  test('non è ancora finita: valida_al vuoto (convenzione permanente) o non ancora raggiunto', async () => {
+    // È la riga che decide cosa vede un socio: sbagliarla fa sparire le
+    // offerte permanenti, o fa riapparire quelle scadute. `.gte` da solo
+    // escluderebbe le righe con `valida_al` nullo, quindi il filtro deve
+    // essere un `.or` che le lascia passare esplicitamente.
+    const finto = clientFinto([riga])
+
+    await offerteValide('2026-09-15', finto as never)
+
+    expect(finto.catena.gte).not.toHaveBeenCalled()
+    expect(finto.catena.or).toHaveBeenCalledWith(
+      'valida_al.is.null,valida_al.gte.2026-09-15',
+    )
   })
 
   test('restituisce offerte di dominio, non righe', async () => {

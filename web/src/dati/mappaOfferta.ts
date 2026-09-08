@@ -31,7 +31,7 @@ export function mappaOfferta(riga: RigaOfferta): Offerta {
     descrizioneCompleta: riga.descrizione,
     condizioni: riga.condizioni ?? [],
     validaDal: riga.valida_dal,
-    validaAl: riga.valida_al,
+    validaAl: valore(riga.valida_al),
     modalita: riga.modalita,
     istruzioni: valore(riga.istruzioni),
     inEvidenza: riga.in_evidenza,

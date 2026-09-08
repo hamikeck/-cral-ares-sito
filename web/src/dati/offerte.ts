@@ -32,7 +32,11 @@ export async function offerteValide(
     .select(COLONNE_OFFERTA)
     .eq('stato', 'pubblicata')
     .lte('valida_dal', adesso)
-    .gte('valida_al', adesso)
+    // Una convenzione permanente ha `valida_al` nullo: `.gte` da solo la
+    // escluderebbe, perché in SQL confrontare NULL con qualunque cosa non dà
+    // mai vero. L'`.or` la lascia passare esplicitamente, invece di farla
+    // sparire dal sito insieme a quelle davvero scadute.
+    .or(`valida_al.is.null,valida_al.gte.${adesso}`)
     .order('valida_al', { ascending: true })
 
   if (error) fallisci('Non è stato possibile leggere le offerte', error.message)

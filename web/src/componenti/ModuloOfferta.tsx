@@ -29,6 +29,10 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
     condizioni: offerta?.condizioni.join('\n') ?? '',
     validaDal: offerta?.validaDal ?? '',
     validaAl: offerta?.validaAl ?? '',
+    // Vera solo per un'offerta esistente che non ha mai avuto una data di
+    // fine (una convenzione permanente). Una nuova offerta parte con una
+    // scadenza da scegliere, non senza.
+    senzaScadenza: offerta ? offerta.validaAl === undefined : false,
     modalita: offerta?.modalita ?? ('biglietti' as ModalitaOfferta),
     istruzioni: offerta?.istruzioni ?? '',
     indirizzo: offerta?.contatti.indirizzo ?? '',
@@ -69,10 +73,12 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
   const idErroreCategoria = errori.categoria ? 'categoria-errore' : undefined
   const idErroreModalita = errori.modalita ? 'modalita-errore' : undefined
 
-  // Niente date finte: sul database sono obbligatorie, ma qui — prima che il
-  // direttore le scriva — restano vuote. `SchedaOfferta` sa mostrare un
-  // segnaposto («Scadenza da indicare») invece di formattare una stringa
-  // vuota o, peggio, una data inventata che sembra vera.
+  // Niente date finte: sul database `valida_dal` è obbligatoria, ma qui —
+  // prima che il direttore la scriva — resta vuota. `SchedaOfferta` sa
+  // mostrare un segnaposto («Scadenza da indicare») invece di formattare una
+  // stringa vuota o, peggio, una data inventata che sembra vera. Con «Senza
+  // scadenza» spuntata la fine è `undefined`, non vuota: è lo stesso stato di
+  // una convenzione permanente vera, e l'anteprima mostra «Sempre valida».
   const anteprimaOfferta: Offerta = {
     slug: 'anteprima',
     partner: campi.partner || 'Nome del partner',
@@ -82,7 +88,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
     descrizioneCompleta: campi.descrizioneCompleta,
     condizioni: campi.condizioni.split('\n').filter(Boolean),
     validaDal: campi.validaDal,
-    validaAl: campi.validaAl,
+    validaAl: campi.senzaScadenza ? undefined : campi.validaAl,
     modalita: campi.modalita,
     istruzioni: campi.istruzioni || undefined,
     inEvidenza: campi.inEvidenza,
@@ -155,7 +161,43 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Campo nome="validaDal" etichetta="Valida dal" tipo="date" valore={campi.validaDal} errore={errori.validaDal} onChange={scrivi('validaDal')} />
-            <Campo nome="validaAl" etichetta="Valida fino al" tipo="date" valore={campi.validaAl} errore={errori.validaAl} onChange={scrivi('validaAl')} />
+            <div className="flex flex-col gap-2">
+              <Campo
+                nome="validaAl"
+                etichetta="Valida fino al"
+                tipo="date"
+                valore={campi.validaAl}
+                errore={errori.validaAl}
+                onChange={scrivi('validaAl')}
+                obbligatorio={!campi.senzaScadenza}
+                disabilitato={campi.senzaScadenza}
+              />
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="senzaScadenza"
+                  checked={campi.senzaScadenza}
+                  onChange={(evento) => {
+                    const spuntata = evento.target.checked
+                    // Spuntandola il campo si svuota e si disabilita: niente
+                    // data convenzionale a dire «nessuna scadenza», perché sul
+                    // database la colonna resta vuota davvero.
+                    aggiorna((precedenti) => ({
+                      ...precedenti,
+                      senzaScadenza: spuntata,
+                      validaAl: spuntata ? '' : precedenti.validaAl,
+                    }))
+                    impostaErrori((precedenti) => {
+                      if (!('validaAl' in precedenti)) return precedenti
+                      return Object.fromEntries(
+                        Object.entries(precedenti).filter(([chiave]) => chiave !== 'validaAl'),
+                      )
+                    })
+                  }}
+                />
+                Senza scadenza
+              </label>
+            </div>
           </div>
 
           <fieldset
@@ -247,7 +289,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
 }
 
 function Campo({
-  nome, etichetta, valore, onChange, errore, aiuto, tipo = 'text', multilinea = false, maxLength, obbligatorio = true,
+  nome, etichetta, valore, onChange, errore, aiuto, tipo = 'text', multilinea = false, maxLength, obbligatorio = true, disabilitato = false,
 }: {
   nome: string
   etichetta: string
@@ -259,6 +301,8 @@ function Campo({
   multilinea?: boolean
   maxLength?: number
   obbligatorio?: boolean
+  /** Comprensibile anche da disabilitato: resta etichettato, non nascosto. */
+  disabilitato?: boolean
 }) {
   const idAiuto = aiuto ? `${nome}-aiuto` : undefined
   const idErrore = errore ? `${nome}-errore` : undefined
@@ -268,10 +312,11 @@ function Campo({
     value: valore,
     onChange,
     required: obbligatorio || undefined,
+    disabled: disabilitato || undefined,
     maxLength,
     'aria-describedby': [idAiuto, idErrore].filter(Boolean).join(' ') || undefined,
     'aria-invalid': errore ? true : undefined,
-    className: 'fuoco-su-chiaro border border-linea bg-superficie px-3 py-2',
+    className: 'fuoco-su-chiaro border border-linea bg-superficie px-3 py-2 disabled:cursor-not-allowed disabled:bg-fascia disabled:text-inchiostro-tenue',
   }
 
   return (

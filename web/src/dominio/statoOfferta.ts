@@ -11,7 +11,7 @@ export type StatoLeggibile = 'Bozza' | 'Programmata' | 'In corso' | 'Scaduta'
  * regola del sito, non una colonna, e per questo sta qui.
  */
 export function statoLeggibile(
-  offerta: { stato: 'bozza' | 'pubblicata'; validaDal: string; validaAl: string },
+  offerta: { stato: 'bozza' | 'pubblicata'; validaDal: string; validaAl?: string },
   adesso = oggi(),
 ): StatoLeggibile {
   if (offerta.stato === 'bozza') return 'Bozza'

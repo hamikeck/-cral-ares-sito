@@ -28,4 +28,12 @@ describe('testoPerEmail', () => {
       'https://cralares.it/offerte/uci-cinemas-ingresso-ridotto',
     )
   })
+
+  test('senza data di fine dice che non c’è scadenza, invece di tentare di formattare una data assente', () => {
+    const permanente = { ...offerta, validaAl: undefined }
+
+    expect(testoPerEmail(permanente, 'https://cralares.it')).toContain(
+      'Offerta senza scadenza.',
+    )
+  })
 })

@@ -121,6 +121,37 @@ describe('ModuloOfferta', () => {
     ).not.toBeInTheDocument()
     expect(campoValidaAl).not.toHaveAttribute('aria-invalid')
   })
+
+  test('«Senza scadenza» svuota e disabilita il campo data, e lo riflette nell’anteprima', () => {
+    render(<ModuloOfferta />)
+
+    const campoValidaAl = screen.getByLabelText('Valida fino al')
+    fireEvent.change(campoValidaAl, { target: { value: '2027-05-31' } })
+
+    fireEvent.click(screen.getByLabelText('Senza scadenza'))
+
+    expect(campoValidaAl).toBeDisabled()
+    expect(campoValidaAl).toHaveValue('')
+    expect(screen.getByText('Sempre valida')).toBeInTheDocument()
+  })
+
+  test('togliendo la spunta a «Senza scadenza» il campo data torna compilabile', () => {
+    render(<ModuloOfferta />)
+
+    const casella = screen.getByLabelText('Senza scadenza')
+    fireEvent.click(casella)
+    fireEvent.click(casella)
+
+    expect(screen.getByLabelText('Valida fino al')).not.toBeDisabled()
+  })
+
+  test('con «Senza scadenza» selezionato non ha problemi di accessibilità', async () => {
+    const { container } = render(<ModuloOfferta />)
+
+    fireEvent.click(screen.getByLabelText('Senza scadenza'))
+
+    expect(await violazioniAccessibilita(container)).toEqual([])
+  })
 })
 
 describe('ModuloOfferta con un’offerta esistente', () => {
@@ -172,5 +203,12 @@ describe('ModuloOfferta con un’offerta esistente', () => {
     const { container } = render(<ModuloOfferta offerta={offertaEsistente} />)
 
     expect(await violazioniAccessibilita(container)).toEqual([])
+  })
+
+  test('un’offerta senza data di fine riapre il modulo con «Senza scadenza» già spuntata', () => {
+    render(<ModuloOfferta offerta={{ ...offertaEsistente, validaAl: undefined }} />)
+
+    expect(screen.getByLabelText('Senza scadenza')).toBeChecked()
+    expect(screen.getByLabelText(/^Valida fino al/)).toBeDisabled()
   })
 })

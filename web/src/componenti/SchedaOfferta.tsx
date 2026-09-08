@@ -47,14 +47,19 @@ export function SchedaOfferta({
     </Link>
   )
 
-  // Sul database `valida_al` è obbligatoria: una scheda pubblicata ce l'ha
-  // sempre. Una stringa vuota si presenta solo nell'anteprima del modulo,
-  // prima che il direttore scelga la data — e formattarla comunque
-  // produrrebbe una scadenza inventata (o, con `Intl.DateTimeFormat`, un
-  // errore) invece di un segnaposto riconoscibile come tale.
-  const scadenza = offerta.validaAl
-    ? `Valida fino al ${formattaData(offerta.validaAl)}`
-    : 'Scadenza da indicare'
+  // Tre stati, non due. `validaAl` assente è una convenzione permanente:
+  // sul database la colonna è nulla, e non va mai formattata («Sempre
+  // valida»). Una stringa vuota invece si presenta solo nell'anteprima del
+  // modulo, prima che il direttore scriva la data — un segnaposto diverso
+  // («Scadenza da indicare»), perché lì la scelta non è ancora stata fatta.
+  // In entrambi i casi non si chiama `formattaData`: su una data assente o
+  // vuota, `Intl.DateTimeFormat` solleva un errore.
+  const scadenza =
+    offerta.validaAl === undefined
+      ? 'Sempre valida'
+      : offerta.validaAl
+        ? `Valida fino al ${formattaData(offerta.validaAl)}`
+        : 'Scadenza da indicare'
 
   if (inEvidenza) {
     return (

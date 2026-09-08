@@ -76,7 +76,9 @@ export const offerteFinte: Offerta[] = [
       'Occorre esibire la tessera del CRAL prima del preventivo.',
     ],
     validaDal: '2026-09-01',
-    validaAl: '2026-11-30',
+    // Convenzione permanente, senza data di fine: è l'esempio di offerta che
+    // non scade da sola, e i test delle pagine si appoggiano a questa
+    // fixture per coprire il caso.
     modalita: 'solo_sconto',
     istruzioni:
       'Presentati in officina con la tessera del CRAL e chiedi il preventivo convenzionato. Non serve prenotare dal sito.',

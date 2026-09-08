@@ -166,3 +166,22 @@ Le pagine di errore non mostrano il messaggio tecnico né la traccia dello
 stack: è il modo classico in cui un sito rivela la struttura del proprio
 database mentre si scusa. Va mantenuto così anche quando gli errori
 diventeranno reali.
+
+## Fase 2 — database e area riservata (7-8 settembre 2026)
+
+### Le offerte senza scadenza non spariscono da sole
+
+Chiesto da Michele l'8 settembre 2026, a fase 2 completata: una convenzione
+come quella col gommista non ha una data di fine, e il modulo non deve
+costringere un direttore a inventarsela. Con la migrazione `0003`, `valida_al`
+può essere nullo; nel dominio diventa `validaAl` assente, mai una data
+convenzionale come il 31 dicembre — quella sarebbe una bugia che il sito
+ripeterebbe ai soci.
+
+**La conseguenza operativa, da tenere a mente:** «le offerte scadute
+spariscono da sole» resta vera solo per le offerte che una scadenza ce l'hanno.
+Un'offerta senza scadenza **non sparisce mai da sola** — resta pubblicata
+finché un direttore non la ritira a mano dall'area riservata, spuntando
+«Salva bozza» o eliminandola. Si sposta un pezzo di manutenzione dal sito alle
+persone: è il prezzo di non mentire sulla data, ed è giusto saperlo ora invece
+che scoprirlo fra due anni davanti a un'officina che ha chiuso.
