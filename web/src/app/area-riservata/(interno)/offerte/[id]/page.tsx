@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { eliminaOfferta } from '@/app/azioni/offerte'
+import { CopiaTestoEmail } from '@/componenti/CopiaTestoEmail'
 import { ModuloOfferta } from '@/componenti/ModuloOfferta'
 import { offertaPerId } from '@/dati/offerteRiservate'
+import { testoPerEmail } from '@/dominio/testoEmail'
 
 export const metadata: Metadata = {
   title: 'Modifica offerta',
@@ -32,6 +34,12 @@ export default async function ModificaOfferta({
             ? 'Salvata. È già visibile sul sito.'
             : 'Salvata in bozza. Non è ancora visibile ai soci.'}
         </p>
+      ) : null}
+
+      {offerta.stato === 'pubblicata' ? (
+        <CopiaTestoEmail
+          testo={testoPerEmail(offerta, process.env.NEXT_PUBLIC_SITO_URL ?? 'http://localhost:3000')}
+        />
       ) : null}
 
       <div className="mt-8">

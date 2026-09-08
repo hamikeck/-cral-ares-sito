@@ -71,9 +71,12 @@ describe('Pagina di modifica offerta', () => {
   test('dopo la pubblicazione dice che è già visibile sul sito', async () => {
     offertaRestituita.valore = offertaPubblicata
 
+    // Da qui in poi la pagina di un'offerta pubblicata mostra anche il
+    // blocco del Task 8, che ha un secondo `role="status"` (l'esito della
+    // copia): getByText resta univoco dove getByRole('status') non lo è più.
     render(await rendiPagina('off-2', '1'))
 
-    expect(screen.getByRole('status')).toHaveTextContent('Salvata. È già visibile sul sito.')
+    expect(screen.getByText('Salvata. È già visibile sul sito.')).toBeInTheDocument()
   })
 
   test('il pulsante «Pubblica» cambia parola perché l’offerta è già online', async () => {
@@ -82,6 +85,26 @@ describe('Pagina di modifica offerta', () => {
     render(await rendiPagina('off-2'))
 
     expect(screen.getByRole('button', { name: 'Salva e ripubblica' })).toBeInTheDocument()
+  })
+
+  test('il testo per l’email compare solo quando l’offerta è pubblicata', async () => {
+    // Una bozza non è ancora online: un testo d'annuncio da mandare ai soci
+    // non avrebbe senso finché non lo è.
+    offertaRestituita.valore = offertaBozza
+
+    render(await rendiPagina('off-1'))
+
+    expect(screen.queryByRole('button', { name: 'Copia il testo' })).not.toBeInTheDocument()
+  })
+
+  test('il testo per l’email compare quando l’offerta è pubblicata, con il link alla scheda', async () => {
+    offertaRestituita.valore = offertaPubblicata
+
+    render(await rendiPagina('off-2'))
+
+    expect(screen.getByRole('button', { name: 'Copia il testo' })).toBeInTheDocument()
+    const area = screen.getByLabelText('Testo dell’avviso da copiare') as HTMLTextAreaElement
+    expect(area.value).toContain(`/offerte/${offertaPubblicata.slug}`)
   })
 
   test('la conferma di eliminazione è dietro un pannello chiuso, non un confirm() del browser', async () => {
