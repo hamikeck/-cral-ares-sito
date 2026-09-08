@@ -294,3 +294,56 @@ nel progetto — quindi non è stato il caso di stringere la policy adesso. Il
 commento è stato riscritto per dire il vero e per spostare il riesame reale
 alla fase 4, quando a scrivere contenuti sarà il pubblico e non più solo
 tre persone nominate a mano in una tabella.
+
+### Il Task 9 si è chiuso senza migrazione
+
+Il piano della fase 2 teneva in sospeso due domande per il direttivo dell'8
+settembre 2026: quali campi vogliano davvero per un'offerta, e se le offerte
+abbiano un'immagine. Le colonne dei Task da 1 a 8 erano state scelte per reggere
+in ogni risposta possibile. Il direttivo ha confermato l'ipotesi — gli otto
+campi che già esistono, e nessuna immagine — quindi la migrazione `0004` non è
+mai stata scritta e la tabella `offerte` resta quella della `0001`. Restano
+fuori, e con una risposta esplicita e non più solo per prudenza: `titolo`
+separato dal partner, `prezzo_pieno`, `prezzo_socio` e `immagine_url`.
+
+### Il prezzo del biglietto sta sul circuito, e l'importo si congela
+
+Dalla stessa riunione: i biglietti del cinema si pagano per cedolino (bonifico)
+oppure con la trattenuta in busta paga, e chi sceglie il bonifico deve leggere
+**quanto** bonificare — altrimenti l'IBAN da solo costringe a un giro di email
+per ogni richiesta, cioè il fastidio che il modulo esiste per togliere. Il
+prezzo di un biglietto diventa perciò una colonna di `circuiti`, non di `sedi`:
+dentro lo stesso circuito il biglietto costa uguale in tutte le sale.
+
+L'`importo` però si scrive nella richiesta al momento dell'invio e non si
+ricalcola mai leggendo il prezzo corrente. È la stessa ragione per cui il nome
+del circuito è copiato accanto a `circuito_id`: fra sei mesi UCI ritocca il
+listino, e la richiesta del socio deve continuare a raccontare la cifra che
+quella persona ha letto e bonificato, non quella di oggi.
+
+### La sede è facoltativa, e il link alla programmazione sta lì
+
+Lo spec diceva, con le sue ragioni, che il socio sceglie il circuito e non la
+singola sala. Il direttivo ha chiesto la sala, e la ragione tecnica di prima non
+regge contro chi conosce i propri soci. Il compromesso è che la sede resta
+**facoltativa**: i biglietti valgono su tutto il circuito, quindi al direttore
+serve come indicazione e non come vincolo, e il modulo non allunga la strada a
+chi non sa ancora dove andrà. Il link alla programmazione sta sulla sede perché
+è lì che si guarda cosa danno; per i teatri non serve nulla di nuovo, sono
+offerte con `link_partner`.
+
+### Il socio dice dove vuole i biglietti, ma l'email aziendale resta obbligatoria
+
+Il direttivo ha chiesto che i biglietti si possano ricevere anche sull'indirizzo
+personale o su WhatsApp. L'email aziendale resta comunque un campo obbligatorio,
+perché è quella su cui l'anagrafica riconosce il socio: renderla facoltativa
+avrebbe scaricato tutto il riscontro sulla sola matricola, e chi sbaglia una
+cifra sarebbe stato respinto pur essendo socio. La consegna è quindi una domanda
+distinta dal riconoscimento — *dove vuoi riceverli?* — con tre risposte, e
+ciascuna apre un campo solo. Il `telefono`, oggi obbligatorio per tutti, lo
+diventa solo per chi sceglie WhatsApp: è il recapito della consegna, non un dato
+raccolto perché sì.
+
+**Il sito non manda WhatsApp.** Raccoglie il numero e lo mette in evidenza
+nell'email ai direttori, che scrivono a mano. Vale qui la regola di tutto il
+progetto: il sito raccoglie, le persone rispondono.
