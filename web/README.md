@@ -61,3 +61,20 @@ da valutare caso per caso).
 
 Il sito è distribuito su Netlify tramite il file `netlify.toml` nella radice
 del repository, che imposta `base = "web"`.
+
+Prima del primo deploy vanno impostate le variabili d'ambiente su Netlify, in
+*Site configuration → Environment variables*:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SITO_URL`
+
+Senza di loro la build fallisce: le pagine delle offerte sono generate in
+anticipo (`generateStaticParams`), quindi la build stessa interroga il
+database e si ferma subito se le variabili mancano — non è un errore che
+compare più avanti, a sito già online.
+
+Va anche aggiunto l'indirizzo del sito su Netlify fra i *Redirect URLs* di
+Supabase, in *Authentication → URL Configuration*: senza, il link di accesso
+che arriva per email ai direttori riporta a `localhost` invece che al sito
+vero.
