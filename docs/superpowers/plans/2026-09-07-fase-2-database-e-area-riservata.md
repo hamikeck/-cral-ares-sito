@@ -3160,3 +3160,119 @@ git commit -m "Campi dell'offerta come deliberato dal direttivo"
       database e non nel codice, cosa dice ora la pagina cookie.
 - [ ] `delete from offerte;` prima di andare online sul dominio vero — le otto
       dimostrative non devono sopravvivere alla pubblicazione.
+
+---
+
+## Task 10: Offerte senza scadenza
+
+> Chiesto da Michele l'8 settembre 2026, a fase 2 completata. Non era nello spec.
+
+Una convenzione col gommista non ha una data di fine. Oggi il modulo la pretende,
+e un direttore che non ce l'ha è costretto a inventarsela — di solito mettendo
+il 31 dicembre, che è una bugia che il sito poi ripete ai soci.
+
+**La conseguenza da mettere in conto, e da scrivere nel verbale.** «Le offerte
+scadute spariscono da sole» è la riga che tiene pulito il sito senza chiedere
+niente a nessuno. Un'offerta senza scadenza **non sparisce mai**: resta finché
+un direttore non la ritira a mano. Si sposta un pezzo di manutenzione dal sito
+alle persone, ed è giusto saperlo prima e non scoprirlo fra due anni davanti a
+una convenzione con un'officina che ha chiuso.
+
+**Files:**
+- Create: `supabase/migrations/0003_offerta_senza_scadenza.sql`
+- Modify: `web/src/dati/righe.ts`, `web/src/dati/mappaOfferta.ts`, `web/src/dati/offerte.ts`
+- Modify: `web/src/dominio/offerta.ts`, `offertaSchema.ts`, `statoOfferta.ts`, `testoEmail.ts`
+- Modify: `web/src/lib/date.ts`
+- Modify: `web/src/componenti/SchedaOfferta.tsx`, `ModuloOfferta.tsx`
+- Modify: `web/src/app/offerte/[slug]/page.tsx`, `web/src/app/azioni/offerte.ts`
+- Modify: `web/src/test/offerteFinte.ts`, `supabase/semi/offerte-dimostrative.sql`
+- Test: i file `.test.ts(x)` corrispondenti
+
+**Interfaces:**
+- `Offerta.validaAl` diventa `string | undefined` — segue la convenzione già in
+  uso nel file, dove i campi assenti sono `undefined` e mai `null`
+- `RigaOfferta.valida_al` diventa `string | null`
+- `scaduta(iso: string | undefined, adesso?): boolean` — falsa quando la data manca
+
+- [ ] **Step 1: La migrazione**
+
+```sql
+-- Un'offerta può non avere una data di fine: le convenzioni permanenti non ne
+-- hanno una, e costringere il direttore a inventarsela produce una scadenza
+-- falsa che il sito poi ripete ai soci.
+--
+-- Il vincolo `offerte_validita_coerente` non va toccato: in SQL un confronto
+-- con NULL vale NULL, e un CHECK che vale NULL passa. Una riga senza data di
+-- fine lo attraversa senza bisogno di eccezioni.
+alter table offerte alter column valida_al drop not null;
+```
+
+- [ ] **Step 2: Il dominio, in TDD**
+
+`scaduta` in `lib/date.ts` accetta una data assente e risponde `false`: ciò che
+non ha scadenza non è scaduto. Scrivi prima i test — data assente, data passata,
+data odierna — poi cambia la firma.
+
+`statoLeggibile` in `dominio/statoOfferta.ts`: un'offerta pubblicata senza data
+di fine non è mai `'Scaduta'`. Resta `'Programmata'` finché non è iniziata, poi
+`'In corso'` per sempre.
+
+`testoPerEmail` in `dominio/testoEmail.ts`: al posto di «Valida fino al …»
+scrive **«Offerta senza scadenza.»**. La riga resta, perché l'email ai soci deve
+avere sempre la stessa forma: cambia solo cosa dice.
+
+`schemaOfferta` in `dominio/offertaSchema.ts`: `validaAl` accetta la stringa
+vuota oltre al formato data. Il controllo incrociato sulle due date **si salta**
+quando la fine manca — oggi confronta due stringhe e con una vuota darebbe un
+errore falso.
+
+- [ ] **Step 3: I dati**
+
+`RigaOfferta.valida_al` diventa `string | null`; `mappaOfferta` lo traduce con
+`valore()`, la funzione che già trasforma i `null` in assenze.
+
+In `dati/offerte.ts`, `offerteValide` deve far passare anche le offerte senza
+data. Sostituisci il filtro sulla fine:
+
+```ts
+    .or(`valida_al.is.null,valida_al.gte.${adesso}`)
+```
+
+**Testalo.** È la riga che decide cosa vede un socio: se sbagliata, o spariscono
+le offerte permanenti o riappaiono quelle scadute. Il doppio del client nei test
+va esteso per registrare la chiamata a `.or`.
+
+- [ ] **Step 4: Il modulo**
+
+Accanto al campo «Valida fino al» una casella **«Senza scadenza»**. Quando è
+spuntata, il campo data si svuota e si disabilita; quando si toglie la spunta,
+torna compilabile. La casella è pilotata dallo stato, come «in evidenza», così
+l'anteprima la riflette.
+
+Non usare una data convenzionale per dire «nessuna scadenza»: nel database la
+colonna è vuota, e ogni valore-sentinella diventerebbe una data vera nel
+momento in cui qualcuno la legge senza conoscere la convenzione.
+
+- [ ] **Step 5: Dove si legge**
+
+`SchedaOfferta` e la scheda pubblica scrivono **«Sempre valida»** invece di
+«Valida fino al …». L'elenco in area riservata mostra un trattino nella colonna
+della scadenza. Nessuno dei tre deve chiamare `formattaData` su una data
+assente: `Intl.DateTimeFormat` solleva un errore.
+
+- [ ] **Step 6: I dati dimostrativi**
+
+In `web/src/test/offerteFinte.ts` e in `supabase/semi/offerte-dimostrative.sql`,
+togli la data di fine a **`pneumatici-esposito`**: è una convenzione permanente
+ed è l'esempio giusto. Serve anche a far passare il caso nuovo dai test delle
+pagine, che usano quella fixture.
+
+- [ ] **Step 7: Verifica e commit**
+
+`npx vitest run`, `npx tsc --noEmit`, `npm run lint`, `npm run build`. Nella
+build controlla che le schede offerta restino statiche.
+
+- [ ] **Step 8: Il verbale**
+
+In `docs/decisioni.md` aggiungi la conseguenza operativa: un'offerta senza
+scadenza non sparisce da sola, e va ritirata a mano dall'area riservata.
