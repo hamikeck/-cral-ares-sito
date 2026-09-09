@@ -1,53 +1,31 @@
 @import "tailwindcss";
 
 /**
- * Caratteri del sito, installati in locale e serviti dal nostro dominio.
+ * Il carattere del sito: Archivo, una famiglia sola.
  *
- * Sono gli stessi della presentazione approvata dal direttivo: Saira
- * Condensed per i titoli — condensato e maiuscolo, da cartello — e Titillium
- * Web per il testo corrente, che è il carattere ufficiale della pubblica
- * amministrazione italiana.
+ * Sostituisce Saira Condensed e Titillium Web (settembre 2026). Titillium è
+ * il carattere ufficiale della pubblica amministrazione italiana: corretto
+ * per l'Agenzia, sbagliato per il suo dopolavoro, ed era metà del motivo per
+ * cui il sito «sapeva di datore di lavoro».
  *
- * Non arrivano da Google Fonts di proposito: una richiesta a un server
+ * È variabile su due assi, larghezza (62-125) e peso (400-800), e la stessa
+ * famiglia fa quindi due mestieri: strettissima e pesante dove fa da insegna
+ * — nomi dei partner, prezzi — e normale dove si legge. Un file solo invece
+ * di cinque, 90 KB contro i 60 di prima: si paga la variabilità, si risparmia
+ * in richieste e si guadagna ogni larghezza intermedia.
+ *
+ * Non arriva da Google Fonts, come gli altri prima: una richiesta a un server
  * esterno trasferirebbe l'indirizzo IP del visitatore a un terzo, e sarebbe
- * un trattamento da dichiarare nell'informativa. Qui i file stanno in
- * public/font/ e nessuno esce dal nostro dominio. Sottoinsieme latino di
- * base, che copre tutte le lettere accentate italiane: 64 KB in tutto.
+ * un trattamento da dichiarare nell'informativa. Il file sta in public/font/.
+ * Sottoinsieme latino di base: copre le accentate italiane e il simbolo €.
  */
 @font-face {
-  font-family: 'Saira Condensed';
+  font-family: 'Archivo';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
   font-display: swap;
-  src: url('/font/saira-condensed-600.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Saira Condensed';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/font/saira-condensed-700.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Titillium Web';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/font/titillium-web-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Titillium Web';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/font/titillium-web-600.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Titillium Web';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/font/titillium-web-700.woff2') format('woff2');
+  src: url('/font/archivo-variable.woff2') format('woff2');
 }
 
 @theme {
@@ -68,8 +46,41 @@
   --color-inchiostro-tenue: #4E7180;
   --color-linea: #D5E5EA;
 
-  --font-titolo: 'Saira Condensed', 'Arial Narrow', system-ui, sans-serif;
-  --font-sans: 'Titillium Web', system-ui, -apple-system, 'Segoe UI', Roboto,
+  /* La veste notturna (settembre 2026). Il sito pubblico sta sul buio: il
+     fondo scende dal quasi nero del cielo all'orizzonte più chiaro, e la
+     luce calda esce da dietro il marchio in facciata.
+
+     I pannelli sono pieni, non di vetro: fondo compatto, filo azzurro
+     sottile, nessuna trasparenza e nessuna ombra. Sono la scelta del
+     committente davanti al campione, e l'unica unità di costruzione del
+     sito: carte del nastro, porte dei servizi, riquadri. */
+  --color-notte: #04222C;
+  --color-cielo: #062C39;
+  --color-orizzonte: #0A3A4A;
+  --color-pannello: #052733;
+  --color-pannello-alto: #083544;
+  --color-parete: #24505F;
+  --color-filo: #1B4152;
+
+  /* Testo sul buio, dal più forte al più tenue. */
+  --color-chiaro: #EAF6F9;
+  --color-corpo: #C9E3EB;
+  --color-tenue: #9FC9D6;
+
+  /* L'oro è l'arancione del marchio schiarito perché regga il testo sul
+     buio: 11,5:1 su --color-pannello, contro i 3,9:1 dell'arancione puro,
+     che sarebbe stato sotto la soglia. NON è un sesto colore: è una variante
+     chiara del quarto, e non va portato al direttivo come colore nuovo.
+
+     Vale la regola dei tre usi, ed è severa perché l'oro ovunque non
+     evidenzia più niente: la cifra del servizio, il vantaggio della sola
+     offerta in evidenza, l'azione principale. Tutto il resto — bordi,
+     separatori, rimandi, numeri, voci del piè di pagina — è --color-luce. */
+  --color-oro: #FFD79A;
+  --color-luce: #8FD8EE;
+
+  --font-titolo: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
 
   /* Scala tipografica fluida: cresce con la larghezza senza scatti. */
@@ -84,20 +95,78 @@
 }
 
 @layer base {
-  /* I titoli sono in Saira Condensed maiuscolo, come nella presentazione.
-     Il maiuscolo su un condensato regge perché le parole sono corte e i
-     titoli non superano mai le poche parole: non si usa mai su un paragrafo. */
+  /* I titoli prendono la larghezza stretta di Archivo invece del maiuscolo.
+     Il maiuscolo se n'è andato con Saira Condensed: su un condensato dava
+     l'aria del cartello stradale, e i nomi dei partner — «Centro sportivo
+     Acquachiara» — in maiuscolo occupavano tre righe su un telefono. */
   h1, h2, h3 {
     font-family: var(--font-titolo);
-    letter-spacing: 0.01em;
+    font-stretch: 84%;
+    font-weight: 700;
+    letter-spacing: 0.005em;
     text-wrap: balance;
   }
+}
 
-  /* Il maiuscolo va solo ai titoli strutturali, dove le parole sono poche e
-     grandi. Su un h3 piccolo produce l'effetto etichetta, e i nomi dei
-     partner si leggono meglio in tondo. */
-  h1, h2 {
-    text-transform: uppercase;
+/**
+ * Il pannello: l'unità con cui è costruito tutto il sito pubblico.
+ *
+ * Fondo pieno con un accenno di gradiente, filo azzurro sottile, spigoli
+ * arrotondati appena. Niente trasparenza, niente sfocatura, nessuna ombra:
+ * è la differenza fra questo e le lastre di vetro del primo giro, e la
+ * ragione per cui regge otto ripetizioni di fila senza diventare una macchia.
+ */
+@utility pannello {
+  background: linear-gradient(var(--color-pannello), var(--color-pannello-alto));
+  border: 1px solid var(--color-parete);
+  border-radius: 0.9rem;
+}
+
+/**
+ * Le due andature di Archivo.
+ *
+ * `insegna` è il nome di un partner o il titolo di una sezione: stretto
+ * abbastanza da far stare «Centro sportivo Acquachiara» su una riga sola a
+ * 375 px. `cifra` è più stretta e più grassa ancora, e serve ai numeri —
+ * che su questo sito sono il contenuto, non un dettaglio. Le cifre tabulari
+ * tengono i prezzi incolonnati fra una scheda e l'altra.
+ */
+@utility insegna {
+  font-stretch: 84%;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+}
+
+@utility cifra {
+  font-stretch: 78%;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/**
+ * La grana sul fondo scuro.
+ *
+ * Un velo di rumore al 5,5%, generato in SVG dentro il foglio di stile: non
+ * è un'immagine e non costa una richiesta. Serve a due cose, entrambe
+ * verificabili solo su uno schermo vero: toglie le bande che i gradienti
+ * scuri disegnano sui pannelli dei telefoni, e leva al buio pieno quella
+ * piattezza da colore CSS che si riconosce a occhio.
+ *
+ * Va su un elemento in `position: relative`, e resta sotto ogni contenuto
+ * perché non intercetta il puntatore.
+ */
+@utility grana {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23g)'/></svg>");
   }
 }
 
