@@ -478,3 +478,68 @@ luce sul bordo alto del campione approvato; cifra dorata; contorno di ogni
 pannello azzurro, compreso quello della scheda in evidenza, che si distingue
 per un azzurro più chiaro e non per un filo d'oro. Un pulsante caldo per
 pagina è un bersaglio; una linea calda su ogni scheda è rumore.
+
+---
+
+## Fase 3 — anagrafica soci (10 settembre 2026)
+
+### L'anagrafica è muta verso l'esterno, e il riscontro non la leggerà
+
+`soci` non ha nessuna politica RLS per `anon`, e l'assenza è voluta: è
+l'elenco nominativo dei dipendenti di un ufficio pubblico. Verificato contro
+il database vero con la chiave pubblica del sito, quella che sta nel browser
+di chiunque: `soci` restituisce zero righe su venti, `offerte` ne restituisce
+tre.
+
+Il riscontro delle richieste (fase 4) **non leggerà questa tabella**: girerà
+su una funzione `security definer` che risponde sì o no senza restituire una
+riga, come `e_redattore()` fa per i redattori. Un modulo che dicesse «questo
+indirizzo risulta» mostrando il nome sarebbe un modo per farsi dare l'elenco
+del personale una richiesta alla volta.
+
+### Il duplicato si scopre dopo, non prima
+
+Il controllo di unicità parte dall'errore `23505` del database e solo dopo
+cerca chi occupa quel posto, per poter dire «Questa matricola è già assegnata
+a Mario Rossi». Verificare in anticipo aprirebbe una finestra fra il controllo
+e la scrittura in cui due direttori inseriscono lo stesso socio, e lascerebbe
+comunque il database come unico giudice vero: tanto vale interrogarlo per
+primo e usare la risposta per scrivere una frase in italiano.
+
+### Le normalizzazioni stanno in due posti e devono restare identiche
+
+`lower(email)` e `upper(replace(codice_dipendente, ' ', ''))` negli indici,
+`normalizzaEmail` e `normalizzaMatricola` nel codice. Se divergono, il
+database accetta come distinte due righe che il codice considera la stessa
+persona. Sono normalizzate nell'indice e non nel dato perché il valore va
+conservato com'è stato scritto: è quello che un direttore si aspetta di
+rileggere.
+
+### L'import produce SQL, non scrive sul database
+
+`strumenti/genera-import-soci.mjs` legge il CSV del direttivo e stampa un
+`insert`. Due vantaggi che valgono la scomodità: nessuna credenziale di
+scrittura entra nel progetto, e prima di eseguire si può leggere esattamente
+cosa si sta per inserire in un'anagrafica di quattrocento persone.
+
+È tollerante su come il file è scritto — punto e virgola o virgola, «E-mail»
+o «Codice dipendente», il BOM che Excel mette in testa e che è la ragione
+numero uno per cui un import «non funziona e non si capisce perché» — e severo
+su cosa lascia passare: **ogni riga scartata è segnalata col suo numero**. Un
+socio perso in silenzio si scopre mesi dopo, quando quella persona non riesce
+a chiedere i biglietti e telefona arrabbiata.
+
+Gli apostrofi vengono raddoppiati: «D'Amico» chiuderebbe la stringa SQL a metà
+nome. C'è un test apposta, ed è il motivo per cui questo strumento ha una
+suite invece di essere due righe buttate in un terminale.
+
+### La migrazione 0003 risultava applicata solo il 10 settembre
+
+Il primo `db push` di questa fase ha applicato **due** migrazioni: la `0004`
+dei soci e la `0003` delle offerte senza scadenza, che il codice online usava
+già da giorni. O non era mai stata applicata — e allora un direttore che
+avesse spuntato «Senza scadenza» si sarebbe visto rifiutare il salvataggio —
+oppure qualcuno l'aveva eseguita a mano dal pannello senza che il registro la
+registrasse. Non è più distinguibile. È l'argomento definitivo per non
+applicare mai niente a mano: il registro delle migrazioni è l'unica memoria di
+cosa c'è davvero sul database.

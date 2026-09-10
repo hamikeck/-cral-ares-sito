@@ -49,6 +49,32 @@ browser di proposito: a proteggere i dati sono le politiche RLS definite
 nelle migrazioni, non la segretezza della chiave. La chiave *secret*
 (`service_role`) non entra nel progetto, in nessun file.
 
+### L'elenco dei soci
+
+L'anagrafica entra **una volta sola**, importata dal file del direttivo su
+tabella vuota; da quel momento la aggiornano i direttori dalla pagina
+`/area-riservata/soci`. Non esiste logica di fusione fra un import e i dati
+già presenti, per scelta.
+
+Dal foglio Excel si esporta in CSV (*File → Salva con nome → CSV*), poi:
+
+```bash
+node strumenti/genera-import-soci.mjs ~/elenco.csv > import.sql
+```
+
+Lo strumento è tollerante su come è scritto il file — punto e virgola o
+virgola, colonne chiamate «E-mail» o «Codice dipendente», maiuscole a caso —
+e severo su cosa lascia passare: ogni riga che non riesce a usare la
+**segnala** con il suo numero, invece di scartarla in silenzio. Un socio perso
+nell'import si scopre mesi dopo, quando quella persona non riesce a chiedere i
+biglietti.
+
+Non scrive sul database: produce SQL da rileggere e incollare nel *SQL Editor*
+del pannello Supabase. Nessuna credenziale di scrittura entra nel progetto.
+
+In `supabase/semi/soci-finti.sql` ci sono venti soci inventati per lo
+sviluppo, con matricole di forme diverse apposta.
+
 In `supabase/semi/offerte-dimostrative.sql` ci sono le otto offerte
 dimostrative e il primo redattore, gli stessi dati oggi in
 `src/test/offerteFinte.ts`, usati per popolare il database in fase di
