@@ -69,7 +69,7 @@ export function SchedaOfferta({
 
   return (
     <article
-      className={`fuoco-scheda pannello relative flex flex-col px-5 py-5 transition-colors ${
+      className={`fuoco-scheda pannello relative flex h-full flex-col px-5 py-5 transition-colors ${
         inEvidenza ? 'border-oro/60' : 'hover:border-luce/60'
       }`}
     >
