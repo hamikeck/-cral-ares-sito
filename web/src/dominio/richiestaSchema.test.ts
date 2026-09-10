@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { schemaDatiSocio } from './richiestaSchema'
+import { schemaDatiSocio, schemaRichiestaCinema } from './richiestaSchema'
 
 const base = {
   nome: 'Mario',
@@ -14,7 +14,8 @@ const base = {
 }
 
 function erroreSu(campo: string, dati: Record<string, unknown>) {
-  const esito = schemaDatiSocio.safeParse(dati)
+  const schema = 'circuitoId' in dati ? schemaRichiestaCinema : schemaDatiSocio
+  const esito = schema.safeParse(dati)
   if (esito.success) return undefined
   return esito.error.issues.find((problema) => problema.path[0] === campo)?.message
 }
@@ -77,5 +78,48 @@ describe('schemaDatiSocio', () => {
     // spazio davanti no: meglio toglierli qui, una volta per tutte.
     const esito = schemaDatiSocio.safeParse({ ...base, email: '  mario.rossi@ae.it  ' })
     expect(esito.success && esito.data.email).toBe('mario.rossi@ae.it')
+  })
+})
+
+describe('schemaRichiestaCinema', () => {
+  const richiesta = {
+    ...base,
+    circuitoId: '0f9d2b1e-5c3a-4a7b-9e21-8c4d6f2a1b03',
+    sedeId: '',
+    quantita: '4',
+    pagamento: 'bonifico',
+  }
+
+  test('accetta una richiesta completa, con la sede lasciata in bianco', () => {
+    // La sede è facoltativa: i biglietti valgono su tutto il circuito, e chi
+    // non sa ancora dove andrà deve poter inviare lo stesso.
+    expect(schemaRichiestaCinema.safeParse(richiesta).success).toBe(true)
+  })
+
+  test('la quantità arriva dal modulo come testo e diventa un numero', () => {
+    const esito = schemaRichiestaCinema.safeParse(richiesta)
+    expect(esito.success && esito.data.quantita).toBe(4)
+  })
+
+  test('senza circuito non si va avanti', () => {
+    expect(erroreSu('circuitoId', { ...richiesta, circuitoId: '' })).toBe('Scegli il circuito.')
+  })
+
+  test('zero biglietti non è una richiesta', () => {
+    expect(erroreSu('quantita', { ...richiesta, quantita: '0' })).toBeDefined()
+  })
+
+  test('chi ne chiede troppi viene rimandato al messaggio, non respinto e basta', () => {
+    const messaggio = erroreSu('quantita', { ...richiesta, quantita: '40' })
+    expect(messaggio).toMatch(/scrivilo nel messaggio/i)
+  })
+
+  test('i controlli condivisi valgono anche qui', () => {
+    // È la ragione per cui i campi comuni stanno in un oggetto e non in uno
+    // schema chiuso: qui dentro devono comportarsi come nel modulo dei soci.
+    expect(
+      erroreSu('emailPersonale', { ...richiesta, consegna: 'email_personale' }),
+    ).toBeDefined()
+    expect(erroreSu('consensoPrivacy', { ...richiesta, consensoPrivacy: false })).toBeDefined()
   })
 })
