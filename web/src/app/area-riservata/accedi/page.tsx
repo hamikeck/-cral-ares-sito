@@ -24,7 +24,7 @@ export default async function Accedi({
       {nonAutorizzato ? (
         <p
           role="alert"
-          className="mt-6 border-l-4 border-oro/50 bg-pannello px-4 py-3 text-corpo"
+          className="mt-6 border-l-4 border-luce/60 bg-pannello px-4 py-3 text-corpo"
         >
           Questo indirizzo non è fra quelli autorizzati a pubblicare le offerte.
           Se pensi che sia un errore, scrivi agli altri direttori.

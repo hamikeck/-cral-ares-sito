@@ -115,12 +115,12 @@ export default async function Home() {
       </section>
 
       <section className="mt-12 grid gap-4 sm:grid-cols-[3fr_2fr]">
-        <div className="pannello flex flex-col border-oro/50 px-5 py-6">
+        <div className="pannello flex flex-col border-luce/70 px-5 py-6">
           <p className="text-sm font-semibold text-luce">{porte.cinema.occhiello}</p>
           <h2 className="mt-1 text-2xl text-chiaro">{porte.cinema.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.cinema.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="fuoco-su-scuro block rounded-lg bg-oro py-3 text-center font-bold text-notte">
+            <span className="fuoco-su-scuro block rounded-lg bg-luce py-3 text-center font-bold text-notte">
               {porte.cinema.invito}
             </span>
           </p>

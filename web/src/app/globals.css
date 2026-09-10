@@ -59,7 +59,7 @@
   --color-orizzonte: #0A3A4A;
   --color-pannello: #052733;
   --color-pannello-alto: #083544;
-  --color-parete: #24505F;
+  --color-parete: #2E6376;
   --color-filo: #1B4152;
 
   /* Testo sul buio, dal più forte al più tenue. I nomi evitano «corpo»:
@@ -74,10 +74,17 @@
      che sarebbe stato sotto la soglia. NON è un sesto colore: è una variante
      chiara del quarto, e non va portato al direttivo come colore nuovo.
 
-     Vale la regola dei tre usi, ed è severa perché l'oro ovunque non
-     evidenzia più niente: la cifra del servizio, il vantaggio della sola
-     offerta in evidenza, l'azione principale. Tutto il resto — bordi,
-     separatori, rimandi, numeri, voci del piè di pagina — è --color-luce. */
+     **Il caldo dice due cose sole: il denaro e la luce.** La cifra di
+     un'offerta, la scadenza che sta per arrivare, l'alone dietro il marchio.
+     Nient'altro — nemmeno i pulsanti, nemmeno i bordi delle schede in
+     evidenza, che pure lo avevano.
+
+     Tutta la struttura e tutte le azioni sono azzurre: filo dei pannelli,
+     separatori, pulsanti, rimandi, filtri, numeri, voci del piè di pagina.
+     È l'azzurro del marchio, e non è una scelta di gusto: su un sito che
+     un dipendente usa per farsi mandare dei biglietti, l'affidabilità e la
+     chiarezza le comunica il colore freddo, mentre il caldo è quello che
+     attira l'occhio — e attira solo se è raro. */
   --color-oro: #FFD79A;
   --color-luce: #8FD8EE;
 

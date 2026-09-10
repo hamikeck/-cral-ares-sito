@@ -558,12 +558,20 @@ Il testo sul buio ha tre livelli: `chiaro` `#EAF6F9` per i titoli, `lettura`
 `#C9E3EB` per il testo corrente — il bianco pieno affatica su un paragrafo
 lungo — e `tenue` `#9FC9D6` per il servizio.
 
-**La regola dei tre usi dell'oro.** L'oro dice tre cose e nient'altro: la
-cifra del servizio, il vantaggio della sola offerta in evidenza, l'azione
-principale di una pagina pubblica. Tutto il resto — bordi, separatori,
-rimandi, numeri, voci del piè di pagina, filtri, azioni dell'area riservata —
-è `luce`. È una regola severa e ha una ragione sola: un colore che sta ovunque
-non evidenzia più niente.
+**Il caldo dice il denaro e la luce; l'azzurro dice tutto il resto.**
+
+- **Caldo** (`oro`, `arancione`): la cifra di un'offerta, la scadenza che sta
+  per arrivare, l'alone dietro il marchio. Nient'altro — nemmeno i pulsanti.
+- **Azzurro** (`luce`, `parete`): la struttura e le azioni. Filo dei pannelli,
+  separatori, pulsanti, rimandi, filtri, numeri, voci del piè di pagina.
+- **Arancione pieno** come terza famiglia, che non è un accento ma un
+  **segnale**: gli avvisi d'errore e la scadenza vicina.
+
+Non è una scelta di gusto. Su un sito che un dipendente apre per farsi mandare
+dei biglietti, l'affidabilità e la chiarezza le comunica il colore freddo,
+mentre il caldo è quello che attira l'occhio — e attira solo se è raro. Una
+prima versione metteva l'oro anche sui pulsanti e sui bordi delle schede in
+evidenza: erano tre o quattro punti caldi per schermata, e nessuno vinceva.
 
 ### 13.2 Il carattere
 

@@ -437,3 +437,27 @@ centrare e sbagliare il bersaglio. Ma è `aria-hidden`: è la parte visibile
 dell'unico collegamento della scheda, quello sul nome del partner esteso al
 riquadro. Due link identici costringerebbero chi usa uno screen reader ad
 ascoltare la stessa destinazione due volte. Un test conta i collegamenti.
+
+### I contorni non sono arancioni, e il perché vale più della regola
+
+Proposta del committente: usare l'arancione del marchio per i contorni dei
+pannelli, notando — giustamente — che l'oro era troppo e che i colori del
+marchio comunicavano poco. La diagnosi era esatta, il mezzo no: otto pannelli
+con il filo arancione sono otto linee calde per schermata, cioè *più* caldo e
+non meno.
+
+Soprattutto, affidabilità e semplicità d'uso non le porta l'arancione. Su un
+sito che un dipendente apre per farsi mandare dei biglietti dal proprio
+dopolavoro, quelle due cose le dice il colore freddo; il caldo è quello che
+attira l'occhio, e attira solo finché resta raro. Quindi si è fatto il
+contrario di quanto proposto, con lo stesso obiettivo: **l'azzurro prende la
+struttura e tutte le azioni, il caldo resta sul denaro e sulla luce.**
+
+Di conseguenza i pulsanti perdono l'oro, comprese le azioni principali, e il
+filo dei pannelli passa da `#24505F` a `#2E6376`: prima era un grigio-azzurro
+così spento da non appartenere a nessuno, adesso si riconosce come l'azzurro
+del marchio.
+
+Resta una terza famiglia, che non è un accento ma un segnale: l'arancione
+pieno degli avvisi d'errore e della scadenza vicina. Un colore semantico non
+compete con la tavolozza, dice un'altra cosa.

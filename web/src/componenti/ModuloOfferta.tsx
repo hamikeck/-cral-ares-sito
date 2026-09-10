@@ -126,7 +126,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
         <form action={azione} noValidate className="flex flex-col gap-5">
           {offerta ? <input type="hidden" name="id" value={offerta.id} /> : null}
           {errori.modulo ? (
-            <p role="alert" className="border-l-4 border-oro/50 bg-pannello px-4 py-3">
+            <p role="alert" className="border-l-4 border-arancione bg-pannello px-4 py-3">
               {errori.modulo}
             </p>
           ) : null}

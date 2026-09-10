@@ -109,7 +109,7 @@ export default async function PaginaOfferta({
       </section>
 
       {terminata ? (
-        <p className="border-l-4 border-oro/50 bg-pannello px-5 py-6 text-corpo sm:px-8">
+        <p className="border-l-4 border-luce/60 bg-pannello px-5 py-6 text-corpo sm:px-8">
           {testoScaduta} Guarda{' '}
           <Link
             href="/offerte"

@@ -70,7 +70,7 @@ export function SchedaOfferta({
   return (
     <article
       className={`fuoco-scheda pannello relative flex h-full flex-col px-5 py-5 transition-colors ${
-        inEvidenza ? 'border-oro/60' : 'hover:border-luce/60'
+        inEvidenza ? 'border-luce/70' : 'hover:border-luce/60'
       }`}
     >
       <p className="text-sm font-semibold text-luce">{offerta.categoria}</p>
@@ -94,9 +94,7 @@ export function SchedaOfferta({
       <span
         aria-hidden="true"
         className={`mt-auto rounded-lg py-2.5 text-center text-sm font-bold ${
-          inEvidenza
-            ? 'bg-oro text-notte'
-            : 'border border-luce/45 text-luce'
+          inEvidenza ? 'bg-luce text-notte' : 'border border-luce/45 text-luce'
         }`}
       >
         {AZIONE[offerta.modalita]}

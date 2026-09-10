@@ -22,7 +22,7 @@ export default async function AreaRiservata({
       {erroreEliminazione ? (
         <p
           role="alert"
-          className="mb-6 border-l-4 border-oro/50 bg-pannello px-4 py-3 text-corpo"
+          className="mb-6 border-l-4 border-luce/60 bg-pannello px-4 py-3 text-corpo"
         >
           Non è stato possibile eliminare l’offerta: è ancora qui sotto.
           Riprova, o avvisa chi si occupa del sito se il problema continua.
