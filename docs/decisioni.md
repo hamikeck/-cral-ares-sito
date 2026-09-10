@@ -461,3 +461,20 @@ del marchio.
 Resta una terza famiglia, che non è un accento ma un segnale: l'arancione
 pieno degli avvisi d'errore e della scadenza vicina. Un colore semantico non
 compete con la tavolozza, dice un'altra cosa.
+
+### Il caldo riempie, il freddo delimita
+
+Correzione della correzione, e la regola finale è più semplice delle due che
+l'hanno preceduta: **il caldo sta sulle superfici, il freddo sui contorni.**
+
+Nella prima versione l'oro era ovunque — bordi, rimandi, numeri, pulsanti — e
+non evidenziava più niente. Nella seconda l'ho tolto anche dai pulsanti, e il
+sito è diventato corretto e inerte: senza un bersaglio caldo per pagina non si
+capiva più dove premere. La terza distingue *dove* sta il colore invece di
+contare quante volte compare.
+
+Quindi: pulsante dell'azione principale dorato e pieno, con il gradiente e la
+luce sul bordo alto del campione approvato; cifra dorata; contorno di ogni
+pannello azzurro, compreso quello della scheda in evidenza, che si distingue
+per un azzurro più chiaro e non per un filo d'oro. Un pulsante caldo per
+pagina è un bersaglio; una linea calda su ogni scheda è rumore.

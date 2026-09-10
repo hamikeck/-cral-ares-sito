@@ -120,7 +120,7 @@ export default async function Home() {
           <h2 className="mt-1 text-2xl text-chiaro">{porte.cinema.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.cinema.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="fuoco-su-scuro block rounded-lg bg-luce py-3 text-center font-bold text-notte">
+            <span className="azione-oro fuoco-su-scuro block rounded-lg py-3 text-center font-bold">
               {porte.cinema.invito}
             </span>
           </p>

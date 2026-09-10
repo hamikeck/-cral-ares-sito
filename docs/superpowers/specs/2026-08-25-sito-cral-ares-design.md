@@ -560,18 +560,22 @@ lungo — e `tenue` `#9FC9D6` per il servizio.
 
 **Il caldo dice il denaro e la luce; l'azzurro dice tutto il resto.**
 
-- **Caldo** (`oro`, `arancione`): la cifra di un'offerta, la scadenza che sta
-  per arrivare, l'alone dietro il marchio. Nient'altro — nemmeno i pulsanti.
+- **Caldo** (`oro`, `arancione`): la cifra di un'offerta, **l'azione
+  principale** di una pagina pubblica, la scadenza che sta per arrivare,
+  l'alone dietro il marchio. Nient'altro — in particolare nessun bordo.
 - **Azzurro** (`luce`, `parete`): la struttura e le azioni. Filo dei pannelli,
   separatori, pulsanti, rimandi, filtri, numeri, voci del piè di pagina.
 - **Arancione pieno** come terza famiglia, che non è un accento ma un
   **segnale**: gli avvisi d'errore e la scadenza vicina.
 
-Non è una scelta di gusto. Su un sito che un dipendente apre per farsi mandare
-dei biglietti, l'affidabilità e la chiarezza le comunica il colore freddo,
-mentre il caldo è quello che attira l'occhio — e attira solo se è raro. Una
-prima versione metteva l'oro anche sui pulsanti e sui bordi delle schede in
-evidenza: erano tre o quattro punti caldi per schermata, e nessuno vinceva.
+La divisione passa fra **contorni e superfici**, non fra elementi: il caldo
+riempie, il freddo delimita. Un bordo dorato su ogni scheda darebbe tre o
+quattro linee calde per schermata e nessuna vincerebbe; un pulsante dorato per
+pagina, invece, è il bersaglio, e la sua rarità è ciò che lo rende tale.
+
+Su un sito che un dipendente apre per farsi mandare dei biglietti, la
+struttura fredda comunica affidabilità e la superficie calda dice dove
+premere.
 
 ### 13.2 Il carattere
 

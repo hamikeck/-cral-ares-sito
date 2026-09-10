@@ -178,6 +178,23 @@
 }
 
 /**
+ * L'azione principale di una pagina pubblica.
+ *
+ * Dorata e piena, con il gradiente appena percettibile e la luce sul bordo
+ * alto che aveva il campione: è il solo pulsante del sito che si accende, e
+ * la sua rarità è quello che lo rende un bersaglio invece di una decorazione.
+ * Le azioni secondarie restano un contorno azzurro, e nell'area riservata
+ * l'oro non entra affatto.
+ */
+@utility azione-oro {
+  background: linear-gradient(180deg, #f2b76c 0%, #d98b36 100%);
+  color: var(--color-notte);
+  box-shadow:
+    0 8px 20px rgba(217, 139, 54, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/**
  * Il pannello: l'unità con cui è costruito tutto il sito pubblico.
  *
  * Fondo pieno con un accenno di gradiente, filo azzurro sottile, spigoli

@@ -26,7 +26,7 @@ export default function Errore({ reset }: { error: Error; reset: () => void }) {
         <button
           type="button"
           onClick={reset}
-          className="fuoco-su-scuro rounded-lg bg-luce px-5 py-3 font-bold text-notte hover:bg-azzurro"
+          className="azione-oro fuoco-su-scuro rounded-lg px-5 py-3 font-bold"
         >
           {riprova}
         </button>

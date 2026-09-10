@@ -81,7 +81,7 @@ export function SchedaOfferta({
         {offerta.vantaggio}
       </p>
 
-      <p className="mt-2 max-w-prose text-corpo text-lettura">{offerta.descrizione}</p>
+      <p className="mt-4 max-w-prose text-corpo text-lettura">{offerta.descrizione}</p>
 
       <p
         className={`mt-3 mb-4 text-sm ${
@@ -93,8 +93,8 @@ export function SchedaOfferta({
 
       <span
         aria-hidden="true"
-        className={`mt-auto rounded-lg py-2.5 text-center text-sm font-bold ${
-          inEvidenza ? 'bg-luce text-notte' : 'border border-luce/45 text-luce'
+        className={`mt-auto rounded-lg py-3 text-center text-sm font-bold ${
+          inEvidenza ? 'azione-oro' : 'border border-luce/45 text-luce'
         }`}
       >
         {AZIONE[offerta.modalita]}
