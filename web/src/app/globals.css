@@ -97,6 +97,21 @@
 }
 
 @layer base {
+  /* Il sito pubblico sta sul buio. Il gradiente è fisso rispetto alla
+     finestra e non alla pagina: attaccato al documento, su una pagina lunga
+     come l'elenco delle offerte si stirerebbe fino a schiarire il fondo là
+     dove non c'è nessuna luce a giustificarlo. */
+  body {
+    background: linear-gradient(
+      var(--color-notte) 0%,
+      var(--color-cielo) 42%,
+      var(--color-orizzonte) 100%
+    );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--color-chiaro);
+  }
+
   /* I titoli prendono la larghezza stretta di Archivo invece del maiuscolo.
      Il maiuscolo se n'è andato con Saira Condensed: su un condensato dava
      l'aria del cartello stradale, e i nomi dei partner — «Centro sportivo
@@ -107,6 +122,46 @@
     font-weight: 700;
     letter-spacing: 0.005em;
     text-wrap: balance;
+  }
+}
+
+/**
+ * L'alone caldo dietro il marchio, in facciata.
+ *
+ * È l'unico punto luminoso del sito e l'unica cosa animata: quattordici
+ * secondi per un giro e un ottavo di luminosità in tutto, che è la differenza
+ * fra una brace e il disegno di una brace. Chi ha chiesto al telefono di
+ * ridurre le animazioni la vede ferma, come impone WCAG 2.3.3.
+ *
+ * Va dentro un elemento in `position: relative`, e sborda di lato perché la
+ * luce non conosce i margini del contenitore.
+ */
+@keyframes respiro {
+  0%,
+  100% {
+    opacity: 0.84;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility alone {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: -25%;
+  right: -25%;
+  height: 30rem;
+  pointer-events: none;
+  background:
+    radial-gradient(45% 50% at 50% 42%, rgba(255, 214, 150, 0.34) 0%, rgba(255, 214, 150, 0) 66%),
+    radial-gradient(68% 66% at 50% 48%, rgba(234, 162, 86, 0.3) 0%, rgba(234, 162, 86, 0) 70%);
+  animation: respiro 14s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0.92;
   }
 }
 
