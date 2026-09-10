@@ -67,21 +67,21 @@ export default async function PaginaOfferta({
   return (
     <article className="flex max-w-3xl flex-col gap-8">
       <div>
-        <p className="text-sm text-inchiostro-tenue">{offerta.categoria}</p>
-        <h1 className="mt-1 text-titolo-pagina text-inchiostro">
+        <p className="text-sm text-tenue">{offerta.categoria}</p>
+        <h1 className="mt-1 text-titolo-pagina text-chiaro">
           {offerta.partner}
         </h1>
         <p
           className={
             terminata
-              ? 'mt-4 font-titolo text-vantaggio font-bold text-inchiostro-tenue'
-              : 'mt-4 font-titolo text-vantaggio font-bold text-blu-profondo'
+              ? 'mt-4 font-titolo text-vantaggio font-bold text-tenue'
+              : 'mt-4 font-titolo text-vantaggio font-bold text-oro'
           }
         >
           {offerta.vantaggio}
         </p>
         <p className="mt-4 text-corpo">{offerta.descrizioneCompleta}</p>
-        <p className="mt-5 border-t border-linea pt-3 text-sm text-inchiostro-tenue">
+        <p className="mt-5 border-t border-parete pt-3 text-sm text-tenue">
           {/* `terminata` è vero solo quando `validaAl` è una data passata:
               `scaduta()` risponde sempre falso a una data assente, quindi il
               ramo «Era valida» non chiama mai `formattaData` su un'offerta
@@ -95,12 +95,12 @@ export default async function PaginaOfferta({
       </div>
 
       <section>
-        <h2 className="text-2xl text-inchiostro">{titoloCondizioni}</h2>
+        <h2 className="text-2xl text-chiaro">{titoloCondizioni}</h2>
         <ul className="mt-3 flex flex-col gap-2">
           {offerta.condizioni.map((condizione) => (
             <li
               key={condizione}
-              className="border-l-2 border-linea pl-4 text-corpo"
+              className="border-l-2 border-parete pl-4 text-corpo"
             >
               {condizione}
             </li>
@@ -109,31 +109,31 @@ export default async function PaginaOfferta({
       </section>
 
       {terminata ? (
-        <p className="border-l-4 border-arancione bg-fascia px-5 py-6 text-corpo sm:px-8">
+        <p className="border-l-4 border-luce/60 bg-pannello px-5 py-6 text-corpo sm:px-8">
           {testoScaduta} Guarda{' '}
           <Link
             href="/offerte"
-            className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+            className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
           >
             le offerte in corso
           </Link>
           .
         </p>
       ) : (
-      <section className="bg-fascia px-5 py-6 sm:px-8">
+      <section className="bg-pannello px-5 py-6 sm:px-8">
         {offerta.modalita === 'solo_sconto' ? (
           <>
-            <h2 className="text-2xl text-inchiostro">{titoloComeFunziona}</h2>
+            <h2 className="text-2xl text-chiaro">{titoloComeFunziona}</h2>
             <p className="mt-3 max-w-prose text-corpo">{offerta.istruzioni}</p>
           </>
         ) : (
           <>
-            <h2 className="text-2xl text-inchiostro">{titoloRichiesta}</h2>
+            <h2 className="text-2xl text-chiaro">{titoloRichiesta}</h2>
             <p className="mt-3 max-w-prose text-corpo">
               {richiestaNonAncora}{' '}
               <a
                 href={`mailto:${email}`}
-                className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+                className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
               >
                 {email}
               </a>
@@ -146,7 +146,7 @@ export default async function PaginaOfferta({
       <p>
         <Link
           href="/offerte"
-          className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+          className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
         >
           {torna}
         </Link>

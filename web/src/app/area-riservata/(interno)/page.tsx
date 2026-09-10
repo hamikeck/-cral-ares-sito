@@ -22,7 +22,7 @@ export default async function AreaRiservata({
       {erroreEliminazione ? (
         <p
           role="alert"
-          className="mb-6 border-l-4 border-arancione bg-fascia px-4 py-3 text-corpo"
+          className="mb-6 border-l-4 border-luce/60 bg-pannello px-4 py-3 text-corpo"
         >
           Non è stato possibile eliminare l’offerta: è ancora qui sotto.
           Riprova, o avvisa chi si occupa del sito se il problema continua.
@@ -30,11 +30,11 @@ export default async function AreaRiservata({
       ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-titolo-pagina text-inchiostro">Le offerte</h1>
+        <h1 className="text-titolo-pagina text-chiaro">Le offerte</h1>
         <div className="flex items-center gap-4">
           <Link
             href="/area-riservata/offerte/nuova"
-            className="fuoco-su-chiaro border border-blu-profondo bg-blu-profondo px-4 py-2 font-semibold text-white"
+            className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte"
           >
             Nuova offerta
           </Link>
@@ -48,7 +48,7 @@ export default async function AreaRiservata({
           <form action="/area-riservata/uscita" method="post">
             <button
               type="submit"
-              className="fuoco-su-chiaro rounded text-sm underline underline-offset-4"
+              className="fuoco-su-scuro rounded text-sm underline underline-offset-4"
             >
               Esci
             </button>
@@ -67,7 +67,7 @@ export default async function AreaRiservata({
               Elenco delle offerte, dalla più recente modifica
             </caption>
             <thead>
-              <tr className="border-b border-linea text-sm text-inchiostro-tenue">
+              <tr className="border-b border-parete text-sm text-tenue">
                 <th scope="col" className="py-2 pr-4 font-semibold">Partner</th>
                 <th scope="col" className="py-2 pr-4 font-semibold">Categoria</th>
                 <th scope="col" className="py-2 pr-4 font-semibold">Stato</th>
@@ -77,7 +77,7 @@ export default async function AreaRiservata({
             </thead>
             <tbody>
               {offerte.map((offerta) => (
-                <tr key={offerta.id} className="border-b border-linea align-top">
+                <tr key={offerta.id} className="border-b border-parete align-top">
                   <td className="py-3 pr-4 font-semibold">{offerta.partner}</td>
                   <td className="py-3 pr-4">{offerta.categoria}</td>
                   <td className="py-3 pr-4">{statoLeggibile(offerta)}</td>
@@ -87,7 +87,7 @@ export default async function AreaRiservata({
                   <td className="py-3">
                     <Link
                       href={`/area-riservata/offerte/${offerta.id}`}
-                      className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+                      className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
                     >
                       Modifica
                     </Link>

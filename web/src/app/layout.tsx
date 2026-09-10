@@ -20,9 +20,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="it">
-      <body className="flex min-h-screen flex-col bg-fondo text-inchiostro antialiased">
+      <body className="grana flex min-h-screen flex-col antialiased">
         <Intestazione />
-        <main id="contenuto" className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+        <main id="contenuto" className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
           {children}
         </main>
         <PiedePagina />

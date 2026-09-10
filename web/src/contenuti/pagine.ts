@@ -20,28 +20,62 @@ export const contenutiPagine = {
       "Biglietti del cinema, convenzioni con i negozi della zona e offerte riservate ai soci.",
     avvisoDimostrativo:
       "Le offerte qui sotto sono esempi: servono a mostrare che aspetto avrà il sito. Quelle vere le pubblicheranno i direttori dall'area riservata.",
-    titoloEvidenza: "In corso questa settimana",
-    titoloAltre: "Altre offerte aperte",
+
+    /**
+     * Il nastro non si chiama più «In corso questa settimana».
+     *
+     * Le offerte le pubblicano tre direttori a mano, nei ritagli di tempo:
+     * fra due mesi «questa settimana» sarebbe una bugia ripetuta a ogni
+     * visita, e chi torna ogni lunedì se ne accorgerebbe prima di noi.
+     */
+    titoloNastro: "Aperte adesso",
+    scorriNastro: "Scorri per vedere le altre",
+    vediTutteLeOfferte: "Vedile tutte in elenco",
     nessunaOfferta:
       "Questa settimana non ci sono offerte in corso. Le pubblichiamo qui appena arrivano.",
-    titoloCosaTrovi: "Cosa trovi qui",
-    cosaTrovi: [
-      {
+
+    /**
+     * Le due porte: il servizio permanente, quello che vale anche nelle
+     * settimane in cui non si pubblica niente. Il prezzo del biglietto è
+     * l'unico numero della facciata, e finché il direttivo non lo fornisce
+     * la porta mostra il servizio senza cifra — mai un numero inventato.
+     */
+    porte: {
+      cinema: {
+        occhiello: "Il servizio di sempre",
         titolo: "Biglietti del cinema",
         testo:
-          "Il CRAL acquista biglietti dei circuiti convenzionati a prezzo ridotto. Li richiedi dal sito e i direttori ti dicono come ritirarli.",
+          "Validi tutti i giorni, in tutte le sale dei circuiti convenzionati.",
+        invito: "Richiedili in due minuti",
+        nota: "Te li mandano i direttori per email o su WhatsApp.",
       },
-      {
+      convenzioni: {
+        occhiello: "L'altra porta",
         titolo: "Convenzioni",
         testo:
-          "Sconti concordati con negozi e professionisti della zona. In molti casi basta mostrare la tessera del CRAL alla cassa.",
+          "Gomme, assicurazione auto, farmacia, palestra, teatro. Se quello che ti serve non è ancora in elenco, chiedilo lo stesso: i direttori vanno a cercarlo.",
+        invito: "Dicci cosa ti serve",
+      },
+    },
+
+    /** Risponde alla domanda che blocca il socio nuovo: «e poi che succede?» */
+    titoloPassi: "Come funziona",
+    passi: [
+      {
+        titolo: "Dici cosa ti serve",
+        testo: "Dal sito, in due minuti. Servono la matricola e l'email aziendale.",
       },
       {
-        titolo: "Offerte della settimana",
+        titolo: "Ti risponde un direttore",
         testo:
-          "Teatro, eventi e occasioni che durano poco. Restano qui finché sono valide, poi spariscono da sole.",
+          "Una persona, non un sistema automatico: ti dice quando e come ritirare.",
+      },
+      {
+        titolo: "Paghi come preferisci",
+        testo: "Con il cedolino, oppure con la trattenuta in busta paga.",
       },
     ],
+
     titoloIscrizione: "Non sei ancora socio?",
     testoIscrizione:
       "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate.",

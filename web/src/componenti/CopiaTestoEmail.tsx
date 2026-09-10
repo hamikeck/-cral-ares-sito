@@ -31,9 +31,9 @@ export function CopiaTestoEmail({ testo }: { testo: string }) {
   }
 
   return (
-    <div className="mt-8 border border-linea p-4">
-      <h2 className="font-semibold text-inchiostro">Il testo per l’email ai soci</h2>
-      <p className="mt-1 text-sm text-inchiostro-tenue">
+    <div className="mt-8 border border-parete p-4">
+      <h2 className="font-semibold text-chiaro">Il testo per l’email ai soci</h2>
+      <p className="mt-1 text-sm text-tenue">
         Incollalo nell’avviso che mandi da Aruba.
       </p>
 
@@ -46,18 +46,18 @@ export function CopiaTestoEmail({ testo }: { testo: string }) {
         readOnly
         rows={7}
         value={testo}
-        className="fuoco-su-chiaro mt-3 w-full border border-linea bg-superficie px-3 py-2 font-mono text-sm"
+        className="fuoco-su-scuro mt-3 w-full border border-parete bg-pannello px-3 py-2 font-mono text-sm"
       />
 
       <div className="mt-3 flex items-center gap-4">
         <button
           type="button"
           onClick={copia}
-          className="fuoco-su-chiaro border border-blu-profondo bg-blu-profondo px-4 py-2 font-semibold text-white"
+          className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte"
         >
           Copia il testo
         </button>
-        <p role="status" className="text-sm text-inchiostro-tenue">
+        <p role="status" className="text-sm text-tenue">
           {esito === 'copiato' ? 'Copiato.' : null}
           {esito === 'selezionato' ? 'Testo selezionato: premi Cmd+C per copiarlo.' : null}
         </p>

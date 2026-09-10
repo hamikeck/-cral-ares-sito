@@ -1,7 +1,7 @@
 # Sito CRAL ARES — Documento di progettazione
 
 **Prima stesura:** 25 agosto 2026
-**Ultima revisione:** 8 settembre 2026
+**Ultima revisione:** 10 settembre 2026
 **Stato:** approvato dal direttivo il 3 settembre 2026, aggiornato con la riunione dell'8 settembre 2026
 
 ## Revisioni
@@ -13,6 +13,7 @@
 | 04/09/2026 | Richiesta del direttivo in riunione: anagrafica soci gestibile dall'area riservata e riscontro obbligatorio sulle richieste |
 | 04/09/2026 | Le richieste partono anche dalla home con due moduli dedicati (biglietti cinema per circuito, convenzioni). La scheda di un'offerta scaduta resta raggiungibile |
 | 08/09/2026 | Riunione del direttivo: il modulo cinema chiede anche la sede e mostra l'importo, il socio sceglie dove ricevere i biglietti, il pagamento è cedolino o trattenuta in busta paga con l'IBAN nella conferma. Confermati gli otto campi dell'offerta e il no alle immagini |
+| 10/09/2026 | Identità visiva rifatta: la veste notturna, il pannello pieno, Archivo al posto di Saira Condensed e Titillium Web, la regola dei tre usi dell'oro e la home col nastro delle offerte |
 
 ---
 
@@ -523,27 +524,116 @@ risposta al socio si dà rispondendo all'email.
 
 ## 13. Identità visiva
 
+Rifatta il 10 settembre 2026, dopo che la prima veste — corretta, chiara e
+istituzionale — è stata giudicata «troppo spenta». Il sito pubblico sta sul
+**buio**, con una sola sorgente di luce calda dietro il marchio in facciata.
+
+### 13.1 I colori
+
 Dal marchio ufficiale (Vesuvio stilizzato), estratto in SVG da
 `assets/logo-cral-ares.svg`:
 
 | Token | Valore | Uso |
 |---|---|---|
-| `azzurro` | `#73D1EA` | Logo, sfondi tenui, dettagli |
-| `arancione` | `#EAA256` | Logo, accenti, bordi |
-| `blu-profondo` | `#0E5C74` | Pulsanti principali, intestazioni (7,5:1 su bianco) |
-| `blu-notte` | `#0A3D4D` | Testo corrente, piè di pagina (11,8:1 su bianco) |
-| `ambra-scura` | `#96591B` | Link e stati attivi (5,6:1 su bianco) |
+| `azzurro` | `#73D1EA` | Logo, dettagli |
+| `arancione` | `#EAA256` | Logo, la scadenza vicina |
+| `blu-profondo` | `#0E5C74` | — |
+| `blu-notte` | `#0A3D4D` | — |
+| `ambra-scura` | `#96591B` | — |
 
-I due colori originali non hanno contrasto sufficiente per testo su bianco
-(azzurro 1,7:1 e arancione 2,1:1, contro il 4,5:1 richiesto): si usano come
-accenti, sfondi e dettagli grafici, mentre testi e pulsanti usano le varianti
-profonde. L'azzurro originale su fondo `blu-notte` raggiunge 6,7:1 ed è quindi
-utilizzabile per testo nelle sezioni scure.
+I cinque restano quelli approvati dal direttivo. Le superfici della veste
+notturna sono **derivate**, non nuove: `notte` `#04222C`, `cielo` `#062C39` e
+`orizzonte` `#0A3A4A` compongono il gradiente del fondo; `pannello` `#052733` e
+`pannello-alto` `#083544` fanno il piano di ogni riquadro; `parete` `#24505F` e
+`filo` `#1B4152` sono i bordi.
 
-Obiettivo di accessibilità: **WCAG 2.1 AA**, appropriato per un sito legato
-alla pubblica amministrazione. Il sito deve essere pienamente utilizzabile da
-telefono: i soci apriranno le offerte dal cellulare, spesso da un link ricevuto
-via email.
+Due colori di lavoro nascono schiarendo i colori del marchio, perché sul buio
+gli originali non reggono il testo:
+
+- **oro** `#FFD79A` — l'arancione schiarito. 11,5:1 sul pannello, contro i
+  3,9:1 dell'arancione puro.
+- **luce** `#8FD8EE` — l'azzurro schiarito. 9,9:1 sul pannello.
+
+Il testo sul buio ha tre livelli: `chiaro` `#EAF6F9` per i titoli, `lettura`
+`#C9E3EB` per il testo corrente — il bianco pieno affatica su un paragrafo
+lungo — e `tenue` `#9FC9D6` per il servizio.
+
+**Il caldo dice il denaro e la luce; l'azzurro dice tutto il resto.**
+
+- **Caldo** (`oro`, `arancione`): la cifra di un'offerta, **l'azione
+  principale** di una pagina pubblica, la scadenza che sta per arrivare,
+  l'alone dietro il marchio. Nient'altro — in particolare nessun bordo.
+- **Azzurro** (`luce`, `parete`): la struttura e le azioni. Filo dei pannelli,
+  separatori, pulsanti, rimandi, filtri, numeri, voci del piè di pagina.
+- **Arancione pieno** come terza famiglia, che non è un accento ma un
+  **segnale**: gli avvisi d'errore e la scadenza vicina.
+
+La divisione passa fra **contorni e superfici**, non fra elementi: il caldo
+riempie, il freddo delimita. Un bordo dorato su ogni scheda darebbe tre o
+quattro linee calde per schermata e nessuna vincerebbe; un pulsante dorato per
+pagina, invece, è il bersaglio, e la sua rarità è ciò che lo rende tale.
+
+Su un sito che un dipendente apre per farsi mandare dei biglietti, la
+struttura fredda comunica affidabilità e la superficie calda dice dove
+premere.
+
+### 13.2 Il carattere
+
+**Archivo**, una famiglia sola, variabile su larghezza (62-125) e peso
+(400-800). Sostituisce Saira Condensed e Titillium Web; quest'ultimo è il
+carattere ufficiale della pubblica amministrazione italiana, corretto per
+l'Agenzia e sbagliato per il suo dopolavoro.
+
+La stessa famiglia fa due mestieri: `insegna` (larghezza 84%, peso 700) per i
+nomi dei partner e i titoli, `cifra` (larghezza 78%, peso 800, cifre tabulari)
+per i numeri, che su questo sito sono il contenuto. Con Archivo se ne va il
+maiuscolo dai titoli: su un condensato dava l'aria del cartello stradale.
+
+Il file sta in `public/font/`, non su Google Fonts: una richiesta a un server
+esterno trasferirebbe l'indirizzo IP del visitatore a un terzo.
+
+### 13.3 Il pannello
+
+L'unità con cui è costruito tutto il sito pubblico: fondo pieno con un accenno
+di gradiente, filo azzurro sottile, spigoli arrotondati appena. **Niente
+trasparenza, niente sfocatura, nessuna ombra** — non è vetro, ed è la ragione
+per cui regge otto ripetizioni di fila senza diventare una macchia sola.
+
+L'ordine dentro è sempre lo stesso: categoria, nome, cifra, una riga di testo,
+scadenza, azione. Chi scorre col pollice trova ogni cosa dove l'ha lasciata
+nella scheda precedente.
+
+### 13.4 La home
+
+Il primo schermo tiene insieme **l'insegna e le offerte**. Sotto il marchio
+grande — con l'alone caldo che lo stacca dal fondo — corre il **nastro**: le
+offerte in fila, che si scorrono col dito, con la successiva che sbircia dal
+bordo. Non è una giostra che ruota da sola: quella nasconderebbe sette offerte
+su otto dietro una rotazione che nessuno aspetta, e il movimento automatico
+andrebbe reso fermabile per il livello AA.
+
+Sotto il nastro stanno le **due porte** — biglietti del cinema e convenzioni —
+che sono il servizio permanente del CRAL e valgono anche nelle settimane in cui
+i direttori non pubblicano niente. Poi **come funziona** in tre passi, che è
+l'unica cosa numerata del sito perché è l'unica che è davvero una sequenza.
+
+Non esiste più un blocco «in corso questa settimana»: le offerte le pubblicano
+tre direttori nei ritagli di tempo, e quella riga sarebbe diventata una bugia
+ripetuta a ogni visita.
+
+### 13.5 Movimento
+
+Una cosa sola si muove, e solo in facciata: l'alone respira in quattordici
+secondi con un ottavo di luminosità di escursione. Chi ha chiesto al telefono
+di ridurre le animazioni lo vede fermo (WCAG 2.3.3).
+
+### 13.6 Accessibilità
+
+Obiettivo **WCAG 2.1 AA**, appropriato per un sito legato alla pubblica
+amministrazione. L'anello di fuoco da tastiera è azzurro e cade sul buio, dove
+un anello blu sparirebbe. Il sito deve essere pienamente utilizzabile da
+telefono: i soci apriranno le offerte dal cellulare, spesso da un link
+ricevuto via email.
 
 ## 14. Testing
 
