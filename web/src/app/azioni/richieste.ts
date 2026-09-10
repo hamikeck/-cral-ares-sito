@@ -3,8 +3,10 @@
 import { importoBiglietti } from '@/dominio/circuito'
 import { schemaRichiestaCinema } from '@/dominio/richiestaSchema'
 import { circuitiConSedi } from '@/dati/circuiti'
+import { avvisaIDirettori } from '@/dati/posta'
 import { risultaSocio } from '@/dati/soci'
 import { clientPubblico } from '@/dati/supabasePubblico'
+import { formattaEuro } from '@/dominio/circuito'
 
 export type EsitoRichiesta = {
   errori?: Record<string, string>
@@ -122,7 +124,7 @@ export async function inviaRichiestaCinema(
       consenso_privacy: true,
       consenso_il: new Date().toISOString(),
     })
-    .select('id')
+    .select('id, numero')
     .single()
 
   if (error) {
@@ -132,6 +134,52 @@ export async function inviaRichiestaCinema(
     // d'accordo, ed è un caso che non deve succedere. Al socio però serve una
     // frase utile, non una spiegazione.
     return { errori: { modulo: error.code === '42501' ? MESSAGGIO_NON_SOCIO : MESSAGGIO_GENERICO } }
+  }
+
+  // L'avviso parte **dopo** il salvataggio, e il suo esito non cambia quello
+  // che il socio vede: la sua richiesta esiste comunque. Se non parte, la
+  // colonna `email_inviata` resta falsa e l'elenco in area riservata lo dirà.
+  const consegne: Record<string, string> = {
+    email_aziendale: 'Sull’email aziendale',
+    email_personale: 'Su un’altra email',
+    whatsapp: 'Su WhatsApp',
+  }
+  const importo = importoBiglietti(circuito, dati.quantita)
+
+  const annunciata = await avvisaIDirettori({
+    numero: data.numero,
+    nome: dati.nome,
+    cognome: dati.cognome,
+    codiceDipendente: dati.codiceDipendente,
+    email: dati.email,
+    consegna: consegne[dati.consegna] ?? dati.consegna,
+    recapito:
+      dati.consegna === 'email_personale'
+        ? dati.emailPersonale
+        : dati.consegna === 'whatsapp'
+          ? dati.telefono
+          : undefined,
+    oggettoBreve: `${dati.quantita} biglietti ${circuito.nome}`,
+    righe: [
+      { etichetta: 'Circuito', valore: circuito.nome },
+      ...(sede ? [{ etichetta: 'Sala', valore: sede.nome }] : []),
+      { etichetta: 'Quantità', valore: String(dati.quantita) },
+      ...(importo !== undefined
+        ? [{ etichetta: 'Importo', valore: formattaEuro(importo) }]
+        : []),
+      {
+        etichetta: 'Pagamento',
+        valore: dati.pagamento === 'bonifico' ? 'Cedolino (bonifico)' : 'Trattenuta in busta paga',
+      },
+    ],
+    messaggio: dati.messaggio || undefined,
+  })
+
+  if (annunciata) {
+    // Passa da una funzione e non da un `update`: il ruolo anonimo non ha il
+    // permesso di riscrivere una richiesta, e non deve averlo — con un update
+    // aperto chiunque potrebbe modificare quella di un altro.
+    await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
   }
 
   return {
