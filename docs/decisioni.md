@@ -347,3 +347,93 @@ raccolto perché sì.
 **Il sito non manda WhatsApp.** Raccoglie il numero e lo mette in evidenza
 nell'email ai direttori, che scrivono a mano. Vale qui la regola di tutto il
 progetto: il sito raccoglie, le persone rispondono.
+
+---
+
+## Veste grafica (10 settembre 2026)
+
+### Il sito passa al buio, e il fondo è fissato alla finestra
+
+La prima veste era corretta e istituzionale, ed è stata bocciata perché
+«troppo spenta». Il gradiente del fondo ha `background-attachment: fixed`:
+attaccato al documento, su una pagina lunga come l'elenco delle offerte si
+stirerebbe fino a schiarire il fondo là dove non c'è nessuna luce a
+giustificarlo — l'alone sta in facciata, e sotto deve esserci buio pieno.
+
+### Il pannello non è di vetro, ed è una correzione di rotta
+
+Il primo giro di proposte aveva lastre semitrasparenti con sfocatura e ombra.
+Le avevo tolte di mia iniziativa perché quel linguaggio si data — è lo stesso
+motivo per cui oggi si riconosce a colpo d'occhio un sito del 2013 — e la
+bocciatura è stata immediata e giusta: avevo cambiato la cosa che piaceva.
+Sono state rimesse identiche, e sono uscite di scena tre giorni dopo per una
+via diversa: davanti al campione di un carattere, il committente ha indicato
+un rettangolo pieno e ha detto che rappresentava come voleva il sito. La
+differenza fra le due strade non è il risultato ma chi ha deciso.
+
+Il vantaggio tecnico esiste comunque: senza trasparenza, sfocatura e ombra
+otto pannelli in colonna restano otto oggetti distinti invece di diventare
+una macchia sola.
+
+### La regola dei tre usi dell'oro
+
+L'oro (`#FFD79A`, l'arancione del marchio schiarito per reggere il testo sul
+buio) è ammesso su tre cose: la cifra del servizio, il vantaggio della sola
+offerta in evidenza, l'azione principale di una pagina pubblica. Tutto il
+resto passa all'azzurro.
+
+Nasce da un rilievo del committente — «hai esagerato con l'oro» — che era
+esatto: la regola l'avevo scritta e non l'avevo applicata, e l'oro era ancora
+sui bordi di ogni carta, sui rimandi, sui numeri dei passi e sul contorno da
+tastiera. **Nell'area riservata l'oro non entra proprio:** è il colore del
+vantaggio economico, e dove non si vende niente l'azione principale è azzurra.
+
+### Un nastro, non una giostra
+
+Le offerte sulla home scorrono in orizzontale col dito, non ruotano da sole.
+La rotazione automatica è il pattern più misurato del web e i numeri non
+cambiano: la prima carta si prende quasi tutti i clic, dalla seconda in giù si
+crolla sotto l'uno per cento. Con otto offerte da mostrare a gente che torna
+apposta, nasconderne sette dietro una rotazione è il contrario di quello che
+serve; in più il movimento automatico va reso fermabile per il livello AA, e i
+pulsanti di pausa finirebbero in mezzo all'insegna.
+
+Il nastro è una regione con nome che contiene una lista vera: la lista dà la
+semantica, la regione dà il nome e il fuoco da tastiera.
+
+### «In corso questa settimana» era una bugia a scoppio ritardato
+
+Le offerte le pubblicano tre direttori a mano, nei ritagli di tempo:
+realisticamente qualche pubblicazione al mese, non alla settimana. Quel titolo
+sarebbe rimasto vero per un mese e falso per sempre, ripetuto a ogni visita a
+chi torna ogni lunedì. Il nastro si chiama «Aperte adesso», che è vero in ogni
+momento senza chiedere niente a nessuno.
+
+### Il marchio non sta nella barra quando è già in facciata
+
+`Intestazione` è l'unico client component del sito pubblico, e legge il
+percorso per una ragione sola: sulla home il logo nella barra non si mostra,
+perché lo porta l'insegna grande subito sotto. Due loghi nello stesso schermo
+— uno da quaranta pixel e uno da duecento — si guardano male, e nella barra il
+logo serve solo come strada per tornare a casa: da casa non serve.
+
+### La scadenza dice quanto manca, e il conto passa da Date.UTC
+
+`descriviScadenza` sostituisce le tre stringhe che stavano sparse nella
+scheda. Sotto il mese conta i giorni e la riga si accende in ambra, sopra
+scrive la data per esteso: un'urgenza che suona per sei mesi non è più
+un'urgenza.
+
+Il conto dei giorni passa da `Date.UTC` e non dal fuso locale. Il 25 ottobre
+2026 dura 25 ore perché finisce l'ora legale: una differenza in millisecondi
+calcolata in locale darebbe 2,04 giorni dove sono 3, e un arrotondamento verso
+il basso direbbe «mancano 2 giorni» il giorno sbagliato. C'è un test che lo
+blinda su quella data precisa.
+
+### L'azione in fondo alla scheda non è un secondo collegamento
+
+Ogni pannello finisce con un pulsante, che sul telefono è la differenza fra
+centrare e sbagliare il bersaglio. Ma è `aria-hidden`: è la parte visibile
+dell'unico collegamento della scheda, quello sul nome del partner esteso al
+riquadro. Due link identici costringerebbero chi usa uno screen reader ad
+ascoltare la stessa destinazione due volte. Un test conta i collegamenti.
