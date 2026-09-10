@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { contenutiPagine } from '@/contenuti/pagine'
 import { offertaDaSlug, slugPubblicati } from '@/dati/offerte'
-import { formattaData, scaduta } from '@/lib/date'
+import { descriviScadenza, formattaData, scaduta } from '@/lib/date'
 
 /**
  * Le pagine si rigenerano ogni ora.
@@ -54,6 +54,8 @@ export default async function PaginaOfferta({
 
   const terminata = scaduta(offerta.validaAl)
 
+  const scadenza = descriviScadenza(offerta.validaAl)
+
   const {
     scaduta: testoScaduta,
     titoloCondizioni,
@@ -81,16 +83,19 @@ export default async function PaginaOfferta({
           {offerta.vantaggio}
         </p>
         <p className="mt-4 text-corpo">{offerta.descrizioneCompleta}</p>
-        <p className="mt-5 border-t border-parete pt-3 text-sm text-tenue">
-          {/* `terminata` è vero solo quando `validaAl` è una data passata:
-              `scaduta()` risponde sempre falso a una data assente, quindi il
-              ramo «Era valida» non chiama mai `formattaData` su un'offerta
-              permanente. */}
-          {terminata
-            ? `Era valida fino al ${formattaData(offerta.validaAl!)}`
-            : offerta.validaAl
-              ? `Valida fino al ${formattaData(offerta.validaAl)}`
-              : 'Sempre valida'}
+        {/* La stessa frase che il socio ha letto sulla scheda da cui è
+            arrivato: «Mancano 21 giorni» lì e «Valida fino al 30 novembre»
+            qui sarebbero due modi di dire la stessa cosa nello stesso sito, e
+            chi legge si chiede quale delle due conta. L'unica differenza è il
+            passato, che qui va detto per esteso perché questa pagina resta
+            raggiungibile anche dopo la scadenza — un vecchio link in un'email
+            deve spiegare, non mostrare un «Scaduta» senza data. */}
+        <p
+          className={`mt-5 border-t border-parete pt-3 text-sm ${
+            scadenza.tipo === 'vicina' ? 'font-semibold text-arancione' : 'text-tenue'
+          }`}
+        >
+          {terminata ? `Era valida fino al ${formattaData(offerta.validaAl!)}` : scadenza.testo}
         </p>
       </div>
 
