@@ -7,7 +7,7 @@ export function PiedePagina() {
 
   return (
     <footer className="mt-16 border-t border-filo">
-      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-10 sm:flex-row sm:justify-between">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:justify-between">
         <div>
           <p className="font-semibold">{nome}</p>
           <p className="text-sm text-tenue">{sottotitolo}</p>

@@ -28,7 +28,7 @@ export function Intestazione() {
       >
         Salta al contenuto
       </a>
-      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         {sullaHome ? null : (
           <Link href="/" className="fuoco-su-scuro flex items-center gap-3 rounded">
             {/* eslint-disable-next-line @next/next/no-img-element */}

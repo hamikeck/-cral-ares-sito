@@ -68,7 +68,7 @@ export default async function Home() {
             alt=""
             width={553}
             height={163}
-            className="mx-auto w-full max-w-72 drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)]"
+            className="mx-auto w-full max-w-[19rem] drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)] sm:max-w-md"
           />
           <h1 className="mt-4 text-base font-normal text-tenue">{titolo}</h1>
           <p className="mx-auto mt-2 max-w-md text-sm text-lettura">{occhiello}</p>
