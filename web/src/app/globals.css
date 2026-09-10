@@ -62,9 +62,11 @@
   --color-parete: #24505F;
   --color-filo: #1B4152;
 
-  /* Testo sul buio, dal più forte al più tenue. */
+  /* Testo sul buio, dal più forte al più tenue. I nomi evitano «corpo»:
+     `--text-corpo` esiste già come misura del carattere, e un colore con lo
+     stesso nome genererebbe due utilità `text-corpo` in conflitto. */
   --color-chiaro: #EAF6F9;
-  --color-corpo: #C9E3EB;
+  --color-lettura: #C9E3EB;
   --color-tenue: #9FC9D6;
 
   /* L'oro è l'arancione del marchio schiarito perché regga il testo sul
@@ -208,7 +210,7 @@
    l'utente vede evidenziata. */
 @utility fuoco-scheda {
   &:has(a:focus-visible) {
-    outline: 2px solid var(--color-blu-notte);
+    outline: 2px solid var(--color-azzurro);
     outline-offset: 2px;
   }
 

@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { ModuloOfferta } from './ModuloOfferta'
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { offerteFinte } from '@/test/offerteFinte'
@@ -132,7 +132,12 @@ describe('ModuloOfferta', () => {
 
     expect(campoValidaAl).toBeDisabled()
     expect(campoValidaAl).toHaveValue('')
-    expect(screen.getByText('Sempre valida')).toBeInTheDocument()
+
+    // Dentro l'anteprima, non nella pagina: «Senza scadenza» è anche
+    // l'etichetta della casella che si è appena spuntata, quindi cercarlo
+    // ovunque troverebbe due elementi e non direbbe nulla sull'anteprima.
+    const anteprima = within(screen.getByLabelText('Anteprima'))
+    expect(anteprima.getByText('Senza scadenza')).toBeInTheDocument()
   })
 
   test('togliendo la spunta a «Senza scadenza» il campo data torna compilabile', () => {
