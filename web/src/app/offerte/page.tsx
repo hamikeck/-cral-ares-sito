@@ -42,11 +42,11 @@ export default async function Offerte({
   return (
     <>
       <div className="flex max-w-2xl flex-col gap-3">
-        <h1 className="text-titolo-pagina text-inchiostro">{titolo}</h1>
-        <p className="text-corpo text-inchiostro-tenue">{occhiello}</p>
+        <h1 className="text-titolo-pagina text-chiaro">{titolo}</h1>
+        <p className="text-corpo text-tenue">{occhiello}</p>
       </div>
 
-      <p className="mt-6 max-w-2xl border-l-2 border-azzurro bg-fascia px-4 py-3 text-sm text-inchiostro-tenue">
+      <p className="mt-6 max-w-2xl border-l-2 border-azzurro bg-pannello px-4 py-3 text-sm text-tenue">
         {avvisoDimostrativo}
       </p>
 
@@ -58,8 +58,8 @@ export default async function Offerte({
               aria-current={categoriaScelta ? undefined : 'true'}
               className={
                 categoriaScelta
-                  ? 'fuoco-su-chiaro inline-block border border-linea bg-superficie px-3 py-1.5 text-sm hover:border-blu-profondo'
-                  : 'fuoco-su-chiaro inline-block border border-blu-profondo bg-blu-profondo px-3 py-1.5 text-sm font-semibold text-white'
+                  ? 'fuoco-su-scuro inline-block rounded-full border border-parete px-3 py-1.5 text-sm text-lettura hover:border-luce'
+                  : 'fuoco-su-scuro inline-block rounded-full border border-luce bg-luce px-3 py-1.5 text-sm font-bold text-notte'
               }
             >
               {tutte}
@@ -74,8 +74,8 @@ export default async function Offerte({
                   aria-current={attiva ? 'true' : undefined}
                   className={
                     attiva
-                      ? 'fuoco-su-chiaro inline-block border border-blu-profondo bg-blu-profondo px-3 py-1.5 text-sm font-semibold text-white'
-                      : 'fuoco-su-chiaro inline-block border border-linea bg-superficie px-3 py-1.5 text-sm hover:border-blu-profondo'
+                      ? 'fuoco-su-scuro inline-block rounded-full border border-luce bg-luce px-3 py-1.5 text-sm font-bold text-notte'
+                      : 'fuoco-su-scuro inline-block rounded-full border border-parete px-3 py-1.5 text-sm text-lettura hover:border-luce'
                   }
                 >
                   {categoria}

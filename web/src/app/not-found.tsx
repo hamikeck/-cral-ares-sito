@@ -6,12 +6,12 @@ export default function NonTrovata() {
 
   return (
     <article className="flex max-w-2xl flex-col gap-6 text-corpo">
-      <h1 className="text-titolo-pagina text-inchiostro">{titolo}</h1>
+      <h1 className="text-titolo-pagina text-chiaro">{titolo}</h1>
       <p>{testo}</p>
       <p>
         <Link
           href="/"
-          className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+          className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
         >
           {invito}
         </Link>

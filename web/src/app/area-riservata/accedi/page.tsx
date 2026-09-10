@@ -15,8 +15,8 @@ export default async function Accedi({
 
   return (
     <section className="max-w-2xl">
-      <h1 className="text-titolo-pagina text-inchiostro">Area riservata</h1>
-      <p className="mt-3 text-corpo text-inchiostro-tenue">
+      <h1 className="text-titolo-pagina text-chiaro">Area riservata</h1>
+      <p className="mt-3 text-corpo text-tenue">
         Riservata ai direttori del CRAL. Non serve una password: arriva un link
         per email, si preme, si entra.
       </p>
@@ -24,7 +24,7 @@ export default async function Accedi({
       {nonAutorizzato ? (
         <p
           role="alert"
-          className="mt-6 border-l-4 border-arancione bg-fascia px-4 py-3 text-corpo"
+          className="mt-6 border-l-4 border-oro/50 bg-pannello px-4 py-3 text-corpo"
         >
           Questo indirizzo non è fra quelli autorizzati a pubblicare le offerte.
           Se pensi che sia un errore, scrivi agli altri direttori.

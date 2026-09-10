@@ -27,10 +27,10 @@ export default async function ModificaOfferta({
 
   return (
     <section>
-      <h1 className="text-titolo-pagina text-inchiostro">Modifica offerta</h1>
+      <h1 className="text-titolo-pagina text-chiaro">Modifica offerta</h1>
 
       {salvata ? (
-        <p role="status" className="mt-4 border-l-4 border-azzurro bg-fascia px-4 py-3 text-corpo">
+        <p role="status" className="mt-4 border-l-4 border-azzurro bg-pannello px-4 py-3 text-corpo">
           {offerta.stato === 'pubblicata'
             ? 'Salvata. È già visibile sul sito.'
             : 'Salvata in bozza. Non è ancora visibile ai soci.'}
@@ -45,7 +45,7 @@ export default async function ModificaOfferta({
         <ModuloOfferta offerta={offerta} />
       </div>
 
-      <details className="mt-12 border border-linea p-4">
+      <details className="mt-12 border border-parete p-4">
         <summary className="cursor-pointer font-semibold">Elimina questa offerta</summary>
         <p className="mt-3 max-w-prose text-corpo">
           Stai per eliminare definitivamente «{offerta.partner} — {offerta.vantaggio}».
@@ -56,7 +56,7 @@ export default async function ModificaOfferta({
           <input type="hidden" name="id" value={offerta.id} />
           <button
             type="submit"
-            className="fuoco-su-chiaro border border-ambra-scura px-4 py-2 font-semibold text-ambra-scura"
+            className="fuoco-su-scuro border border-ambra-scura px-4 py-2 font-semibold text-luce"
           >
             Elimina definitivamente
           </button>

@@ -9,7 +9,7 @@ export function ModuloAccesso() {
   return (
     <form action={azione} className="mt-8 flex max-w-md flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="font-semibold text-inchiostro">
+        <label htmlFor="email" className="font-semibold text-chiaro">
           Il tuo indirizzo email
         </label>
         <input
@@ -18,20 +18,20 @@ export function ModuloAccesso() {
           type="email"
           autoComplete="email"
           required
-          className="fuoco-su-chiaro border border-linea bg-superficie px-3 py-2 text-corpo"
+          className="fuoco-su-scuro border border-parete bg-pannello px-3 py-2 text-corpo"
         />
       </div>
 
       <button
         type="submit"
         disabled={inCorso}
-        className="fuoco-su-chiaro border border-blu-profondo bg-blu-profondo px-4 py-2 font-semibold text-white disabled:opacity-60"
+        className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte disabled:opacity-60"
       >
         {inCorso ? 'Invio in corso…' : 'Mandami il link'}
       </button>
 
       {stato ? (
-        <p role="status" className="border-l-2 border-azzurro bg-fascia px-4 py-3 text-corpo">
+        <p role="status" className="border-l-2 border-azzurro bg-pannello px-4 py-3 text-corpo">
           {stato.messaggio}
         </p>
       ) : null}

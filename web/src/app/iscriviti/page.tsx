@@ -11,20 +11,20 @@ export default function Iscriviti() {
 
   return (
     <article className="flex max-w-2xl flex-col gap-6 text-corpo">
-      <h1 className="text-titolo-pagina text-inchiostro">{titolo}</h1>
+      <h1 className="text-titolo-pagina text-chiaro">{titolo}</h1>
       {paragrafi.map((paragrafo) => (
         <p key={paragrafo}>{paragrafo}</p>
       ))}
       <p>
         <a
           href={`mailto:${email}`}
-          className="fuoco-su-chiaro rounded font-semibold text-ambra-scura underline underline-offset-4"
+          className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
         >
           {email}
         </a>
       </p>
-      <p className="text-xs text-inchiostro-tenue">{emailProvvisoria}</p>
-      <p className="text-sm text-inchiostro-tenue">{notaProvvisoria}</p>
+      <p className="text-xs text-tenue">{emailProvvisoria}</p>
+      <p className="text-sm text-tenue">{notaProvvisoria}</p>
     </article>
   )
 }

@@ -28,7 +28,7 @@ export default async function GuscioRiservato({
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-sm text-inchiostro-tenue">
+      <p className="text-sm text-tenue">
         Sei entrato come {data.user.email}
       </p>
       {children}

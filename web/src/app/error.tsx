@@ -20,24 +20,24 @@ export default function Errore({ reset }: { error: Error; reset: () => void }) {
 
   return (
     <div className="flex max-w-2xl flex-col gap-6 text-corpo">
-      <h1 className="text-titolo-pagina text-inchiostro">{titolo}</h1>
+      <h1 className="text-titolo-pagina text-chiaro">{titolo}</h1>
       <p>{testo}</p>
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
           onClick={reset}
-          className="fuoco-su-chiaro bg-blu-profondo px-5 py-3 font-semibold text-white hover:bg-blu-notte"
+          className="fuoco-su-scuro rounded-lg bg-oro px-5 py-3 font-bold text-notte hover:bg-arancione"
         >
           {riprova}
         </button>
         <Link
           href="/"
-          className="fuoco-su-chiaro border border-linea px-5 py-3 font-semibold hover:border-blu-profondo"
+          className="fuoco-su-scuro border border-parete px-5 py-3 font-semibold hover:border-luce"
         >
           {tornaHome}
         </Link>
       </div>
-      <p className="text-sm text-inchiostro-tenue">{seContinua}</p>
+      <p className="text-sm text-tenue">{seContinua}</p>
     </div>
   )
 }

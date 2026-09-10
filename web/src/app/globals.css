@@ -109,7 +109,12 @@
     );
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: var(--color-chiaro);
+
+    /* Il testo corrente è `lettura`, non `chiaro`: sul buio il bianco pieno
+       affatica su un paragrafo lungo, e il contrasto resta comunque 12,3:1
+       sul fondo più scuro. `chiaro` è per i titoli e per ciò che deve
+       staccare. */
+    color: var(--color-lettura);
   }
 
   /* I titoli prendono la larghezza stretta di Archivo invece del maiuscolo.

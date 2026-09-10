@@ -126,7 +126,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
         <form action={azione} noValidate className="flex flex-col gap-5">
           {offerta ? <input type="hidden" name="id" value={offerta.id} /> : null}
           {errori.modulo ? (
-            <p role="alert" className="border-l-4 border-arancione bg-fascia px-4 py-3">
+            <p role="alert" className="border-l-4 border-oro/50 bg-pannello px-4 py-3">
               {errori.modulo}
             </p>
           ) : null}
@@ -143,14 +143,14 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
               onChange={scrivi('categoria')}
               aria-describedby={idErroreCategoria}
               aria-invalid={errori.categoria ? true : undefined}
-              className="fuoco-su-chiaro border border-linea bg-superficie px-3 py-2"
+              className="fuoco-su-scuro border border-parete bg-pannello px-3 py-2"
             >
               {CATEGORIE.map((categoria) => (
                 <option key={categoria} value={categoria}>{categoria}</option>
               ))}
             </select>
             {errori.categoria ? (
-              <p id={idErroreCategoria} role="alert" className="text-sm text-ambra-scura">{errori.categoria}</p>
+              <p id={idErroreCategoria} role="alert" className="text-sm text-luce">{errori.categoria}</p>
             ) : null}
           </div>
 
@@ -201,7 +201,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
           </div>
 
           <fieldset
-            className="flex flex-col gap-2 border border-linea p-4"
+            className="flex flex-col gap-2 border border-parete p-4"
             aria-describedby={idErroreModalita}
           >
             <legend className="px-2 font-semibold">Come si ottiene</legend>
@@ -221,7 +221,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
               </label>
             ))}
             {errori.modalita ? (
-              <p id={idErroreModalita} role="alert" className="text-sm text-ambra-scura">{errori.modalita}</p>
+              <p id={idErroreModalita} role="alert" className="text-sm text-luce">{errori.modalita}</p>
             ) : null}
           </fieldset>
 
@@ -229,7 +229,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
             <Campo nome="istruzioni" etichetta="Cosa deve fare il socio" multilinea valore={campi.istruzioni} errore={errori.istruzioni} onChange={scrivi('istruzioni')} />
           ) : null}
 
-          <details className="border border-linea p-4">
+          <details className="border border-parete p-4">
             <summary className="cursor-pointer font-semibold">Recapiti del partner (facoltativi)</summary>
             <div className="mt-4 flex flex-col gap-4">
               <Campo nome="indirizzo" etichetta="Indirizzo" obbligatorio={false} valore={campi.indirizzo} onChange={scrivi('indirizzo')} />
@@ -252,10 +252,10 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
           </label>
 
           <div className="flex flex-wrap gap-3">
-            <button type="submit" name="azione" value="bozza" disabled={inCorso} className="fuoco-su-chiaro border border-linea px-4 py-2 font-semibold">
+            <button type="submit" name="azione" value="bozza" disabled={inCorso} className="fuoco-su-scuro border border-parete px-4 py-2 font-semibold">
               Salva bozza
             </button>
-            <button type="submit" name="azione" value="pubblica" disabled={inCorso} className="fuoco-su-chiaro border border-blu-profondo bg-blu-profondo px-4 py-2 font-semibold text-white">
+            <button type="submit" name="azione" value="pubblica" disabled={inCorso} className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte">
               {offerta?.stato === 'pubblicata' ? 'Salva e ripubblica' : 'Pubblica'}
             </button>
           </div>
@@ -263,7 +263,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
 
         {!campi.inEvidenza ? (
           <aside aria-label="Anteprima" className="lg:sticky lg:top-6 lg:self-start">
-            <h2 className="text-sm font-semibold uppercase text-inchiostro-tenue">
+            <h2 className="text-sm font-semibold uppercase text-tenue">
               Come apparirà nell’elenco
             </h2>
             <div className="mt-3">{anteprima}</div>
@@ -278,7 +278,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
         // vedrà mai. Qui sotto ha la larghezza piena della pagina, la stessa
         // che avrà davvero in home.
         <div aria-label="Anteprima">
-          <h2 className="text-sm font-semibold uppercase text-inchiostro-tenue">
+          <h2 className="text-sm font-semibold uppercase text-tenue">
             Come apparirà in evidenza sulla home
           </h2>
           <div className="mt-3">{anteprima}</div>
@@ -316,7 +316,7 @@ function Campo({
     maxLength,
     'aria-describedby': [idAiuto, idErrore].filter(Boolean).join(' ') || undefined,
     'aria-invalid': errore ? true : undefined,
-    className: 'fuoco-su-chiaro border border-linea bg-superficie px-3 py-2 disabled:cursor-not-allowed disabled:bg-fascia disabled:text-inchiostro-tenue',
+    className: 'fuoco-su-scuro border border-parete bg-pannello px-3 py-2 disabled:cursor-not-allowed disabled:bg-pannello disabled:text-tenue',
   }
 
   return (
@@ -324,12 +324,12 @@ function Campo({
       <label htmlFor={nome} className="font-semibold">
         {etichetta}
         {obbligatorio ? null : (
-          <span className="font-normal text-inchiostro-tenue"> (facoltativo)</span>
+          <span className="font-normal text-tenue"> (facoltativo)</span>
         )}
       </label>
-      {aiuto ? <p id={idAiuto} className="text-sm text-inchiostro-tenue">{aiuto}</p> : null}
+      {aiuto ? <p id={idAiuto} className="text-sm text-tenue">{aiuto}</p> : null}
       {multilinea ? <textarea {...comuni} rows={4} /> : <input {...comuni} type={tipo} />}
-      {errore ? <p id={idErrore} role="alert" className="text-sm text-ambra-scura">{errore}</p> : null}
+      {errore ? <p id={idErrore} role="alert" className="text-sm text-luce">{errore}</p> : null}
     </div>
   )
 }

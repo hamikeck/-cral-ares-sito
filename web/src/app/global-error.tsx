@@ -16,7 +16,7 @@ export default function ErroreGlobale({ reset }: { error: Error; reset: () => vo
 
   return (
     <html lang="it">
-      <body className="bg-fondo text-inchiostro antialiased">
+      <body className="bg-notte text-chiaro antialiased">
         <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-16 text-corpo">
           <h1 className="text-titolo-pagina">{titolo}</h1>
           <p>{testo}</p>
@@ -24,7 +24,7 @@ export default function ErroreGlobale({ reset }: { error: Error; reset: () => vo
             <button
               type="button"
               onClick={reset}
-              className="fuoco-su-chiaro bg-blu-profondo px-5 py-3 font-semibold text-white hover:bg-blu-notte"
+              className="fuoco-su-scuro rounded-lg bg-oro px-5 py-3 font-bold text-notte hover:bg-arancione"
             >
               {riprova}
             </button>
