@@ -30,8 +30,10 @@ describe('risultaSocio', () => {
   })
 
   test('risponde falso quando il database dice falso', async () => {
+    // Per esempio chi ha indovinato una matricola ma scrive dalla propria
+    // email: da sola, la matricola non basta più.
     rpc.mockResolvedValue({ data: false, error: null })
-    expect(await risultaSocio('estraneo@gmail.com', '')).toBe(false)
+    expect(await risultaSocio('ladro@gmail.com', 'AE12345')).toBe(false)
   })
 
   test('un errore non diventa mai un sì', async () => {

@@ -65,8 +65,13 @@ export async function sociInConflitto(
  *
  * La domanda la decide il database, con `risulta_socio`: la tabella `soci` non
  * è leggibile da una pagina pubblica, e non deve esserlo. La funzione risponde
- * vero o falso e non restituisce mai una riga — né il nome, né quale dei due
- * campi ha combaciato.
+ * vero o falso e non restituisce mai una riga.
+ *
+ * Servono **entrambi** i campi, e devono appartenere alla stessa persona.
+ * Chiedere solo la matricola sarebbe stato comodo e pericoloso: le matricole
+ * sono numeri vicini fra loro, e il modulo permette di farsi consegnare i
+ * biglietti su un'altra email — chi ne indovinasse una si farebbe mandare i
+ * biglietti di un collega sulla propria casella.
  *
  * Passa dal client pubblico, quello che non tocca i cookie: chi compila il
  * modulo non ha una sessione, e non deve averne bisogno.

@@ -585,3 +585,25 @@ stessa ragione per cui accanto a `circuito_id` c'è `circuito` copiato.
 `prezzo_socio` sta su `circuiti` e non su `sedi` perché dentro lo stesso
 circuito il biglietto costa uguale in tutte le sale. Resta nullo finché il
 direttivo non lo comunica, e il modulo mostra il servizio senza cifra.
+
+### Il riscontro vuole email e matricola, non uno dei due
+
+Scoperto provando la politica contro il database vero: una richiesta inviata
+con **l'email di un estraneo e la matricola di un socio** veniva accettata.
+Non era un difetto dell'implementazione — era la regola deliberata il 3
+settembre, «basta uno dei due» — ma la regola era diventata pericolosa senza
+che nessuno se ne accorgesse.
+
+Il motivo lo ha visto Michele: le due chiavi non si equivalgono. Un'email non
+si indovina, una matricola sì. E dall'8 settembre il modulo chiede **dove**
+consegnare i biglietti, con l'opzione «su un'altra email»: chi indovina una
+matricola si fa mandare i biglietti di un collega sulla propria casella. Non
+è il fastidio di una richiesta finta, è un furto.
+
+La cosa da ricordare è come è nato il buco: **nessuna delle due decisioni era
+sbagliata quando è stata presa.** Il 3 settembre l'email nel modulo *era* il
+recapito, e accettare la sola matricola serviva a non respingere chi scriveva
+da casa. L'8 settembre la consegna è diventata una domanda separata, e da quel
+momento la vecchia larghezza ha smesso di proteggere e ha cominciato ad
+aprire. Una regola di sicurezza va riletta ogni volta che cambia il modulo
+attorno a lei.
