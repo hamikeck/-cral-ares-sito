@@ -543,3 +543,45 @@ oppure qualcuno l'aveva eseguita a mano dal pannello senza che il registro la
 registrasse. Non è più distinguibile. È l'argomento definitivo per non
 applicare mai niente a mano: il registro delle migrazioni è l'unica memoria di
 cosa c'è davvero sul database.
+
+---
+
+## Fase 4 — le richieste (10 settembre 2026)
+
+### Il riscontro è una politica, non un controllo dell'applicazione
+
+Chi compila il modulo non ha una sessione, quindi l'inserimento in `richieste`
+passa dal ruolo anonimo. Una politica `with check (true)` avrebbe lasciato a
+chiunque la possibilità di scrivere righe chiamando l'API direttamente,
+saltando Turnstile e il riscontro, e riempiendo di spazzatura l'elenco che i
+direttori esportano.
+
+La `with check` chiama invece `risulta_socio(email, codice_dipendente)`: è
+PostgreSQL a rifiutare la riga di chi non risulta socio. Il controllo resta
+anche nella Server Action, ma lì serve a produrre un messaggio in italiano —
+«Non risulti fra i soci» invece di un errore. **La cortesia sta nel codice, la
+sicurezza nella politica.**
+
+### Niente `socio_id` sulle richieste
+
+Lo spec lo prevedeva, ed è stato tolto. Per riempirlo servirebbe leggere
+`soci` da una pagina pubblica, e quella tabella non è leggibile da lì per
+scelta: è l'elenco nominativo dei dipendenti di un ufficio pubblico. Una
+funzione che restituisse l'id sarebbe una funzione che conferma «questa
+persona esiste e si chiama così», cioè esattamente ciò che `risulta_socio`
+evita di fare.
+
+I dati del socio sono comunque copiati dentro la richiesta, ed è quello che
+serviva davvero: un direttore può togliere una persona dall'anagrafica senza
+svuotarne lo storico.
+
+### L'importo si congela, il prezzo sta sul circuito
+
+`richieste.importo` si scrive all'invio e non si ricalcola mai leggendo il
+prezzo corrente: fra sei mesi il listino cambia, e la richiesta deve
+continuare a raccontare la cifra che quella persona ha letto e pagato. È la
+stessa ragione per cui accanto a `circuito_id` c'è `circuito` copiato.
+
+`prezzo_socio` sta su `circuiti` e non su `sedi` perché dentro lo stesso
+circuito il biglietto costa uguale in tutte le sale. Resta nullo finché il
+direttivo non lo comunica, e il modulo mostra il servizio senza cifra.

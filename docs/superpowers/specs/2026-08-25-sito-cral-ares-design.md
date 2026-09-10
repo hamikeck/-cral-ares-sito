@@ -197,7 +197,6 @@ create table richieste (
   id                 uuid primary key default gen_random_uuid(),
   tipo               tipo_richiesta not null,
   offerta_id         uuid references offerte(id),   -- solo se tipo = 'offerta'
-  socio_id           uuid references soci(id) on delete set null,
   -- dati del socio, copiati al momento dell'invio
   nome               text not null,
   cognome            text not null,
@@ -232,9 +231,19 @@ create table richieste (
 
 **Note sul modello**
 
-- **I dati del socio sono copiati dentro la richiesta**, non solo referenziati.
-  È ciò che permette di cancellare un socio senza svuotare il suo storico:
-  `socio_id` diventa nullo, la richiesta resta leggibile per intero.
+- **I dati del socio sono copiati dentro la richiesta**, e basta: non c'è
+  nessun `socio_id`. Copiarli permette di togliere una persona dall'anagrafica
+  senza svuotarne lo storico, e il riferimento in più non serviva a niente —
+  per riempirlo bisognerebbe leggere `soci` da una pagina pubblica, dove quella
+  tabella non è leggibile per scelta.
+- **Il riscontro è una politica del database, non un controllo
+  dell'applicazione.** La `with check` dell'inserimento in `richieste` chiama
+  `risulta_socio(email, codice_dipendente)`: è PostgreSQL a rifiutare la riga
+  di chi non risulta socio. Senza, chiunque potrebbe scrivere richieste
+  chiamando l'API direttamente, saltando Turnstile e riempiendo di spazzatura
+  l'elenco che i direttori esportano. Il controllo resta anche nel codice, ma
+  lì serve a produrre un messaggio in italiano: la sicurezza sta nella
+  politica.
 - Le offerte scadute restano in tabella: servono a ricostruire a cosa si
   riferiva una vecchia richiesta.
 - **Una sola tabella `richieste` per tutti i tipi.** Il campo `tipo` dice da
