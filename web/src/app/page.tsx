@@ -68,10 +68,21 @@ export default async function Home() {
             alt=""
             width={553}
             height={163}
-            className="mx-auto w-full max-w-[19rem] drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)] sm:max-w-md"
+            className="mx-auto w-full max-w-[19rem] drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)] sm:max-w-lg"
           />
-          <h1 className="mt-4 text-base font-normal text-tenue">{titolo}</h1>
-          <p className="mx-auto mt-2 max-w-md text-sm text-lettura">{occhiello}</p>
+
+          {/* Le due righe sotto il marchio erano un sussurro grigio da 16 e 14
+              pixel, e a un sussurro tanto vale rinunciare. Adesso dicono le due
+              cose che servono a chi arriva — chi siamo e cosa ci guadagni — a
+              un corpo che si legge davvero.
+
+              Il titolo non si può togliere né nascondere: è l'unico h1 della
+              pagina, e il marchio accanto è un'immagine decorativa (`alt=""`),
+              perché il nome dell'associazione va detto una volta sola e in
+              testo. Se sparisse, chi naviga con uno screen reader aprirebbe
+              una home senza nome. */}
+          <h1 className="mt-6 text-2xl text-chiaro sm:text-4xl">{titolo}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-balance text-corpo text-lettura">{occhiello}</p>
         </div>
 
         <div className="relative mt-8">

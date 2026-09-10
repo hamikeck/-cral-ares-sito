@@ -161,14 +161,17 @@
 @utility alone {
   position: absolute;
   z-index: 0;
+  inset-inline: 0;
   top: 0;
-  left: -25%;
-  right: -25%;
   height: 30rem;
   pointer-events: none;
+
+  /* I raggi restano sotto il 40%, così la luce si spegne da sé prima di
+     arrivare ai bordi. Con raggi più larghi il contenitore la tranciava di
+     netto, e si vedeva il rettangolo del taglio invece dell'alone. */
   background:
-    radial-gradient(45% 50% at 50% 42%, rgba(255, 214, 150, 0.34) 0%, rgba(255, 214, 150, 0) 66%),
-    radial-gradient(68% 66% at 50% 48%, rgba(234, 162, 86, 0.3) 0%, rgba(234, 162, 86, 0) 70%);
+    radial-gradient(36% 52% at 50% 40%, rgba(255, 214, 150, 0.36) 0%, rgba(255, 214, 150, 0) 68%),
+    radial-gradient(50% 66% at 50% 46%, rgba(234, 162, 86, 0.32) 0%, rgba(234, 162, 86, 0) 72%);
   animation: respiro 14s ease-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
