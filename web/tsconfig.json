@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // Serve a strumenti/genera-import-soci.mjs, che gira con Node e non con
+    // un bundler: Node carica un file TypeScript solo se il percorso porta
+    // l'estensione. È sicuro perché non compiliamo mai (noEmit).
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

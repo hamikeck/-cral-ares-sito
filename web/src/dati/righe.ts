@@ -1,5 +1,5 @@
 /**
- * I tipi delle righe, copia fedele di `supabase/migrations/0001_impianto.sql`.
+ * I tipi delle righe, copia fedele delle migrazioni in `supabase/migrations/`.
  *
  * Sono scritti a mano invece che generati: il progetto ha tre tabelle, e un
  * passaggio di generazione da eseguire a ogni migrazione costa più di quanto
@@ -39,3 +39,17 @@ export const COLONNE_OFFERTA =
   'slug, partner, categoria, vantaggio, descrizione_breve, descrizione, ' +
   'condizioni, valida_dal, valida_al, in_evidenza, modalita, istruzioni, ' +
   'indirizzo, telefono, link_partner, codice_sconto, stato'
+
+/** Copia fedele di `supabase/migrations/0004_soci.sql`. */
+export type RigaSocio = {
+  id: string
+  nome: string
+  cognome: string
+  email: string
+  codice_dipendente: string
+  telefono: string | null
+  note: string | null
+}
+
+/** Le colonne da chiedere a Supabase per costruire un `Socio`. */
+export const COLONNE_SOCIO = 'id, nome, cognome, email, codice_dipendente, telefono, note'
