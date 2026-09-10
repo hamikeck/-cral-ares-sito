@@ -33,6 +33,12 @@ export default async function AreaRiservata({
         <h1 className="text-titolo-pagina text-chiaro">Le offerte</h1>
         <div className="flex items-center gap-4">
           <Link
+            href="/area-riservata/soci"
+            className="fuoco-su-scuro rounded text-sm font-semibold text-luce underline underline-offset-4"
+          >
+            I soci
+          </Link>
+          <Link
             href="/area-riservata/offerte/nuova"
             className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte"
           >
