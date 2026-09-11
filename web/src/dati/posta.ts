@@ -1,4 +1,11 @@
-import { corpoEmail, corpoHtml, oggettoEmail, type RichiestaPerEmail } from '@/lib/emailRichiesta'
+import {
+  corpoConferma,
+  corpoEmail,
+  corpoHtml,
+  oggettoConferma,
+  oggettoEmail,
+  type RichiestaPerEmail,
+} from '@/lib/emailRichiesta'
 
 /**
  * L'invio dell'email ai direttori.
@@ -64,5 +71,42 @@ export async function avvisaIDirettori(richiesta: RichiestaPerEmail): Promise<bo
   } catch (errore) {
     console.error(`Errore nell’invio dell’avviso per la richiesta #${richiesta.numero}:`, errore)
     return false
+  }
+}
+
+/**
+ * La presa in carico che riceve il socio.
+ *
+ * Va **sempre all'email aziendale**, quella confrontata con l'anagrafica, e
+ * mai al recapito che il socio ha scritto per la consegna. Non è una
+ * distrazione: l'indirizzo della consegna non è verificato da nessuno, e
+ * spedirci un'email trasformerebbe il modulo in un modo per mandare posta a
+ * un indirizzo qualsiasi con il nostro mittente.
+ *
+ * Come l'avviso ai direttori, è un tentativo: la richiesta è già salvata, e
+ * se la conferma non parte il socio ha comunque visto la conferma a schermo.
+ */
+export async function confermaAlSocio(
+  richiesta: RichiestaPerEmail,
+  riepilogo: string,
+): Promise<void> {
+  const chiave = process.env.RESEND_API_KEY
+  if (!chiave) return
+
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${chiave}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: process.env.EMAIL_MITTENTE ?? 'CRAL ARES <onboarding@resend.dev>',
+        to: [richiesta.email],
+        subject: oggettoConferma(richiesta),
+        text: corpoConferma(richiesta, riepilogo),
+        // Se il socio risponde a questa, deve arrivare ai direttori.
+        reply_to: (process.env.EMAIL_DIRETTORI ?? '').split(',')[0]?.trim() || undefined,
+      }),
+    })
+  } catch (errore) {
+    console.error(`Conferma non inviata per la richiesta #${richiesta.numero}:`, errore)
   }
 }

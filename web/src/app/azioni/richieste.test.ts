@@ -2,11 +2,12 @@ import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 const risultaSocio = vi.hoisted(() => vi.fn())
 const avvisaIDirettori = vi.hoisted(() => vi.fn())
+const confermaAlSocio = vi.hoisted(() => vi.fn())
 const inserite = vi.hoisted(() => [] as Record<string, unknown>[])
 const rpc = vi.hoisted(() => vi.fn())
 
 vi.mock('@/dati/soci', () => ({ risultaSocio }))
-vi.mock('@/dati/posta', () => ({ avvisaIDirettori }))
+vi.mock('@/dati/posta', () => ({ avvisaIDirettori, confermaAlSocio }))
 vi.mock('@/dati/circuiti', () => ({
   circuitiConSedi: async () => [
     {
@@ -57,6 +58,7 @@ describe('inviaRichiestaCinema', () => {
     inserite.length = 0
     risultaSocio.mockReset().mockResolvedValue(true)
     avvisaIDirettori.mockReset().mockResolvedValue(true)
+    confermaAlSocio.mockReset().mockResolvedValue(undefined)
     rpc.mockReset()
   })
 
@@ -145,6 +147,19 @@ describe('inviaRichiestaCinema', () => {
     expect(rpc).not.toHaveBeenCalled()
     expect(esito.inviata).toBeDefined()
     expect(esito.errori).toBeUndefined()
+  })
+
+  test('il socio riceve la presa in carico sull’email aziendale', async () => {
+    // Mai sul recapito della consegna: quello non è verificato da nessuno, e
+    // spedirci un'email trasformerebbe il modulo in un modo per mandare posta
+    // a un indirizzo qualsiasi con il nostro mittente.
+    await inviaRichiestaCinema(
+      null,
+      modulo({ consegna: 'email_personale', emailPersonale: 'altro@gmail.com' }),
+    )
+
+    expect(confermaAlSocio).toHaveBeenCalledOnce()
+    expect(confermaAlSocio.mock.calls[0][0].email).toBe('mario.rossi@esempio.test')
   })
 
   test('la causale dice a chi appartiene il bonifico', async () => {

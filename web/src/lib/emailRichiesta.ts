@@ -130,3 +130,34 @@ export function corpoHtml(richiesta: RichiestaPerEmail): string {
     '</div>',
   ].join('')
 }
+
+/**
+ * L'email di presa in carico, quella che riceve il socio.
+ *
+ * Esiste per una ragione sola e misurabile: **evitare che compili due volte.**
+ * Senza una conferma, chi non riceve risposta entro sera rimanda la richiesta,
+ * e il direttore si ritrova due righe uguali da capire.
+ *
+ * Non promette tempi che non possiamo garantire — a rispondere è una persona
+ * nei ritagli di tempo — e non dice «la tua richiesta è stata approvata»:
+ * dice che è arrivata, che è diversa cosa.
+ */
+export function oggettoConferma(richiesta: RichiestaPerEmail): string {
+  return `Abbiamo ricevuto la tua richiesta · #${richiesta.numero}`
+}
+
+export function corpoConferma(richiesta: RichiestaPerEmail, riepilogo: string): string {
+  return [
+    `Ciao ${richiesta.nome},`,
+    '',
+    `abbiamo ricevuto la tua richiesta (#${richiesta.numero}): ${riepilogo}.`,
+    '',
+    'Ti risponde un direttore del CRAL, non un sistema automatico: può volerci',
+    'qualche giorno. Non serve rimandare la richiesta — è già in coda.',
+    '',
+    'Se paghi con il cedolino, aspetta la sua email prima di fare qualsiasi',
+    'versamento: l’IBAN e l’importo te li scrive lui.',
+    '',
+    'CRAL ARES',
+  ].join('\n')
+}

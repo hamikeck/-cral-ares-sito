@@ -10,7 +10,7 @@ import {
 } from '@/dominio/richiestaSchema'
 import { offertaConId } from '@/dati/offerte'
 import { circuitiConSedi } from '@/dati/circuiti'
-import { avvisaIDirettori } from '@/dati/posta'
+import { avvisaIDirettori, confermaAlSocio } from '@/dati/posta'
 import { risultaSocio } from '@/dati/soci'
 import { clientPubblico } from '@/dati/supabasePubblico'
 import { formattaEuro } from '@/dominio/circuito'
@@ -180,7 +180,7 @@ export async function inviaRichiestaCinema(
   // colonna `email_inviata` resta falsa e l'elenco in area riservata lo dirà.
   const importo = importoBiglietti(circuito, dati.quantita)
 
-  const annunciata = await avvisaIDirettori({
+  const avviso = {
     numero: data.numero,
     nome: dati.nome,
     cognome: dati.cognome,
@@ -202,7 +202,8 @@ export async function inviaRichiestaCinema(
       },
     ],
     messaggio: dati.messaggio || undefined,
-  })
+  }
+  const annunciata = await avvisaIDirettori(avviso)
 
   if (annunciata) {
     // Passa da una funzione e non da un `update`: il ruolo anonimo non ha il
@@ -210,6 +211,12 @@ export async function inviaRichiestaCinema(
     // aperto chiunque potrebbe modificare quella di un altro.
     await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
   }
+
+  // La presa in carico va all'email aziendale e non al recapito della
+  // consegna: quello non è verificato da nessuno, e spedirci un'email
+  // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
+  // qualsiasi con il nostro mittente.
+  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
 
   return {
     inviata: {
@@ -266,7 +273,7 @@ export async function inviaRichiestaConvenzione(
     return { errori: { modulo: error.code === '42501' ? MESSAGGIO_NON_SOCIO : MESSAGGIO_GENERICO } }
   }
 
-  const annunciata = await avvisaIDirettori({
+  const avviso = {
     numero: data.numero,
     nome: dati.nome,
     cognome: dati.cognome,
@@ -277,11 +284,18 @@ export async function inviaRichiestaConvenzione(
     oggettoBreve: `Convenzione ${dati.convenzione}`,
     righe: [{ etichetta: 'Convenzione', valore: dati.convenzione }],
     messaggio: dati.messaggio,
-  })
+  }
+  const annunciata = await avvisaIDirettori(avviso)
 
   if (annunciata) {
     await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
   }
+
+  // La presa in carico va all'email aziendale e non al recapito della
+  // consegna: quello non è verificato da nessuno, e spedirci un'email
+  // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
+  // qualsiasi con il nostro mittente.
+  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
 
   // Niente IBAN né importo: qui non c'è ancora niente da pagare.
   return { inviata: { pagamentoBonifico: false, causale: '' } }
@@ -389,7 +403,7 @@ export async function inviaRichiestaOfferta(
     return { errori: { modulo: error.code === '42501' ? MESSAGGIO_NON_SOCIO : MESSAGGIO_GENERICO } }
   }
 
-  const annunciata = await avvisaIDirettori({
+  const avviso = {
     numero: data.numero,
     nome: dati.nome,
     cognome: dati.cognome,
@@ -429,11 +443,18 @@ export async function inviaRichiestaOfferta(
         : []),
     ],
     messaggio: dati.messaggio || undefined,
-  })
+  }
+  const annunciata = await avvisaIDirettori(avviso)
 
   if (annunciata) {
     await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
   }
+
+  // La presa in carico va all'email aziendale e non al recapito della
+  // consegna: quello non è verificato da nessuno, e spedirci un'email
+  // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
+  // qualsiasi con il nostro mittente.
+  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
 
   return {
     inviata: {
