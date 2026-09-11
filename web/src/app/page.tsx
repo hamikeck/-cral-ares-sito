@@ -49,6 +49,7 @@ export default async function Home() {
     invito,
   } = contenutiPagine.home
 
+  const { email: emailAssociazione } = contenutiPagine.associazione
   const valide = await offerteValide()
   const principale = inEvidenza(valide)
   const nastro = principale ? [principale, ...altre(valide)] : altre(valide)
@@ -131,9 +132,12 @@ export default async function Home() {
           <h2 className="mt-1 text-2xl text-chiaro">{porte.cinema.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.cinema.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="azione-oro fuoco-su-scuro block rounded-lg py-3 text-center font-bold">
+            <Link
+              href="/richiesta/cinema"
+              className="azione-oro fuoco-su-scuro block rounded-lg py-3 text-center font-bold"
+            >
               {porte.cinema.invito}
-            </span>
+            </Link>
           </p>
           <p className="mt-2 text-xs text-tenue">{porte.cinema.nota}</p>
         </div>
@@ -143,9 +147,16 @@ export default async function Home() {
           <h2 className="mt-1 text-2xl text-chiaro">{porte.convenzioni.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.convenzioni.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="block rounded-lg border border-luce/45 py-3 text-center font-bold text-luce">
+            {/* La porta delle convenzioni non ha ancora un modulo suo: finché
+                non c'è, manda a scrivere ai direttori invece di non portare da
+                nessuna parte. Un pulsante che non fa niente è peggio di un
+                pulsante che fa la cosa lenta. */}
+            <a
+              href={`mailto:${emailAssociazione}?subject=${encodeURIComponent('Richiesta convenzione')}`}
+              className="fuoco-su-scuro block rounded-lg border border-luce/45 py-3 text-center font-bold text-luce"
+            >
               {porte.convenzioni.invito}
-            </span>
+            </a>
           </p>
         </div>
       </section>
