@@ -136,3 +136,31 @@ export const schemaRichiestaCinema = z
   .superRefine(controllaDatiSocio)
 
 export type DatiRichiestaCinema = z.infer<typeof schemaRichiestaCinema>
+
+/**
+ * Il modulo delle convenzioni: due campi, entrambi liberi.
+ *
+ * Il campo libero è una scelta esplicita del direttivo (spec 8.2): le
+ * convenzioni sono eterogenee e un elenco chiuso ne lascerebbe fuori troppe.
+ * Il costo è che «gommista», «Gommista» e «cambio gomme» arriveranno come voci
+ * distinte, e contarle richiederà una lettura a occhio.
+ */
+export const schemaRichiestaConvenzione = z
+  .object({
+    ...campiDatiSocio,
+    convenzione: z
+      .string()
+      .trim()
+      .min(1, 'Scrivi di quale convenzione hai bisogno, anche con parole tue.')
+      .max(80, 'Scrivilo più corto: il resto mettilo qui sotto, in «cosa ti serve».'),
+
+    /**
+     * Qui il messaggio non è facoltativo come negli altri moduli: è **la
+     * richiesta**. Senza, al direttore arriverebbe una parola sola — «palestra»
+     * — e dovrebbe richiamare per sapere cosa serve davvero.
+     */
+    messaggio: z.string().trim().min(1, 'Spiega in due righe cosa ti serve.'),
+  })
+  .superRefine(controllaDatiSocio)
+
+export type DatiRichiestaConvenzione = z.infer<typeof schemaRichiestaConvenzione>

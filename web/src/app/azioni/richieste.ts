@@ -1,7 +1,10 @@
 'use server'
 
 import { importoBiglietti } from '@/dominio/circuito'
-import { schemaRichiestaCinema } from '@/dominio/richiestaSchema'
+import {
+  schemaRichiestaCinema,
+  schemaRichiestaConvenzione,
+} from '@/dominio/richiestaSchema'
 import { circuitiConSedi } from '@/dati/circuiti'
 import { avvisaIDirettori } from '@/dati/posta'
 import { risultaSocio } from '@/dati/soci'
@@ -32,7 +35,8 @@ const MESSAGGIO_NON_SOCIO =
 const MESSAGGIO_GENERICO =
   'Non è stato possibile inviare la richiesta. Riprova fra poco; se il problema continua, scrivi ai direttori.'
 
-function leggiModulo(datiModulo: FormData) {
+/** I campi che tutti i moduli hanno in comune. */
+function leggiDatiSocio(datiModulo: FormData) {
   return {
     nome: String(datiModulo.get('nome') ?? ''),
     cognome: String(datiModulo.get('cognome') ?? ''),
@@ -43,22 +47,52 @@ function leggiModulo(datiModulo: FormData) {
     telefono: String(datiModulo.get('telefono') ?? ''),
     messaggio: String(datiModulo.get('messaggio') ?? ''),
     consensoPrivacy: datiModulo.get('consensoPrivacy') === 'on',
-    circuitoId: String(datiModulo.get('circuitoId') ?? ''),
-    sedeId: String(datiModulo.get('sedeId') ?? ''),
-    quantita: String(datiModulo.get('quantita') ?? ''),
-    pagamento: String(datiModulo.get('pagamento') ?? ''),
   }
 }
 
-function raccogliErrori(esito: ReturnType<typeof schemaRichiestaCinema.safeParse>) {
+/** Gli errori di Zod diventano una mappa campo → messaggio, come li vuole il modulo. */
+function raccogliErrori(problemi: { path: PropertyKey[]; message: string }[]) {
   const errori: Record<string, string> = {}
-  if (!esito.success) {
-    esito.error.issues.forEach((problema) => {
-      const campo = String(problema.path[0] ?? 'modulo')
-      if (!errori[campo]) errori[campo] = problema.message
-    })
-  }
+  problemi.forEach((problema) => {
+    const campo = String(problema.path[0] ?? 'modulo')
+    if (!errori[campo]) errori[campo] = problema.message
+  })
   return errori
+}
+
+/** Come si racconta all'email dei direttori dove il socio vuole ricevere. */
+const CONSEGNE_LEGGIBILI: Record<string, string> = {
+  email_aziendale: 'Sull’email aziendale',
+  email_personale: 'Su un’altra email',
+  whatsapp: 'Su WhatsApp',
+}
+
+function recapitoScelto(dati: {
+  consegna: string
+  emailPersonale: string
+  telefono: string
+}): string | undefined {
+  if (dati.consegna === 'email_personale') return dati.emailPersonale
+  if (dati.consegna === 'whatsapp') return dati.telefono
+  return undefined
+}
+
+/**
+ * Il riscontro, con il suo esito già tradotto in un messaggio.
+ *
+ * Lo fanno tutti i moduli allo stesso modo, e sbagliarlo in uno solo
+ * significherebbe aprire una porta che le altre tengono chiusa.
+ */
+async function fermaChiNonERisultaSocio(dati: {
+  email: string
+  codiceDipendente: string
+}): Promise<EsitoRichiesta | undefined> {
+  try {
+    if (await risultaSocio(dati.email, dati.codiceDipendente)) return undefined
+  } catch {
+    return { errori: { modulo: MESSAGGIO_GENERICO } }
+  }
+  return { errori: { modulo: MESSAGGIO_NON_SOCIO } }
 }
 
 /**
@@ -79,18 +113,19 @@ export async function inviaRichiestaCinema(
   _statoPrecedente: EsitoRichiesta | null,
   datiModulo: FormData,
 ): Promise<EsitoRichiesta> {
-  const esito = schemaRichiestaCinema.safeParse(leggiModulo(datiModulo))
-  if (!esito.success) return { errori: raccogliErrori(esito) }
+  const esito = schemaRichiestaCinema.safeParse({
+    ...leggiDatiSocio(datiModulo),
+    circuitoId: String(datiModulo.get('circuitoId') ?? ''),
+    sedeId: String(datiModulo.get('sedeId') ?? ''),
+    quantita: String(datiModulo.get('quantita') ?? ''),
+    pagamento: String(datiModulo.get('pagamento') ?? ''),
+  })
+  if (!esito.success) return { errori: raccogliErrori(esito.error.issues) }
 
   const dati = esito.data
 
-  let socio: boolean
-  try {
-    socio = await risultaSocio(dati.email, dati.codiceDipendente)
-  } catch {
-    return { errori: { modulo: MESSAGGIO_GENERICO } }
-  }
-  if (!socio) return { errori: { modulo: MESSAGGIO_NON_SOCIO } }
+  const respinto = await fermaChiNonERisultaSocio(dati)
+  if (respinto) return respinto
 
   const circuiti = await circuitiConSedi()
   const circuito = circuiti.find((uno) => uno.id === dati.circuitoId)
@@ -139,11 +174,6 @@ export async function inviaRichiestaCinema(
   // L'avviso parte **dopo** il salvataggio, e il suo esito non cambia quello
   // che il socio vede: la sua richiesta esiste comunque. Se non parte, la
   // colonna `email_inviata` resta falsa e l'elenco in area riservata lo dirà.
-  const consegne: Record<string, string> = {
-    email_aziendale: 'Sull’email aziendale',
-    email_personale: 'Su un’altra email',
-    whatsapp: 'Su WhatsApp',
-  }
   const importo = importoBiglietti(circuito, dati.quantita)
 
   const annunciata = await avvisaIDirettori({
@@ -152,13 +182,8 @@ export async function inviaRichiestaCinema(
     cognome: dati.cognome,
     codiceDipendente: dati.codiceDipendente,
     email: dati.email,
-    consegna: consegne[dati.consegna] ?? dati.consegna,
-    recapito:
-      dati.consegna === 'email_personale'
-        ? dati.emailPersonale
-        : dati.consegna === 'whatsapp'
-          ? dati.telefono
-          : undefined,
+    consegna: CONSEGNE_LEGGIBILI[dati.consegna] ?? dati.consegna,
+    recapito: recapitoScelto(dati),
     oggettoBreve: `${dati.quantita} biglietti ${circuito.nome}`,
     righe: [
       { etichetta: 'Circuito', valore: circuito.nome },
@@ -189,4 +214,71 @@ export async function inviaRichiestaCinema(
       causale: `CRAL ARES biglietti ${circuito.nome} ${dati.cognome} ${dati.codiceDipendente}`,
     },
   }
+}
+
+/**
+ * Invia una richiesta di convenzione.
+ *
+ * Gemella di quella del cinema, e più corta: non c'è niente da pagare, quindi
+ * non si chiede come — chiederlo sarebbe un campo senza senso da compilare,
+ * visto che a questo punto non si sa nemmeno se la convenzione esiste.
+ */
+export async function inviaRichiestaConvenzione(
+  _statoPrecedente: EsitoRichiesta | null,
+  datiModulo: FormData,
+): Promise<EsitoRichiesta> {
+  const esito = schemaRichiestaConvenzione.safeParse({
+    ...leggiDatiSocio(datiModulo),
+    convenzione: String(datiModulo.get('convenzione') ?? ''),
+  })
+  if (!esito.success) return { errori: raccogliErrori(esito.error.issues) }
+
+  const dati = esito.data
+
+  const respinto = await fermaChiNonERisultaSocio(dati)
+  if (respinto) return respinto
+
+  const { data, error } = await clientPubblico()
+    .from('richieste')
+    .insert({
+      tipo: 'convenzione',
+      nome: dati.nome,
+      cognome: dati.cognome,
+      codice_dipendente: dati.codiceDipendente,
+      email: dati.email,
+      consegna: dati.consegna,
+      email_personale: dati.consegna === 'email_personale' ? dati.emailPersonale : null,
+      telefono: dati.consegna === 'whatsapp' ? dati.telefono : null,
+      convenzione: dati.convenzione,
+      messaggio: dati.messaggio,
+      consenso_privacy: true,
+      consenso_il: new Date().toISOString(),
+    })
+    .select('id, numero')
+    .single()
+
+  if (error) {
+    console.error('Errore nell’invio di una richiesta convenzione:', error)
+    return { errori: { modulo: error.code === '42501' ? MESSAGGIO_NON_SOCIO : MESSAGGIO_GENERICO } }
+  }
+
+  const annunciata = await avvisaIDirettori({
+    numero: data.numero,
+    nome: dati.nome,
+    cognome: dati.cognome,
+    codiceDipendente: dati.codiceDipendente,
+    email: dati.email,
+    consegna: CONSEGNE_LEGGIBILI[dati.consegna] ?? dati.consegna,
+    recapito: recapitoScelto(dati),
+    oggettoBreve: `Convenzione ${dati.convenzione}`,
+    righe: [{ etichetta: 'Convenzione', valore: dati.convenzione }],
+    messaggio: dati.messaggio,
+  })
+
+  if (annunciata) {
+    await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
+  }
+
+  // Niente IBAN né importo: qui non c'è ancora niente da pagare.
+  return { inviata: { pagamentoBonifico: false, causale: '' } }
 }

@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest'
-import { schemaDatiSocio, schemaRichiestaCinema } from './richiestaSchema'
+import {
+  schemaDatiSocio,
+  schemaRichiestaCinema,
+  schemaRichiestaConvenzione,
+} from './richiestaSchema'
 
 const base = {
   nome: 'Mario',
@@ -121,5 +125,40 @@ describe('schemaRichiestaCinema', () => {
       erroreSu('emailPersonale', { ...richiesta, consegna: 'email_personale' }),
     ).toBeDefined()
     expect(erroreSu('consensoPrivacy', { ...richiesta, consensoPrivacy: false })).toBeDefined()
+  })
+})
+
+describe('schemaRichiestaConvenzione', () => {
+  const richiesta = {
+    ...base,
+    convenzione: 'Gommista',
+    messaggio: 'Mi servono quattro gomme invernali entro novembre.',
+  }
+
+  test('accetta una richiesta scritta con parole proprie', () => {
+    expect(schemaRichiestaConvenzione.safeParse(richiesta).success).toBe(true)
+  })
+
+  test('senza dire quale convenzione non si va avanti', () => {
+    const esito = schemaRichiestaConvenzione.safeParse({ ...richiesta, convenzione: '  ' })
+    expect(esito.success).toBe(false)
+  })
+
+  test('il «cosa ti serve» è obbligatorio, al contrario che negli altri moduli', () => {
+    // Qui il messaggio **è** la richiesta: senza, al direttore arriva una
+    // parola sola e deve richiamare.
+    const esito = schemaRichiestaConvenzione.safeParse({ ...richiesta, messaggio: '' })
+    expect(esito.success).toBe(false)
+  })
+
+  test('una convenzione lunghissima viene rimandata al campo giusto', () => {
+    const esito = schemaRichiestaConvenzione.safeParse({
+      ...richiesta,
+      convenzione: 'x'.repeat(200),
+    })
+    const messaggio =
+      !esito.success &&
+      esito.error.issues.find((problema) => problema.path[0] === 'convenzione')?.message
+    expect(messaggio).toMatch(/cosa ti serve/)
   })
 })

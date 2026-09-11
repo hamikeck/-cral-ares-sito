@@ -77,14 +77,12 @@ describe('Home', () => {
     ).toHaveAttribute('href', '/richiesta/cinema')
   })
 
-  test('la porta delle convenzioni manda a scrivere, finché il suo modulo non c’è', async () => {
-    // Un pulsante che non fa niente è peggio di uno che fa la cosa lenta.
+  test('anche la porta delle convenzioni porta al suo modulo', async () => {
     render(await Home())
 
-    const porta = screen.getByRole('link', {
-      name: contenutiPagine.home.porte.convenzioni.invito,
-    })
-    expect(porta.getAttribute('href')).toMatch(/^mailto:/)
+    expect(
+      screen.getByRole('link', { name: contenutiPagine.home.porte.convenzioni.invito }),
+    ).toHaveAttribute('href', '/richiesta/convenzione')
   })
 
   test('non presenta violazioni di accessibilità', async () => {
