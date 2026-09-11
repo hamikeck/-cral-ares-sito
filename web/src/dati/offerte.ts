@@ -82,3 +82,32 @@ export async function slugPubblicati(
 
   return (data as { slug: string }[]).map((riga) => riga.slug)
 }
+
+/**
+ * L'offerta pubblicata con il suo id, per collegarci una richiesta.
+ *
+ * L'id non entra nel tipo `Offerta` — le pagine non ne hanno bisogno e non
+ * devono conoscerlo — ma la richiesta sì: è il riferimento che permette a un
+ * direttore, fra sei mesi, di sapere a cosa si riferiva.
+ *
+ * La Server Action la rilegge **dal database** invece di fidarsi di quanto le
+ * arriva dal modulo: la modalità decide quali campi sono obbligatori, e se
+ * arrivasse dal browser basterebbe cambiarla per saltare i controlli.
+ */
+export async function offertaConId(
+  slug: string,
+  client: SupabaseClient = clientPubblico(),
+): Promise<{ id: string; offerta: Offerta } | undefined> {
+  const { data, error } = await client
+    .from('offerte')
+    .select(`id, ${COLONNE_OFFERTA}`)
+    .eq('stato', 'pubblicata')
+    .eq('slug', slug)
+    .maybeSingle()
+
+  if (error) fallisci('Non è stato possibile leggere l’offerta', error.message)
+  if (!data) return undefined
+
+  const riga = data as unknown as RigaOfferta & { id: string }
+  return { id: riga.id, offerta: mappaOfferta(riga) }
+}

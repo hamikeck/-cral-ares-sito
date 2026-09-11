@@ -1,10 +1,14 @@
 'use server'
 
 import { importoBiglietti } from '@/dominio/circuito'
+import type { DatiSocioRichiesta } from '@/dominio/richiestaSchema'
 import {
   schemaRichiestaCinema,
   schemaRichiestaConvenzione,
+  schemaRichiestaOffertaBiglietti,
+  schemaRichiestaOffertaInformazioni,
 } from '@/dominio/richiestaSchema'
+import { offertaConId } from '@/dati/offerte'
 import { circuitiConSedi } from '@/dati/circuiti'
 import { avvisaIDirettori } from '@/dati/posta'
 import { risultaSocio } from '@/dati/soci'
@@ -281,4 +285,160 @@ export async function inviaRichiestaConvenzione(
 
   // Niente IBAN né importo: qui non c'è ancora niente da pagare.
   return { inviata: { pagamentoBonifico: false, causale: '' } }
+}
+
+/**
+ * Invia una richiesta partita dalla scheda di un'offerta.
+ *
+ * **La modalità si rilegge dal database**, mai dal modulo: è lei a decidere
+ * quali campi sono obbligatori, e se arrivasse dal browser basterebbe
+ * cambiarla per saltare i controlli — chiedere dei biglietti senza dire
+ * quanti, o senza scegliere come pagarli.
+ */
+export async function inviaRichiestaOfferta(
+  _statoPrecedente: EsitoRichiesta | null,
+  datiModulo: FormData,
+): Promise<EsitoRichiesta> {
+  const slug = String(datiModulo.get('slug') ?? '')
+  const trovata = await offertaConId(slug)
+
+  if (!trovata) {
+    // L'offerta è stata ritirata mentre il socio compilava, oppure è scaduta.
+    return {
+      errori: {
+        modulo:
+          'Questa offerta non è più disponibile. Torna all’elenco: potresti trovarne una simile.',
+      },
+    }
+  }
+
+  const { id, offerta } = trovata
+  const perBiglietti = offerta.modalita === 'biglietti'
+
+  const comuni = leggiDatiSocio(datiModulo)
+
+  // Due schemi e due rami separati, invece di uno schema con tutto dentro:
+  // un modulo che chiede dei posti e uno che chiede informazioni non hanno le
+  // stesse regole, e mescolarle vorrebbe dire renderle tutte facoltative.
+  let dati: DatiSocioRichiesta & { messaggio: string }
+  let biglietti:
+    | {
+        quantita: number
+        titoloEvento: string
+        dataPreferita: string
+        orarioPreferito: string
+        pagamento: 'bonifico' | 'busta_paga'
+      }
+    | undefined
+
+  if (perBiglietti) {
+    const esito = schemaRichiestaOffertaBiglietti.safeParse({
+      ...comuni,
+      slug,
+      quantita: String(datiModulo.get('quantita') ?? ''),
+      titoloEvento: String(datiModulo.get('titoloEvento') ?? ''),
+      dataPreferita: String(datiModulo.get('dataPreferita') ?? ''),
+      orarioPreferito: String(datiModulo.get('orarioPreferito') ?? ''),
+      pagamento: String(datiModulo.get('pagamento') ?? ''),
+    })
+    if (!esito.success) return { errori: raccogliErrori(esito.error.issues) }
+
+    dati = esito.data
+    biglietti = {
+      quantita: esito.data.quantita,
+      titoloEvento: esito.data.titoloEvento,
+      dataPreferita: esito.data.dataPreferita,
+      orarioPreferito: esito.data.orarioPreferito,
+      pagamento: esito.data.pagamento,
+    }
+  } else {
+    const esito = schemaRichiestaOffertaInformazioni.safeParse({ ...comuni, slug })
+    if (!esito.success) return { errori: raccogliErrori(esito.error.issues) }
+    dati = esito.data
+  }
+
+  const respinto = await fermaChiNonERisultaSocio(dati)
+  if (respinto) return respinto
+
+  const { data, error } = await clientPubblico()
+    .from('richieste')
+    .insert({
+      tipo: 'offerta',
+      offerta_id: id,
+      nome: dati.nome,
+      cognome: dati.cognome,
+      codice_dipendente: dati.codiceDipendente,
+      email: dati.email,
+      consegna: dati.consegna,
+      email_personale: dati.consegna === 'email_personale' ? dati.emailPersonale : null,
+      telefono: dati.consegna === 'whatsapp' ? dati.telefono : null,
+      pagamento: biglietti?.pagamento ?? null,
+      quantita: biglietti?.quantita ?? null,
+      titolo_evento: biglietti?.titoloEvento || null,
+      data_preferita: biglietti?.dataPreferita || null,
+      orario_preferito: biglietti?.orarioPreferito || null,
+      messaggio: dati.messaggio || null,
+      consenso_privacy: true,
+      consenso_il: new Date().toISOString(),
+    })
+    .select('id, numero')
+    .single()
+
+  if (error) {
+    console.error('Errore nell’invio di una richiesta da offerta:', error)
+    return { errori: { modulo: error.code === '42501' ? MESSAGGIO_NON_SOCIO : MESSAGGIO_GENERICO } }
+  }
+
+  const annunciata = await avvisaIDirettori({
+    numero: data.numero,
+    nome: dati.nome,
+    cognome: dati.cognome,
+    codiceDipendente: dati.codiceDipendente,
+    email: dati.email,
+    consegna: CONSEGNE_LEGGIBILI[dati.consegna] ?? dati.consegna,
+    recapito: recapitoScelto(dati),
+    oggettoBreve: biglietti
+      ? `${biglietti.quantita} posti ${offerta.partner}`
+      : `Informazioni ${offerta.partner}`,
+    righe: [
+      { etichetta: 'Offerta', valore: `${offerta.partner} — ${offerta.vantaggio}` },
+      ...(biglietti ? [{ etichetta: 'Posti', valore: String(biglietti.quantita) }] : []),
+      ...(biglietti?.titoloEvento
+        ? [{ etichetta: 'Evento', valore: biglietti.titoloEvento }]
+        : []),
+      ...(biglietti?.dataPreferita
+        ? [
+            {
+              etichetta: 'Quando',
+              valore: [biglietti.dataPreferita, biglietti.orarioPreferito]
+                .filter(Boolean)
+                .join(' '),
+            },
+          ]
+        : []),
+      ...(biglietti
+        ? [
+            {
+              etichetta: 'Pagamento',
+              valore:
+                biglietti.pagamento === 'bonifico'
+                  ? 'Cedolino (bonifico)'
+                  : 'Trattenuta in busta paga',
+            },
+          ]
+        : []),
+    ],
+    messaggio: dati.messaggio || undefined,
+  })
+
+  if (annunciata) {
+    await clientPubblico().rpc('segna_avviso_inviato', { richiesta_id: data.id })
+  }
+
+  return {
+    inviata: {
+      pagamentoBonifico: biglietti?.pagamento === 'bonifico',
+      causale: `CRAL ARES ${offerta.partner} ${dati.cognome} ${dati.codiceDipendente}`,
+    },
+  }
 }

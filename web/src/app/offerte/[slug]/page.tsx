@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { RichiediOfferta } from '@/componenti/RichiediOfferta'
 import { contenutiPagine } from '@/contenuti/pagine'
 import { offertaDaSlug, slugPubblicati } from '@/dati/offerte'
 import { descriviScadenza, formattaData, scaduta } from '@/lib/date'
@@ -134,15 +135,9 @@ export default async function PaginaOfferta({
         ) : (
           <>
             <h2 className="text-2xl text-chiaro">{titoloRichiesta}</h2>
-            <p className="mt-3 max-w-prose text-corpo">
-              {richiestaNonAncora}{' '}
-              <a
-                href={`mailto:${email}`}
-                className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
-              >
-                {email}
-              </a>
-            </p>
+            <div className="mt-5">
+              <RichiediOfferta offerta={offerta} />
+            </div>
           </>
         )}
       </section>

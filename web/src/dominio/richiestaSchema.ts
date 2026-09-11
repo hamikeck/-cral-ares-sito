@@ -164,3 +164,42 @@ export const schemaRichiestaConvenzione = z
   .superRefine(controllaDatiSocio)
 
 export type DatiRichiestaConvenzione = z.infer<typeof schemaRichiestaConvenzione>
+
+/**
+ * La richiesta che parte dalla scheda di un'offerta.
+ *
+ * È il percorso migliore, perché **l'offerta è già scelta**: il socio arriva
+ * dal link ricevuto per email e non deve selezionare niente. Cambia solo cosa
+ * si chiede sopra ai dati comuni, e lo decide la modalità dell'offerta —
+ * riletta dal database, mai dal modulo.
+ */
+export const schemaRichiestaOffertaBiglietti = z
+  .object({
+    ...campiDatiSocio,
+    slug: z.string().min(1),
+    quantita: z.coerce
+      .number({ message: 'Scrivi quanti posti ti servono.' })
+      .int('I posti si contano a uno a uno.')
+      .min(1, 'Serve almeno un posto.')
+      .max(
+        MASSIMO_BIGLIETTI,
+        `Da qui se ne possono chiedere al massimo ${MASSIMO_BIGLIETTI}. Se te ne servono di più, scrivilo nel messaggio.`,
+      ),
+
+    /** Per gli eventi a data fissa: teatro, concerti, spettacoli. */
+    titoloEvento: z.string().trim(),
+    dataPreferita: z.string().trim(),
+    orarioPreferito: z.string().trim(),
+
+    pagamento: z.enum(['bonifico', 'busta_paga'], { message: 'Scegli come vuoi pagare.' }),
+  })
+  .superRefine(controllaDatiSocio)
+
+/** Per le convenzioni: non c'è niente da contare e niente da pagare. */
+export const schemaRichiestaOffertaInformazioni = z
+  .object({
+    ...campiDatiSocio,
+    slug: z.string().min(1),
+    messaggio: z.string().trim().min(1, 'Scrivi cosa vuoi sapere.'),
+  })
+  .superRefine(controllaDatiSocio)

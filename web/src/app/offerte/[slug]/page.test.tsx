@@ -59,19 +59,13 @@ describe('Pagina di una singola offerta', () => {
     }
   })
 
-  test("un'offerta da richiedere dice che il modulo non c'è ancora", async () => {
-    render(
-      await PaginaOfferta({ params: Promise.resolve({ slug: conRichiesta.slug }) }),
-    )
-    expect(
-      screen.getByRole('heading', {
-        level: 2,
-        name: contenutiPagine.offerta.titoloRichiesta,
-      }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: /info@cralares\.it/ }),
-    ).toHaveAttribute('href', 'mailto:info@cralares.it')
+  test("un'offerta da richiedere mostra il modulo, già collegato a lei", async () => {
+    // Il percorso migliore: il socio arriva dal link ricevuto per email e non
+    // deve scegliere niente, perché l'offerta è già scelta.
+    render(await PaginaOfferta({ params: Promise.resolve({ slug: conRichiesta.slug }) }))
+
+    expect(screen.getByRole('button', { name: /Richiedi i posti|Invia la richiesta/ })).toBeInTheDocument()
+    expect(screen.getByLabelText('Matricola')).toBeInTheDocument()
   })
 
   test("un'offerta a solo sconto spiega cosa fare, senza modulo", async () => {
