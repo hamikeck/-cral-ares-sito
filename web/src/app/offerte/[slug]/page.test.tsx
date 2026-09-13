@@ -15,7 +15,7 @@ vi.mock('@/dati/offerte', () => ({
 
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { contenutiPagine } from '@/contenuti/pagine'
-import { formattaData } from '@/lib/date'
+import { descriviScadenza, formattaData } from '@/lib/date'
 import PaginaOfferta, { generateStaticParams } from './page'
 
 /** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
@@ -50,26 +50,22 @@ describe('Pagina di una singola offerta', () => {
     )
     expect(screen.getByText(conRichiesta.vantaggio)).toBeInTheDocument()
     expect(
-      screen.getByText(`Valida fino al ${formattaData(conRichiesta.validaAl!)}`),
+      // La stessa frase della scheda da cui il socio è arrivato: la pagina
+      // non ha un modo suo di dire quanto manca.
+      screen.getByText(descriviScadenza(conRichiesta.validaAl).testo),
     ).toBeInTheDocument()
     for (const condizione of conRichiesta.condizioni) {
       expect(screen.getByText(condizione)).toBeInTheDocument()
     }
   })
 
-  test("un'offerta da richiedere dice che il modulo non c'è ancora", async () => {
-    render(
-      await PaginaOfferta({ params: Promise.resolve({ slug: conRichiesta.slug }) }),
-    )
-    expect(
-      screen.getByRole('heading', {
-        level: 2,
-        name: contenutiPagine.offerta.titoloRichiesta,
-      }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: /info@cralares\.it/ }),
-    ).toHaveAttribute('href', 'mailto:info@cralares.it')
+  test("un'offerta da richiedere mostra il modulo, già collegato a lei", async () => {
+    // Il percorso migliore: il socio arriva dal link ricevuto per email e non
+    // deve scegliere niente, perché l'offerta è già scelta.
+    render(await PaginaOfferta({ params: Promise.resolve({ slug: conRichiesta.slug }) }))
+
+    expect(screen.getByRole('button', { name: /Richiedi i posti|Invia la richiesta/ })).toBeInTheDocument()
+    expect(screen.getByLabelText('Matricola')).toBeInTheDocument()
   })
 
   test("un'offerta a solo sconto spiega cosa fare, senza modulo", async () => {
@@ -148,11 +144,11 @@ describe('Pagina di una singola offerta', () => {
     ).toHaveAttribute('href', '/offerte')
   })
 
-  test("un'offerta senza data di fine dice che è sempre valida, senza formattare una data assente", async () => {
+  test("un'offerta senza data di fine lo dice, senza formattare una data assente", async () => {
     render(
       await PaginaOfferta({ params: Promise.resolve({ slug: permanente.slug }) }),
     )
-    expect(screen.getByText('Sempre valida')).toBeInTheDocument()
+    expect(screen.getByText('Senza scadenza')).toBeInTheDocument()
     expect(screen.queryByText(/Era valida fino al/)).not.toBeInTheDocument()
   })
 })

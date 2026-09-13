@@ -2,6 +2,7 @@
 
 import { useActionState, useMemo, useState } from 'react'
 import { aggiungiSocio, rimuoviSocio, type EsitoSocio } from '@/app/azioni/soci'
+import { Campo } from './Campo'
 import type { Socio } from '@/dominio/socio'
 
 /**
@@ -138,7 +139,7 @@ function ModuloNuovoSocio() {
           errore={errori.codiceDipendente}
           richiesto
         />
-        <Campo nome="telefono" etichetta="Telefono (facoltativo)" tipo="tel" />
+        <Campo nome="telefono" etichetta="Telefono (facoltativo)" tipo="tel" inputMode="tel" />
         <Campo nome="note" etichetta="Note (facoltative)" aiuto="Uso interno: non le vede nessun altro." />
 
         <p className="sm:col-span-2">
@@ -152,48 +153,5 @@ function ModuloNuovoSocio() {
         </p>
       </form>
     </section>
-  )
-}
-
-function Campo({
-  nome,
-  etichetta,
-  tipo = 'text',
-  errore,
-  aiuto,
-  richiesto = false,
-}: {
-  nome: string
-  etichetta: string
-  tipo?: string
-  errore?: string
-  aiuto?: string
-  richiesto?: boolean
-}) {
-  const idAiuto = aiuto ? `${nome}-aiuto` : undefined
-  const idErrore = errore ? `${nome}-errore` : undefined
-
-  return (
-    <label className="flex flex-col gap-1">
-      <span className="text-sm font-semibold text-chiaro">{etichetta}</span>
-      <input
-        name={nome}
-        type={tipo}
-        required={richiesto}
-        aria-describedby={[idAiuto, idErrore].filter(Boolean).join(' ') || undefined}
-        aria-invalid={errore ? true : undefined}
-        className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
-      />
-      {aiuto ? (
-        <span id={idAiuto} className="text-xs text-tenue">
-          {aiuto}
-        </span>
-      ) : null}
-      {errore ? (
-        <span id={idErrore} className="text-xs font-semibold text-arancione">
-          {errore}
-        </span>
-      ) : null}
-    </label>
   )
 }

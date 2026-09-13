@@ -543,3 +543,98 @@ oppure qualcuno l'aveva eseguita a mano dal pannello senza che il registro la
 registrasse. Non è più distinguibile. È l'argomento definitivo per non
 applicare mai niente a mano: il registro delle migrazioni è l'unica memoria di
 cosa c'è davvero sul database.
+
+---
+
+## Fase 4 — le richieste (10 settembre 2026)
+
+### Il riscontro è una politica, non un controllo dell'applicazione
+
+Chi compila il modulo non ha una sessione, quindi l'inserimento in `richieste`
+passa dal ruolo anonimo. Una politica `with check (true)` avrebbe lasciato a
+chiunque la possibilità di scrivere righe chiamando l'API direttamente,
+saltando Turnstile e il riscontro, e riempiendo di spazzatura l'elenco che i
+direttori esportano.
+
+La `with check` chiama invece `risulta_socio(email, codice_dipendente)`: è
+PostgreSQL a rifiutare la riga di chi non risulta socio. Il controllo resta
+anche nella Server Action, ma lì serve a produrre un messaggio in italiano —
+«Non risulti fra i soci» invece di un errore. **La cortesia sta nel codice, la
+sicurezza nella politica.**
+
+### Niente `socio_id` sulle richieste
+
+Lo spec lo prevedeva, ed è stato tolto. Per riempirlo servirebbe leggere
+`soci` da una pagina pubblica, e quella tabella non è leggibile da lì per
+scelta: è l'elenco nominativo dei dipendenti di un ufficio pubblico. Una
+funzione che restituisse l'id sarebbe una funzione che conferma «questa
+persona esiste e si chiama così», cioè esattamente ciò che `risulta_socio`
+evita di fare.
+
+I dati del socio sono comunque copiati dentro la richiesta, ed è quello che
+serviva davvero: un direttore può togliere una persona dall'anagrafica senza
+svuotarne lo storico.
+
+### L'importo si congela, il prezzo sta sul circuito
+
+`richieste.importo` si scrive all'invio e non si ricalcola mai leggendo il
+prezzo corrente: fra sei mesi il listino cambia, e la richiesta deve
+continuare a raccontare la cifra che quella persona ha letto e pagato. È la
+stessa ragione per cui accanto a `circuito_id` c'è `circuito` copiato.
+
+`prezzo_socio` sta su `circuiti` e non su `sedi` perché dentro lo stesso
+circuito il biglietto costa uguale in tutte le sale. Resta nullo finché il
+direttivo non lo comunica, e il modulo mostra il servizio senza cifra.
+
+### Il riscontro vuole email e matricola, non uno dei due
+
+Scoperto provando la politica contro il database vero: una richiesta inviata
+con **l'email di un estraneo e la matricola di un socio** veniva accettata.
+Non era un difetto dell'implementazione — era la regola deliberata il 3
+settembre, «basta uno dei due» — ma la regola era diventata pericolosa senza
+che nessuno se ne accorgesse.
+
+Il motivo lo ha visto Michele: le due chiavi non si equivalgono. Un'email non
+si indovina, una matricola sì. E dall'8 settembre il modulo chiede **dove**
+consegnare i biglietti, con l'opzione «su un'altra email»: chi indovina una
+matricola si fa mandare i biglietti di un collega sulla propria casella. Non
+è il fastidio di una richiesta finta, è un furto.
+
+La cosa da ricordare è come è nato il buco: **nessuna delle due decisioni era
+sbagliata quando è stata presa.** Il 3 settembre l'email nel modulo *era* il
+recapito, e accettare la sola matricola serviva a non respingere chi scriveva
+da casa. L'8 settembre la consegna è diventata una domanda separata, e da quel
+momento la vecchia larghezza ha smesso di proteggere e ha cominciato ad
+aprire. Una regola di sicurezza va riletta ogni volta che cambia il modulo
+attorno a lei.
+
+### Turnstile fallisce chiuso su un rifiuto, aperto su un guasto
+
+Il controllo antispam distingue due esiti negativi, e la differenza è una
+scelta:
+
+- **gettone mancante o rifiutato** — si blocca. È il caso per cui esiste;
+- **Cloudflare non risponde** — si lascia passare, e lo si scrive nei log.
+
+La seconda riga non è una dimenticanza. Un guasto di un servizio terzo non
+deve impedire a un socio di chiedere quattro biglietti: quello che il
+controllo protegge vale poco — sapere se un'email appartiene a un dipendente —
+mentre il danno di un modulo fermo è certo e immediato. Fra i due, si sceglie
+di restare aperti.
+
+Il controllo sta **in cima** alle tre azioni, prima della validazione e del
+riscontro: sono i due passaggi che interrogano il database, e farli per una
+richiesta inviata da un programma significa averla già fatta lavorare.
+
+### Quello che manca si dichiara, non si finge
+
+Vale ormai per quattro cose, ed è diventata la regola del progetto: il prezzo
+dei biglietti, l'IBAN, gli indirizzi dei direttori e adesso le chiavi di
+Turnstile. In tutti e quattro i casi il sito funziona senza, e dice cosa manca
+invece di inventarlo.
+
+Nel caso di Turnstile la conseguenza è più sottile delle altre: senza la
+chiave pubblica il widget non compare **e lo script di Cloudflare non viene
+caricato**. Un widget spento che scarica comunque il suo script farebbe
+partire una richiesta a un terzo ogni volta che un socio apre un modulo — la
+stessa ragione per cui i caratteri del sito non passano da Google.

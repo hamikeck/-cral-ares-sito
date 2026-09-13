@@ -8,6 +8,15 @@
  */
 export const contenutiPagine = {
   associazione: {
+    /**
+     * L'IBAN su cui i soci fanno il bonifico del cedolino.
+     *
+     * Assente finché il direttivo non lo comunica, ed è deliberato: la pagina
+     * di conferma dice al socio che l'IBAN glielo scriverà un direttore,
+     * invece di mostrare un numero inventato. Un IBAN sbagliato manda dei
+     * soldi a uno sconosciuto.
+     */
+    iban: undefined as string | undefined,
     nome: 'CRAL ARES',
     sottotitolo: "Circolo ricreativo dei dipendenti dell'Agenzia delle Entrate",
     email: 'info@cralares.it',

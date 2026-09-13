@@ -67,6 +67,24 @@ describe('Home', () => {
     offerte.aperte = true
   })
 
+  test('la porta del cinema porta al modulo, non a un pulsante finto', async () => {
+    // È la prima cosa che un socio preme sulla home: se non porta da nessuna
+    // parte, il resto del sito non conta.
+    render(await Home())
+
+    expect(
+      screen.getByRole('link', { name: contenutiPagine.home.porte.cinema.invito }),
+    ).toHaveAttribute('href', '/richiesta/cinema')
+  })
+
+  test('anche la porta delle convenzioni porta al suo modulo', async () => {
+    render(await Home())
+
+    expect(
+      screen.getByRole('link', { name: contenutiPagine.home.porte.convenzioni.invito }),
+    ).toHaveAttribute('href', '/richiesta/convenzione')
+  })
+
   test('non presenta violazioni di accessibilità', async () => {
     const { container } = render(await Home())
     expect(await violazioniAccessibilita(container)).toEqual([])

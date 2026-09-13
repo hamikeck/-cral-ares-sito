@@ -3,6 +3,7 @@ import type { Socio } from '@/dominio/socio'
 import { normalizzaEmail, normalizzaMatricola } from '@/dominio/socio'
 import { mappaSocio } from './mappaSocio'
 import { COLONNE_SOCIO, type RigaSocio } from './righe'
+import { clientPubblico } from './supabasePubblico'
 import { clientServer } from './supabaseServer'
 
 /**
@@ -57,4 +58,39 @@ export async function sociInConflitto(
       (socio) => normalizzaMatricola(socio.codiceDipendente) === matricolaCercata,
     ),
   }
+}
+
+/**
+ * Questa persona risulta fra i soci?
+ *
+ * La domanda la decide il database, con `risulta_socio`: la tabella `soci` non
+ * è leggibile da una pagina pubblica, e non deve esserlo. La funzione risponde
+ * vero o falso e non restituisce mai una riga.
+ *
+ * Servono **entrambi** i campi, e devono appartenere alla stessa persona.
+ * Chiedere solo la matricola sarebbe stato comodo e pericoloso: le matricole
+ * sono numeri vicini fra loro, e il modulo permette di farsi consegnare i
+ * biglietti su un'altra email — chi ne indovinasse una si farebbe mandare i
+ * biglietti di un collega sulla propria casella.
+ *
+ * Passa dal client pubblico, quello che non tocca i cookie: chi compila il
+ * modulo non ha una sessione, e non deve averne bisogno.
+ */
+export async function risultaSocio(
+  email: string,
+  codiceDipendente: string,
+): Promise<boolean> {
+  const { data, error } = await clientPubblico().rpc('risulta_socio', {
+    email_richiedente: email,
+    matricola_richiedente: codiceDipendente,
+  })
+
+  if (error) {
+    // Un errore qui non deve mai diventare un «sì»: se il database non
+    // risponde, la richiesta non parte. Il dettaglio va nei log, non a schermo.
+    console.error('Errore nel riscontro di un socio:', error)
+    throw new Error('Non è stato possibile verificare l’iscrizione')
+  }
+
+  return data === true
 }

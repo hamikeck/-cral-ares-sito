@@ -197,7 +197,6 @@ create table richieste (
   id                 uuid primary key default gen_random_uuid(),
   tipo               tipo_richiesta not null,
   offerta_id         uuid references offerte(id),   -- solo se tipo = 'offerta'
-  socio_id           uuid references soci(id) on delete set null,
   -- dati del socio, copiati al momento dell'invio
   nome               text not null,
   cognome            text not null,
@@ -232,9 +231,19 @@ create table richieste (
 
 **Note sul modello**
 
-- **I dati del socio sono copiati dentro la richiesta**, non solo referenziati.
-  È ciò che permette di cancellare un socio senza svuotare il suo storico:
-  `socio_id` diventa nullo, la richiesta resta leggibile per intero.
+- **I dati del socio sono copiati dentro la richiesta**, e basta: non c'è
+  nessun `socio_id`. Copiarli permette di togliere una persona dall'anagrafica
+  senza svuotarne lo storico, e il riferimento in più non serviva a niente —
+  per riempirlo bisognerebbe leggere `soci` da una pagina pubblica, dove quella
+  tabella non è leggibile per scelta.
+- **Il riscontro è una politica del database, non un controllo
+  dell'applicazione.** La `with check` dell'inserimento in `richieste` chiama
+  `risulta_socio(email, codice_dipendente)`: è PostgreSQL a rifiutare la riga
+  di chi non risulta socio. Senza, chiunque potrebbe scrivere richieste
+  chiamando l'API direttamente, saltando Turnstile e riempiendo di spazzatura
+  l'elenco che i direttori esportano. Il controllo resta anche nel codice, ma
+  lì serve a produrre un messaggio in italiano: la sicurezza sta nella
+  politica.
 - Le offerte scadute restano in tabella: servono a ricostruire a cosa si
   riferiva una vecchia richiesta.
 - **Una sola tabella `richieste` per tutti i tipi.** Il campo `tipo` dice da
@@ -377,16 +386,26 @@ inviare una richiesta, così i direttori non ricevono email di sconosciuti.
 
 ### 9.1 Come funziona il confronto
 
-All'invio del modulo si cerca un socio la cui **email oppure** il cui **codice
-dipendente** combacino. Basta uno dei due:
+All'invio del modulo si cerca un socio la cui **email aziendale e** il cui
+**codice dipendente** combacino entrambi, e appartengano alla stessa riga:
+l'email di uno e la matricola di un altro non fanno un socio.
 
-- il socio che scrive dall'indirizzo personale viene riconosciuto dal codice;
-- il socio che sbaglia una cifra del codice viene riconosciuto dall'email.
+Il confronto ignora maiuscole e spazi su entrambi i campi, per non respingere
+un socio in regola per un dettaglio di battitura. Un campo vuoto non combacia
+mai.
 
-Il confronto ignora maiuscole e spazi su entrambi i campi. Serve a non
-respingere un socio in regola per un dettaglio di battitura: il falso allarme
-qui costa una telefonata arrabbiata, mentre il caso opposto — un estraneo che
-indovina sia l'email sia il codice di un dipendente — non è realistico.
+**Perché entrambi, dal 10 settembre 2026.** La regola originale (3 settembre)
+ne accettava uno solo, per non respingere il socio che scriveva dal proprio
+indirizzo personale. Le due chiavi però non si equivalgono: un'email non si
+indovina, una matricola sì — sono numeri vicini fra loro, e chi ne conosce una
+conosce quasi tutte quelle dei colleghi. E dalla riunione dell'8 settembre il
+modulo chiede **dove** consegnare i biglietti, con l'opzione «su un'altra
+email»: con la sola matricola, un estraneo si farebbe mandare i biglietti di un
+collega sulla propria casella. Non è rumore, è un furto.
+
+Il motivo che giustificava la larghezza è caduto con la stessa riunione: da
+allora l'email aziendale **identifica** e la consegna è una domanda separata,
+quindi chiedere l'indirizzo giusto non toglie niente a nessuno.
 
 ### 9.2 Cosa succede a chi non risulta
 

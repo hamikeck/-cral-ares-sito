@@ -131,9 +131,12 @@ export default async function Home() {
           <h2 className="mt-1 text-2xl text-chiaro">{porte.cinema.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.cinema.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="azione-oro fuoco-su-scuro block rounded-lg py-3 text-center font-bold">
+            <Link
+              href="/richiesta/cinema"
+              className="azione-oro fuoco-su-scuro block rounded-lg py-3 text-center font-bold"
+            >
               {porte.cinema.invito}
-            </span>
+            </Link>
           </p>
           <p className="mt-2 text-xs text-tenue">{porte.cinema.nota}</p>
         </div>
@@ -143,9 +146,12 @@ export default async function Home() {
           <h2 className="mt-1 text-2xl text-chiaro">{porte.convenzioni.titolo}</h2>
           <p className="mt-2 text-corpo text-lettura">{porte.convenzioni.testo}</p>
           <p className="mt-auto pt-5">
-            <span className="block rounded-lg border border-luce/45 py-3 text-center font-bold text-luce">
+            <Link
+              href="/richiesta/convenzione"
+              className="fuoco-su-scuro block rounded-lg border border-luce/45 py-3 text-center font-bold text-luce"
+            >
               {porte.convenzioni.invito}
-            </span>
+            </Link>
           </p>
         </div>
       </section>

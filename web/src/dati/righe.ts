@@ -53,3 +53,20 @@ export type RigaSocio = {
 
 /** Le colonne da chiedere a Supabase per costruire un `Socio`. */
 export const COLONNE_SOCIO = 'id, nome, cognome, email, codice_dipendente, telefono, note'
+
+/** Copia fedele di `supabase/migrations/0006_richieste.sql`. */
+export type RigaSede = {
+  id: string
+  nome: string
+  citta: string | null
+  link_programmazione: string | null
+  ordine: number
+}
+
+export type RigaCircuito = {
+  id: string
+  nome: string
+  prezzo_socio: number | null
+  ordine: number
+  sedi: RigaSede[]
+}
