@@ -607,3 +607,34 @@ da casa. L'8 settembre la consegna è diventata una domanda separata, e da quel
 momento la vecchia larghezza ha smesso di proteggere e ha cominciato ad
 aprire. Una regola di sicurezza va riletta ogni volta che cambia il modulo
 attorno a lei.
+
+### Turnstile fallisce chiuso su un rifiuto, aperto su un guasto
+
+Il controllo antispam distingue due esiti negativi, e la differenza è una
+scelta:
+
+- **gettone mancante o rifiutato** — si blocca. È il caso per cui esiste;
+- **Cloudflare non risponde** — si lascia passare, e lo si scrive nei log.
+
+La seconda riga non è una dimenticanza. Un guasto di un servizio terzo non
+deve impedire a un socio di chiedere quattro biglietti: quello che il
+controllo protegge vale poco — sapere se un'email appartiene a un dipendente —
+mentre il danno di un modulo fermo è certo e immediato. Fra i due, si sceglie
+di restare aperti.
+
+Il controllo sta **in cima** alle tre azioni, prima della validazione e del
+riscontro: sono i due passaggi che interrogano il database, e farli per una
+richiesta inviata da un programma significa averla già fatta lavorare.
+
+### Quello che manca si dichiara, non si finge
+
+Vale ormai per quattro cose, ed è diventata la regola del progetto: il prezzo
+dei biglietti, l'IBAN, gli indirizzi dei direttori e adesso le chiavi di
+Turnstile. In tutti e quattro i casi il sito funziona senza, e dice cosa manca
+invece di inventarlo.
+
+Nel caso di Turnstile la conseguenza è più sottile delle altre: senza la
+chiave pubblica il widget non compare **e lo script di Cloudflare non viene
+caricato**. Un widget spento che scarica comunque il suo script farebbe
+partire una richiesta a un terzo ogni volta che un socio apre un modulo — la
+stessa ragione per cui i caratteri del sito non passano da Google.

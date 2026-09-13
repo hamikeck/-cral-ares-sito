@@ -6,6 +6,12 @@ const confermaAlSocio = vi.hoisted(() => vi.fn())
 const inserite = vi.hoisted(() => [] as Record<string, unknown>[])
 const rpc = vi.hoisted(() => vi.fn())
 
+// Fuori da una richiesta HTTP `headers()` non esiste: qui la si detta, così
+// il controllo antispam può leggere l'IP come farebbe in produzione.
+vi.mock('next/headers', () => ({
+  headers: async () => new Map([['x-forwarded-for', '1.2.3.4']]),
+}))
+
 vi.mock('@/dati/soci', () => ({ risultaSocio }))
 vi.mock('@/dati/posta', () => ({ avvisaIDirettori, confermaAlSocio }))
 vi.mock('@/dati/circuiti', () => ({
@@ -160,6 +166,22 @@ describe('inviaRichiestaCinema', () => {
 
     expect(confermaAlSocio).toHaveBeenCalledOnce()
     expect(confermaAlSocio.mock.calls[0][0].email).toBe('mario.rossi@esempio.test')
+  })
+
+  test('un invio senza gettone antispam non passa, quando il controllo è acceso', async () => {
+    // Con le chiavi assenti il controllo è spento e non cambia niente: è lo
+    // stato di oggi. Qui si accende per una prova sola, e deve fermare
+    // l'invio prima ancora di interrogare il database.
+    process.env.TURNSTILE_SECRET_KEY = 'segreto-di-prova'
+    try {
+      const esito = await inviaRichiestaCinema(null, modulo({}))
+
+      expect(inserite).toHaveLength(0)
+      expect(risultaSocio).not.toHaveBeenCalled()
+      expect(esito.errori?.modulo).toMatch(/antispam/)
+    } finally {
+      delete process.env.TURNSTILE_SECRET_KEY
+    }
   })
 
   test('la causale dice a chi appartiene il bonifico', async () => {

@@ -1,5 +1,7 @@
 'use server'
 
+import { headers } from 'next/headers'
+
 import { importoBiglietti } from '@/dominio/circuito'
 import type { DatiSocioRichiesta } from '@/dominio/richiestaSchema'
 import {
@@ -13,6 +15,7 @@ import { circuitiConSedi } from '@/dati/circuiti'
 import { avvisaIDirettori, confermaAlSocio } from '@/dati/posta'
 import { risultaSocio } from '@/dati/soci'
 import { clientPubblico } from '@/dati/supabasePubblico'
+import { verificaTurnstile } from '@/lib/turnstile'
 import { formattaEuro } from '@/dominio/circuito'
 
 export type EsitoRichiesta = {
@@ -82,6 +85,27 @@ function recapitoScelto(dati: {
 }
 
 /**
+ * Il controllo antispam, prima di ogni altra cosa.
+ *
+ * Sta in cima perché è il più economico dei controlli e perché è quello che
+ * deve fermare l'automazione: validare e interrogare il database per una
+ * richiesta inviata da un programma significa averla già fatta lavorare.
+ *
+ * L'IP arriva dall'intestazione che Netlify mette davanti al sito; se non c'è
+ * si procede lo stesso, perché per Cloudflare è un dato accessorio.
+ */
+async function fermaChiNonEUnaPersona(datiModulo: FormData): Promise<EsitoRichiesta | undefined> {
+  const intestazioni = await headers()
+  const ip =
+    intestazioni.get('x-nf-client-connection-ip') ??
+    intestazioni.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    undefined
+
+  const esito = await verificaTurnstile(String(datiModulo.get('cf-turnstile-response') ?? ''), ip)
+  return esito.passato ? undefined : { errori: { modulo: esito.motivo } }
+}
+
+/**
  * Il riscontro, con il suo esito già tradotto in un messaggio.
  *
  * Lo fanno tutti i moduli allo stesso modo, e sbagliarlo in uno solo
@@ -117,6 +141,9 @@ export async function inviaRichiestaCinema(
   _statoPrecedente: EsitoRichiesta | null,
   datiModulo: FormData,
 ): Promise<EsitoRichiesta> {
+  const automatico = await fermaChiNonEUnaPersona(datiModulo)
+  if (automatico) return automatico
+
   const esito = schemaRichiestaCinema.safeParse({
     ...leggiDatiSocio(datiModulo),
     circuitoId: String(datiModulo.get('circuitoId') ?? ''),
@@ -238,6 +265,9 @@ export async function inviaRichiestaConvenzione(
   _statoPrecedente: EsitoRichiesta | null,
   datiModulo: FormData,
 ): Promise<EsitoRichiesta> {
+  const automatico = await fermaChiNonEUnaPersona(datiModulo)
+  if (automatico) return automatico
+
   const esito = schemaRichiestaConvenzione.safeParse({
     ...leggiDatiSocio(datiModulo),
     convenzione: String(datiModulo.get('convenzione') ?? ''),
@@ -313,6 +343,9 @@ export async function inviaRichiestaOfferta(
   _statoPrecedente: EsitoRichiesta | null,
   datiModulo: FormData,
 ): Promise<EsitoRichiesta> {
+  const automatico = await fermaChiNonEUnaPersona(datiModulo)
+  if (automatico) return automatico
+
   const slug = String(datiModulo.get('slug') ?? '')
   const trovata = await offertaConId(slug)
 

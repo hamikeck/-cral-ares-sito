@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { inviaRichiestaConvenzione, type EsitoRichiesta } from '@/app/azioni/richieste'
 import { Campo } from './Campo'
 import { DatiSocio } from './DatiSocio'
+import { Turnstile } from './Turnstile'
 
 /**
  * Il modulo delle convenzioni.
@@ -77,6 +78,8 @@ export function ModuloConvenzione() {
       </fieldset>
 
       <DatiSocio errori={errori} />
+
+      <Turnstile />
 
       <p>
         <button

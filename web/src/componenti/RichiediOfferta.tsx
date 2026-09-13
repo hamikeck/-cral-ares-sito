@@ -6,6 +6,7 @@ import type { Offerta } from '@/dominio/offerta'
 import { Campo } from './Campo'
 import { ConfermaRichiesta } from './ConfermaRichiesta'
 import { DatiSocio } from './DatiSocio'
+import { Turnstile } from './Turnstile'
 
 /**
  * La richiesta che parte dalla scheda di un'offerta.
@@ -141,6 +142,8 @@ export function RichiediOfferta({ offerta }: { offerta: Offerta }) {
           ) : null}
         </fieldset>
       ) : null}
+
+      <Turnstile />
 
       <p>
         <button

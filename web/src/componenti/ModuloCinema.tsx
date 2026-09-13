@@ -7,6 +7,7 @@ import { MASSIMO_BIGLIETTI } from '@/dominio/richiestaSchema'
 import { Campo } from './Campo'
 import { ConfermaRichiesta as Conferma } from './ConfermaRichiesta'
 import { DatiSocio } from './DatiSocio'
+import { Turnstile } from './Turnstile'
 
 /**
  * Il modulo dei biglietti del cinema.
@@ -174,6 +175,8 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
           Per esempio se te ne servono più di {MASSIMO_BIGLIETTI}, o per quando ti servono.
         </span>
       </div>
+
+      <Turnstile />
 
       <p>
         <button
