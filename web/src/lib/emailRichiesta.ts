@@ -16,7 +16,17 @@ export type RichiestaPerEmail = {
   /** Dove il socio vuole ricevere, già scritto in italiano. */
   consegna: string
   recapito?: string
+  /** Come si chiama la richiesta nell'oggetto: corto, e riconoscibile a colpo d'occhio. */
   oggettoBreve: string
+  /**
+   * Come si racconta nella prima riga, dentro una frase.
+   *
+   * È separato dall'oggetto perché una frase non è un'etichetta: «Convenzione
+   * Gommista» sta bene in un oggetto e male dentro «Mario Rossi chiede…», e
+   * abbassare le maiuscole dell'oggetto per farcelo stare rovina i nomi propri
+   * — «4 biglietti uci cinemas».
+   */
+  riepilogo: string
   righe: { etichetta: string; valore: string }[]
   messaggio?: string
 }
@@ -41,7 +51,7 @@ export function oggettoEmail(richiesta: RichiestaPerEmail): string {
  */
 export function corpoEmail(richiesta: RichiestaPerEmail): string {
   const parti: string[] = [
-    `${richiesta.nome} ${richiesta.cognome} chiede ${richiesta.oggettoBreve.toLowerCase()}.`,
+    `${richiesta.nome} ${richiesta.cognome} chiede ${richiesta.riepilogo}.`,
     '',
   ]
 
@@ -123,7 +133,7 @@ export function corpoHtml(richiesta: RichiestaPerEmail): string {
 
   return [
     '<div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;line-height:1.5;color:#14212A">',
-    `<p style="margin:0 0 16px;font-size:18px"><strong>${scappa(richiesta.nome)} ${scappa(richiesta.cognome)}</strong> chiede ${scappa(richiesta.oggettoBreve.toLowerCase())}.</p>`,
+    `<p style="margin:0 0 16px;font-size:18px"><strong>${scappa(richiesta.nome)} ${scappa(richiesta.cognome)}</strong> chiede ${scappa(richiesta.riepilogo)}.</p>`,
     `<table style="border-collapse:collapse">${righe}</table>`,
     messaggio,
     '<p style="margin:20px 0 0;color:#5C707C;font-size:14px">Per rispondere basta premere Rispondi: la risposta va direttamente al socio.</p>',

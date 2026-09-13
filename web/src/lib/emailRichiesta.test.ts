@@ -10,6 +10,7 @@ const richiesta: RichiestaPerEmail = {
   consegna: 'Su WhatsApp',
   recapito: '333 1234567',
   oggettoBreve: '4 biglietti UCI Cinemas',
+  riepilogo: '4 biglietti UCI Cinemas (UCI Casoria)',
   righe: [
     { etichetta: 'Circuito', valore: 'UCI Cinemas' },
     { etichetta: 'Quantità', valore: '4' },
@@ -33,10 +34,23 @@ describe('oggettoEmail', () => {
 })
 
 describe('corpoEmail', () => {
+  test('la prima riga è una frase, non l’etichetta dell’oggetto', () => {
+    // Abbassare le maiuscole dell'oggetto per infilarlo in una frase rovina i
+    // nomi propri: «chiede 4 biglietti uci cinemas».
+    const convenzione = {
+      ...richiesta,
+      oggettoBreve: 'Convenzione Gommista',
+      riepilogo: 'una convenzione con Gommista',
+    }
+    expect(corpoEmail(convenzione).split('\n')[0]).toBe(
+      'Mario Rossi chiede una convenzione con Gommista.',
+    )
+  })
+
   test('apre con la riga che di solito basta', () => {
     // Un direttore che legge dal telefono deve capire tutto dall'anteprima.
     expect(corpoEmail(richiesta).split('\n')[0]).toBe(
-      'Mario Rossi chiede 4 biglietti uci cinemas.',
+      'Mario Rossi chiede 4 biglietti UCI Cinemas (UCI Casoria).',
     )
   })
 

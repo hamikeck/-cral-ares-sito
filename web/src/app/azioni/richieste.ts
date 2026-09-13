@@ -216,6 +216,7 @@ export async function inviaRichiestaCinema(
     consegna: CONSEGNE_LEGGIBILI[dati.consegna] ?? dati.consegna,
     recapito: recapitoScelto(dati),
     oggettoBreve: `${dati.quantita} biglietti ${circuito.nome}`,
+    riepilogo: `${dati.quantita} biglietti ${circuito.nome}${sede ? ` (${sede.nome})` : ''}`,
     righe: [
       { etichetta: 'Circuito', valore: circuito.nome },
       ...(sede ? [{ etichetta: 'Sala', valore: sede.nome }] : []),
@@ -243,7 +244,7 @@ export async function inviaRichiestaCinema(
   // consegna: quello non è verificato da nessuno, e spedirci un'email
   // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
   // qualsiasi con il nostro mittente.
-  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
+  await confermaAlSocio(avviso, avviso.riepilogo)
 
   return {
     inviata: {
@@ -312,6 +313,7 @@ export async function inviaRichiestaConvenzione(
     consegna: CONSEGNE_LEGGIBILI[dati.consegna] ?? dati.consegna,
     recapito: recapitoScelto(dati),
     oggettoBreve: `Convenzione ${dati.convenzione}`,
+    riepilogo: `una convenzione con ${dati.convenzione}`,
     righe: [{ etichetta: 'Convenzione', valore: dati.convenzione }],
     messaggio: dati.messaggio,
   }
@@ -325,7 +327,7 @@ export async function inviaRichiestaConvenzione(
   // consegna: quello non è verificato da nessuno, e spedirci un'email
   // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
   // qualsiasi con il nostro mittente.
-  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
+  await confermaAlSocio(avviso, avviso.riepilogo)
 
   // Niente IBAN né importo: qui non c'è ancora niente da pagare.
   return { inviata: { pagamentoBonifico: false, causale: '' } }
@@ -447,6 +449,9 @@ export async function inviaRichiestaOfferta(
     oggettoBreve: biglietti
       ? `${biglietti.quantita} posti ${offerta.partner}`
       : `Informazioni ${offerta.partner}`,
+    riepilogo: biglietti
+      ? `${biglietti.quantita} posti per ${offerta.partner}`
+      : `informazioni su ${offerta.partner}`,
     righe: [
       { etichetta: 'Offerta', valore: `${offerta.partner} — ${offerta.vantaggio}` },
       ...(biglietti ? [{ etichetta: 'Posti', valore: String(biglietti.quantita) }] : []),
@@ -487,7 +492,7 @@ export async function inviaRichiestaOfferta(
   // consegna: quello non è verificato da nessuno, e spedirci un'email
   // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
   // qualsiasi con il nostro mittente.
-  await confermaAlSocio(avviso, avviso.oggettoBreve.toLowerCase())
+  await confermaAlSocio(avviso, avviso.riepilogo)
 
   return {
     inviata: {
