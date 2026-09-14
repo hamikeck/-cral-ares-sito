@@ -27,8 +27,6 @@ export const contenutiPagine = {
     titolo: "Il circolo dei dipendenti dell'Agenzia delle Entrate",
     occhiello:
       "Biglietti del cinema, convenzioni con i negozi della zona e offerte riservate ai soci.",
-    avvisoDimostrativo:
-      "Le offerte qui sotto sono esempi: servono a mostrare che aspetto avrà il sito. Quelle vere le pubblicheranno i direttori dall'area riservata.",
 
     /**
      * Il nastro non si chiama più «In corso questa settimana».

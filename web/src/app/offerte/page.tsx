@@ -25,7 +25,6 @@ export default async function Offerte({
 }) {
   const { titolo, occhiello, filtroEtichetta, tutte, nessuna } =
     contenutiPagine.offerte
-  const { avvisoDimostrativo } = contenutiPagine.home
 
   const valide = await offerteValide()
   const elencoCategorie = categorieDi(valide)
@@ -45,10 +44,6 @@ export default async function Offerte({
         <h1 className="text-titolo-pagina text-chiaro">{titolo}</h1>
         <p className="text-corpo text-tenue">{occhiello}</p>
       </div>
-
-      <p className="mt-6 max-w-2xl border-l-2 border-azzurro bg-pannello px-4 py-3 text-sm text-tenue">
-        {avvisoDimostrativo}
-      </p>
 
       <nav className="mt-8" aria-label={filtroEtichetta}>
         <ul className="flex flex-wrap gap-2">
