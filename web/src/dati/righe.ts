@@ -70,3 +70,43 @@ export type RigaCircuito = {
   ordine: number
   sedi: RigaSede[]
 }
+
+/** Copia fedele di `supabase/migrations/0006_richieste.sql` e `0008`. */
+export type RigaRichiesta = {
+  id: string
+  numero: number
+  tipo: 'cinema' | 'convenzione' | 'offerta'
+  creata_il: string
+  nome: string
+  cognome: string
+  codice_dipendente: string
+  email: string
+  telefono: string | null
+  consegna: string | null
+  email_personale: string | null
+  pagamento: 'bonifico' | 'busta_paga' | null
+  importo: string | number | null
+  quantita: number | null
+  circuito: string | null
+  sede: string | null
+  convenzione: string | null
+  titolo_evento: string | null
+  data_preferita: string | null
+  orario_preferito: string | null
+  messaggio: string | null
+  email_inviata: boolean
+  offerte: { partner: string; vantaggio: string } | null
+}
+
+/**
+ * Le colonne di una richiesta, con il partner dell'offerta collegata.
+ *
+ * L'offerta arriva annidata in una sola interrogazione: senza, l'elenco
+ * mostrerebbe «Informazioni» senza dire di cosa, e il direttore dovrebbe
+ * aprire la richiesta per scoprirlo.
+ */
+export const COLONNE_RICHIESTA =
+  'id, numero, tipo, creata_il, nome, cognome, codice_dipendente, email, telefono, ' +
+  'consegna, email_personale, pagamento, importo, quantita, circuito, sede, convenzione, ' +
+  'titolo_evento, data_preferita, orario_preferito, messaggio, email_inviata, ' +
+  'offerte(partner, vantaggio)'

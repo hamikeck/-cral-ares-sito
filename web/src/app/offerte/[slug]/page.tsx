@@ -62,7 +62,6 @@ export default async function PaginaOfferta({
     titoloCondizioni,
     titoloComeFunziona,
     titoloRichiesta,
-    richiestaNonAncora,
     torna,
   } = contenutiPagine.offerta
   const { email } = contenutiPagine.associazione

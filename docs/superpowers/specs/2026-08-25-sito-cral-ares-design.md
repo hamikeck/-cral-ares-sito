@@ -141,25 +141,22 @@ create type stato_offerta    as enum ('bozza', 'pubblicata');
 create table offerte (
   id                 uuid primary key default gen_random_uuid(),
   slug               text unique not null,
-  titolo             text not null,
   partner            text not null,
-  categoria          text not null,          -- cinema, teatri, assicurazione auto, pneumatici
+  categoria          text not null,          -- teatro, salute, viaggi, assicurazioni, ...
+  vantaggio          text not null,          -- testo libero: "-30%", "2x1", "ingresso ridotto"
   descrizione_breve  text not null,          -- max 160 caratteri, usata nelle schede
   descrizione        text not null,          -- testo completo, formattazione minima
-  immagine_url       text,
-  vantaggio          text not null,          -- testo libero: "-30%", "2x1", "ingresso ridotto"
-  prezzo_pieno       numeric(8,2),
-  prezzo_socio       numeric(8,2),
+  condizioni         text[] not null default '{}',
   valida_dal         date not null,
-  valida_al          date not null,
+  valida_al          date,                   -- nullo per le convenzioni permanenti
   in_evidenza        boolean not null default false,
   modalita           modalita_offerta not null,
   istruzioni         text,                   -- se modalita = solo_sconto
-  codice_sconto      text,
-  link_partner       text,
+  -- contatti del partner: servono al socio nelle convenzioni e negli sconti
   indirizzo          text,
   telefono           text,
-  email_partner      text,
+  link_partner       text,
+  codice_sconto      text,
   stato              stato_offerta not null default 'bozza',
   creata_da          uuid references redattori(id),
   creata_il          timestamptz not null default now(),
@@ -195,6 +192,7 @@ create type recapito_consegna  as enum ('email_aziendale', 'email_personale', 'w
 
 create table richieste (
   id                 uuid primary key default gen_random_uuid(),
+  numero             bigint generated always as identity,  -- quello nell'oggetto dell'email
   tipo               tipo_richiesta not null,
   offerta_id         uuid references offerte(id),   -- solo se tipo = 'offerta'
   -- dati del socio, copiati al momento dell'invio
@@ -228,6 +226,16 @@ create table richieste (
   creata_il          timestamptz not null default now()
 );
 ```
+
+**Questo è lo schema che esiste davvero.** Fino al 14 settembre 2026 questa
+sezione descriveva un modello più ricco di quello costruito — `titolo`
+separato dal partner, `immagine_url`, `prezzo_pieno`, `prezzo_socio` e
+`email_partner` — perché era stata scritta prima che il direttivo scegliesse.
+Quei cinque campi sono stati **decisi fuori** l'8 settembre, ma il documento
+era rimasto indietro, e chi lo leggeva per scrivere una query trovava colonne
+che il database non ha. Ora le due cose coincidono: **quando cambia una
+colonna, cambiano nello stesso commit la migrazione, `dati/righe.ts` e questa
+sezione.**
 
 **Note sul modello**
 

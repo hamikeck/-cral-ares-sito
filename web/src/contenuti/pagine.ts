@@ -110,8 +110,6 @@ export const contenutiPagine = {
     titoloCondizioni: "Condizioni",
     titoloComeFunziona: "Come si ottiene",
     titoloRichiesta: "Come si richiede",
-    richiestaNonAncora:
-      "Il modulo di richiesta arriverà con la prossima fase del sito. Per ora scrivi ai direttori all'indirizzo dell'associazione.",
     torna: "Torna a tutte le offerte",
     scaduta: "Questa offerta è terminata.",
   },
@@ -137,10 +135,76 @@ export const contenutiPagine = {
     notaProvvisoria:
       'Requisiti, quota annuale e procedura completa saranno pubblicati a breve.',
   },
+  /**
+   * L'informativa privacy.
+   *
+   * Scritta il 14 settembre 2026, quando i moduli hanno cominciato a
+   * raccogliere dati davvero: fino a quel giorno la pagina diceva soltanto
+   * «in corso di redazione», e la casella del consenso rimandava a una
+   * pagina che non spiegava niente. Un consenso che rimanda al nulla non è
+   * un consenso.
+   *
+   * Dice tutto quello che sappiamo per certo, perché lo abbiamo costruito
+   * noi: cosa si raccoglie, perché, per quanto, e chi lo tocca. Resta da
+   * completare **l'identità del titolare** — denominazione, sede, codice
+   * fiscale, email del titolare del trattamento — che deve darci il
+   * direttivo, ed è dichiarata mancante invece che inventata.
+   *
+   * Il testo va comunque riletto da chi se ne intende prima dell'apertura
+   * ai soci: è scritto con onestà, non con competenza legale.
+   */
   privacy: {
     titolo: 'Informativa sulla privacy',
+    introduzione:
+      'Questa pagina spiega quali dati raccoglie il sito del CRAL ARES, perché, per quanto tempo restano e chi può vederli. È scritta per essere letta, non per essere archiviata.',
     notaProvvisoria:
-      "L'informativa completa è in corso di redazione e sarà pubblicata prima dell'apertura del sito ai soci.",
+      'I dati identificativi del titolare del trattamento — denominazione completa, sede e recapito — verranno pubblicati qui prima dell\'apertura del sito ai soci. Nel frattempo, per qualunque domanda sui tuoi dati puoi scrivere ai direttori.',
+    sezioni: [
+      {
+        titolo: 'I dati dei soci',
+        paragrafi: [
+          'L\'associazione conserva un elenco dei soci con nome, cognome, email aziendale e matricola. Servono a una cosa sola: riconoscere chi invia una richiesta dal sito, così i direttori non ricevono messaggi da persone estranee all\'associazione.',
+          'La base giuridica è l\'esecuzione del rapporto associativo, non il consenso: i dati restano finché dura l\'iscrizione. A tenerli aggiornati sono i direttori, che possono aggiungere e togliere persone dall\'elenco.',
+          'L\'elenco non è consultabile dal sito pubblico in nessun modo. Quando compili un modulo, il sito chiede al database soltanto se quella coppia di email e matricola risulta fra i soci, e riceve un sì o un no: mai un nome, mai un elenco.',
+        ],
+      },
+      {
+        titolo: 'Le richieste che invii',
+        paragrafi: [
+          'Quando chiedi dei biglietti o una convenzione, restano registrati i dati che hai scritto nel modulo: nome, cognome, matricola, email aziendale, cosa hai chiesto, come preferisci pagare e il messaggio che hai eventualmente aggiunto.',
+          'La base giuridica qui è il tuo consenso, che dai con la casella da spuntare prima di inviare — mai preselezionata — e di cui restano registrati il giorno e l\'ora.',
+          'Le richieste vengono cancellate dopo 24 mesi. I dati che hai scritto restano dentro la richiesta anche se in futuro uscissi dall\'associazione: serve a non svuotare lo storico di chi resta.',
+        ],
+      },
+      {
+        titolo: 'I recapiti personali, se li dai',
+        paragrafi: [
+          'Se scegli di ricevere quello che chiedi su un\'altra email o su WhatsApp, quel recapito viene conservato insieme alla richiesta e sparisce con lei.',
+          'È un dato che dai per comodità e non per obbligo: puoi sempre farti rispondere sull\'email aziendale, e in quel caso nessun recapito privato entra nel sito. Il recapito alternativo non entra mai nell\'elenco dei soci, che continua a conoscere solo l\'indirizzo che hai comunicato all\'associazione.',
+        ],
+      },
+      {
+        titolo: 'Chi vede i tuoi dati',
+        paragrafi: [
+          'Le richieste le leggono i direttori del CRAL, che rispondono a mano. Nessun altro socio può vedere le richieste altrui.',
+          'Il sito si appoggia a fornitori che trattano i dati per nostro conto: il database e l\'invio delle email di accesso, l\'hosting del sito, il servizio che recapita le email ai direttori e, quando sarà attivo, il controllo antispam dei moduli. I dati restano su infrastrutture con server nell\'Unione Europea.',
+          'Nessun dato viene ceduto a terzi per finalità commerciali, e il sito non fa profilazione.',
+        ],
+      },
+      {
+        titolo: 'I tuoi diritti',
+        paragrafi: [
+          'Puoi chiedere in qualsiasi momento di sapere quali dati abbiamo, di correggerli, di cancellarli o di limitarne l\'uso, e puoi revocare il consenso dato per una richiesta.',
+          'Basta scrivere ai direttori. Se ritieni che i tuoi dati siano trattati in modo scorretto, puoi rivolgerti al Garante per la protezione dei dati personali.',
+        ],
+      },
+      {
+        titolo: 'Cookie',
+        paragrafi: [
+          'Le pagine pubbliche non installano alcun cookie. Nell\'area riservata ai direttori viene usato un cookie tecnico di sessione, che serve a tenere l\'accesso attivo e sparisce con l\'uscita.',
+        ],
+      },
+    ],
   },
   cookie: {
     titolo: 'Cookie',
