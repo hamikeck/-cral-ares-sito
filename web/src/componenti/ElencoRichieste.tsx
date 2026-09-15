@@ -68,7 +68,7 @@ export function ElencoRichieste({ richieste }: { richieste: Richiesta[] }) {
             type="search"
             value={cerca}
             onChange={(evento) => setCerca(evento.target.value)}
-            className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+            className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
           />
         </label>
 

@@ -111,7 +111,7 @@ export function DatiSocio({ errori }: { errori: Record<string, string> }) {
         <input
           type="checkbox"
           name="consensoPrivacy"
-          className="fuoco-su-scuro mt-1 size-4 shrink-0 rounded border border-parete"
+          className="fuoco-su-scuro mt-1 size-4 shrink-0 rounded border border-cornice"
           aria-describedby={errori.consensoPrivacy ? 'consenso-errore' : undefined}
           aria-invalid={errori.consensoPrivacy ? true : undefined}
         />
@@ -150,7 +150,7 @@ function Scelta({
   return (
     <label
       className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 text-corpo ${
-        attiva ? 'border-luce/70 bg-luce/10' : 'border-parete'
+        attiva ? 'border-luce/70 bg-luce/10' : 'border-cornice'
       }`}
     >
       <input

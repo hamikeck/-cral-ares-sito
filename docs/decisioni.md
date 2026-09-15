@@ -119,6 +119,12 @@ amministrazione. **Va rimosso quando si pubblica sul dominio vero.**
 
 ### `info@cralares.it` è un segnaposto, ed è marcato come tale
 
+> **Superata il 15 settembre 2026.** Il direttore ha comunicato i sei
+> indirizzi dei direttori, tutti su `cralares.com`: il sito adesso scrive
+> `segreteriacral@cralares.com`, che esiste e riceve, e la nota di
+> provvisorietà è stata rimossa insieme al segnaposto. Resta da decidere se il
+> sito pubblico starà su quel dominio o su un `.it` da registrare a parte.
+
 Il dominio `cralares.it` non è ancora registrato, quindi quella casella non
 esiste. L'indirizzo compare comunque nel sito, ma accompagnato da una nota che
 ne dichiara la provvisorietà, come ogni altro segnaposto. Da sostituire con
@@ -638,3 +644,60 @@ chiave pubblica il widget non compare **e lo script di Cloudflare non viene
 caricato**. Un widget spento che scarica comunque il suo script farebbe
 partire una richiesta a un terzo ogni volta che un socio apre un modulo — la
 stessa ragione per cui i caratteri del sito non passano da Google.
+
+## Accessibilità — il giro sulla veste notturna (15 settembre 2026)
+
+### La cornice dei campi è un colore a parte, e `parete` non bastava
+
+WCAG 2.1 al criterio 1.4.11 chiede **3:1 fra il contorno di un comando e ciò
+che gli sta intorno**. Il bordo dei campi era `parete` `#2E6376`, che sul buio
+si ferma a 2,35:1 sul pannello e a 2,49:1 sul fondo pagina.
+
+Su un campo di testo non è un dettaglio: l'interno del campo (`notte`) e la
+pagina attorno hanno quasi lo stesso fondo, quindi **il bordo è l'unica cosa
+che dice dove si scrive**. Sotto la soglia, chi ha una vista ridotta o guarda
+lo schermo in pieno sole non trova il campo, non solo lo trova brutto.
+
+Nasce `--color-cornice` `#5891A8`, e non si tocca `parete`. La divisione
+segue il criterio, che si applica **ai comandi e non alla decorazione**:
+
+- **cornice** — campi, aree di testo, menu a tendina, caselle, pulsanti,
+  filtri, schede che si possono scegliere. Venti punti nel codice.
+- **parete** — separatori, righe di tabella, contenitori, `details`,
+  citazioni rientrate. Nove punti, lasciati com'erano.
+
+Cambiare `parete` ovunque avrebbe schiarito anche una dozzina di righe che
+fanno solo da separatore, e su una pagina lunga come l'elenco delle richieste
+si sarebbe visto.
+
+### Il valore si tara sul fondo più chiaro, non sul più scuro
+
+Il primo candidato era `#4B8298`: passava su `notte`, su `pannello` e su
+`pannello-alto`, e il test l'ha bocciato al primo giro — **2,88:1 su
+`orizzonte`**, che è dove il gradiente della pagina arriva in basso.
+
+È l'errore che il test è servito a prendere: si verifica il colore contro il
+fondo più comodo e si dimentica che la stessa pagina, trecento pixel più
+giù, è più chiara. Il valore definitivo tiene il minimo a 3,51:1 su tutti e
+cinque i fondi.
+
+### I contrasti si leggono da `globals.css`, non da una copia
+
+I colori della veste notturna sono derivati e non passano da `marchio.ts`:
+esistono solo nel CSS. Il test li estrae da lì con una espressione regolare,
+invece di ricopiarli in TypeScript, così verifica i valori che il sito usa
+davvero. Una copia sarebbe rimasta indietro alla prima ritoccata, e il test
+avrebbe continuato a dire di sì sul colore sbagliato.
+
+Cinque prove nuove: i tre livelli di testo su ogni fondo, oro e luce sul
+pannello, l'arancione degli errori su ogni fondo, la cornice sopra il 3:1, e
+`parete` **sotto** quella soglia — quest'ultima serve a ricordare perché
+`cornice` esiste, e a far fallire il test se qualcuno le unifica.
+
+### Il resto del giro non ha trovato niente da correggere
+
+Il collegamento «Salta al contenuto», la lingua del documento, le etichette
+legate ai campi con `htmlFor`, gli errori legati con `aria-describedby` e
+`aria-invalid`, l'anello di fuoco azzurro da tastiera, `prefers-reduced-motion`
+sull'alone e l'`alt=""` sul marchio in facciata — che è decorativo perché
+l'`h1` accanto dice già il nome — erano già a posto.

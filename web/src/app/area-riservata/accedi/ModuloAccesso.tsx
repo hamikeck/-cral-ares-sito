@@ -18,7 +18,7 @@ export function ModuloAccesso() {
           type="email"
           autoComplete="email"
           required
-          className="fuoco-su-scuro border border-parete bg-pannello px-3 py-2 text-corpo"
+          className="fuoco-su-scuro border border-cornice bg-pannello px-3 py-2 text-corpo"
         />
       </div>
 

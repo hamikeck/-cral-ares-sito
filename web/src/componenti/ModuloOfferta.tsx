@@ -143,7 +143,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
               onChange={scrivi('categoria')}
               aria-describedby={idErroreCategoria}
               aria-invalid={errori.categoria ? true : undefined}
-              className="fuoco-su-scuro border border-parete bg-pannello px-3 py-2"
+              className="fuoco-su-scuro border border-cornice bg-pannello px-3 py-2"
             >
               {CATEGORIE.map((categoria) => (
                 <option key={categoria} value={categoria}>{categoria}</option>
@@ -252,7 +252,7 @@ export function ModuloOfferta({ offerta }: { offerta?: OffertaRiservata }) {
           </label>
 
           <div className="flex flex-wrap gap-3">
-            <button type="submit" name="azione" value="bozza" disabled={inCorso} className="fuoco-su-scuro border border-parete px-4 py-2 font-semibold">
+            <button type="submit" name="azione" value="bozza" disabled={inCorso} className="fuoco-su-scuro border border-cornice px-4 py-2 font-semibold">
               Salva bozza
             </button>
             <button type="submit" name="azione" value="pubblica" disabled={inCorso} className="fuoco-su-scuro rounded-lg border border-luce bg-luce px-4 py-2 font-bold text-notte">
@@ -316,7 +316,7 @@ function Campo({
     maxLength,
     'aria-describedby': [idAiuto, idErrore].filter(Boolean).join(' ') || undefined,
     'aria-invalid': errore ? true : undefined,
-    className: 'fuoco-su-scuro border border-parete bg-pannello px-3 py-2 disabled:cursor-not-allowed disabled:bg-pannello disabled:text-tenue',
+    className: 'fuoco-su-scuro border border-cornice bg-pannello px-3 py-2 disabled:cursor-not-allowed disabled:bg-pannello disabled:text-tenue',
   }
 
   return (

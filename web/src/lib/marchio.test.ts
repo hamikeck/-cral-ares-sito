@@ -48,3 +48,63 @@ describe('allineamento fra TypeScript e CSS', () => {
     }
   })
 })
+
+/**
+ * La veste notturna non passa da `marchio.ts`: i suoi colori sono derivati e
+ * vivono solo in `globals.css`. Si leggono da lì, così il test verifica i
+ * valori che il sito usa davvero e non una copia che può divergere.
+ */
+function tokenDelCss(nome: string): string {
+  const css = readFileSync(join(process.cwd(), 'src/app/globals.css'), 'utf8')
+  const trovato = css.match(new RegExp(`--color-${nome}:\\s*(#[0-9a-fA-F]{6})`))
+  if (!trovato) throw new Error(`In globals.css manca il token --color-${nome}.`)
+  return trovato[1]
+}
+
+describe('veste notturna', () => {
+  const fondi = ['notte', 'cielo', 'orizzonte', 'pannello', 'pannello-alto']
+
+  test('i tre livelli di testo superano il minimo AA di 4,5:1 su ogni fondo', () => {
+    for (const testo of ['chiaro', 'lettura', 'tenue']) {
+      for (const fondo of fondi) {
+        expect(
+          rapportoDiContrasto(tokenDelCss(testo), tokenDelCss(fondo)),
+          `${testo} su ${fondo}`,
+        ).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  })
+
+  test('oro e luce reggono il testo sul pannello', () => {
+    expect(rapportoDiContrasto(tokenDelCss('oro'), tokenDelCss('pannello'))).toBeGreaterThanOrEqual(4.5)
+    expect(rapportoDiContrasto(tokenDelCss('luce'), tokenDelCss('pannello'))).toBeGreaterThanOrEqual(4.5)
+  })
+
+  test("l'arancione degli errori si legge su ogni fondo", () => {
+    for (const fondo of fondi) {
+      expect(
+        rapportoDiContrasto(tokenDelCss('arancione'), tokenDelCss(fondo)),
+        `arancione su ${fondo}`,
+      ).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
+  /**
+   * WCAG 2.1, criterio 1.4.11: il contorno di un comando deve staccare di
+   * almeno 3:1 da ciò che gli sta intorno. Su un campo di testo il bordo è
+   * l'unica cosa che dice dove si scrive, perché l'interno e la pagina hanno
+   * quasi lo stesso fondo — quindi lì il minimo si applica davvero.
+   */
+  test('la cornice dei campi stacca di almeno 3:1 da ogni fondo', () => {
+    for (const fondo of fondi) {
+      expect(
+        rapportoDiContrasto(tokenDelCss('cornice'), tokenDelCss(fondo)),
+        `cornice su ${fondo}`,
+      ).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  test('`parete` NON basta per i comandi, ed è il motivo per cui `cornice` esiste', () => {
+    expect(rapportoDiContrasto(tokenDelCss('parete'), tokenDelCss('pannello'))).toBeLessThan(3)
+  })
+})

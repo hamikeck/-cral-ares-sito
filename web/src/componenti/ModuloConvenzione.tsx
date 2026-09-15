@@ -63,7 +63,7 @@ export function ModuloConvenzione() {
             required
             aria-describedby={errori.messaggio ? 'messaggio-errore' : 'messaggio-aiuto'}
             aria-invalid={errori.messaggio ? true : undefined}
-            className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+            className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
           />
           {errori.messaggio ? (
             <span id="messaggio-errore" className="text-xs font-semibold text-arancione">

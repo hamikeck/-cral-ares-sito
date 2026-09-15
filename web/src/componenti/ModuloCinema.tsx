@@ -70,7 +70,7 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
               setSedeId('')
             }}
             aria-invalid={errori.circuitoId ? true : undefined}
-            className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+            className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
           >
             {circuiti.map((uno) => (
               <option key={uno.id} value={uno.id}>
@@ -94,7 +94,7 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
               value={sedeId}
               onChange={(evento) => setSedeId(evento.target.value)}
               aria-describedby="sede-aiuto"
-              className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+              className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
             >
               <option value="">Non l’ho ancora deciso</option>
               {circuito.sedi.map((sede) => (
@@ -169,7 +169,7 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
           id="messaggio"
           name="messaggio"
           rows={3}
-          className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+          className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
         />
         <span className="text-xs text-tenue">
           Per esempio se te ne servono più di {MASSIMO_BIGLIETTI}, o per quando ti servono.
@@ -206,7 +206,7 @@ function ScegliPagamento({ errore }: { errore?: string }) {
           <label
             key={valore}
             className={`flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-2.5 ${
-              scelta === valore ? 'border-luce/70 bg-luce/10' : 'border-parete'
+              scelta === valore ? 'border-luce/70 bg-luce/10' : 'border-cornice'
             }`}
           >
             <input

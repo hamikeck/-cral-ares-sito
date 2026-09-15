@@ -62,6 +62,23 @@
   --color-parete: #2E6376;
   --color-filo: #1B4152;
 
+  /* La cornice dei campi, e di tutto ciò che si può premere o compilare.
+     Esiste perché `parete` non basta: il criterio 1.4.11 di WCAG 2.1 chiede
+     3:1 fra il contorno di un comando e ciò che gli sta intorno, e `parete`
+     sul fondo notturno si ferma a 2,35:1. Su un campo di testo il bordo è
+     l'unica cosa che dice dove si scrive — l'interno e la pagina hanno
+     quasi lo stesso fondo — quindi lì quel contorno non è decorazione.
+
+     `parete` resta dov'è per separatori, righe di tabella e contenitori:
+     quelli sono decorazione, e per la decorazione il minimo non si applica.
+
+     Il valore è tarato sul fondo **più chiaro**, non sul più scuro: il
+     gradiente della pagina arriva a `orizzonte` in basso, ed è lì che un
+     bordo azzurro fatica di più. 4,75:1 su `notte`, 4,23:1 su `cielo`,
+     3,51:1 su `orizzonte`, 4,49:1 su `pannello`, 3,76:1 su `pannello-alto`.
+     Il test in `marchio.test.ts` li verifica tutti e cinque. */
+  --color-cornice: #5891A8;
+
   /* Testo sul buio, dal più forte al più tenue. I nomi evitano «corpo»:
      `--text-corpo` esiste già come misura del carattere, e un colore con lo
      stesso nome genererebbe due utilità `text-corpo` in conflitto. */

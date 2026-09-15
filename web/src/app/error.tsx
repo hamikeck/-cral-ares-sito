@@ -32,7 +32,7 @@ export default function Errore({ reset }: { error: Error; reset: () => void }) {
         </button>
         <Link
           href="/"
-          className="fuoco-su-scuro border border-parete px-5 py-3 font-semibold hover:border-luce"
+          className="fuoco-su-scuro border border-cornice px-5 py-3 font-semibold hover:border-luce"
         >
           {tornaHome}
         </Link>

@@ -46,7 +46,7 @@ export function CopiaTestoEmail({ testo }: { testo: string }) {
         readOnly
         rows={7}
         value={testo}
-        className="fuoco-su-scuro mt-3 w-full border border-parete bg-pannello px-3 py-2 font-mono text-sm"
+        className="fuoco-su-scuro mt-3 w-full border border-cornice bg-pannello px-3 py-2 font-mono text-sm"
       />
 
       <div className="mt-3 flex items-center gap-4">

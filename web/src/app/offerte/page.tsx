@@ -53,7 +53,7 @@ export default async function Offerte({
               aria-current={categoriaScelta ? undefined : 'true'}
               className={
                 categoriaScelta
-                  ? 'fuoco-su-scuro inline-block rounded-full border border-parete px-3 py-1.5 text-sm text-lettura hover:border-luce'
+                  ? 'fuoco-su-scuro inline-block rounded-full border border-cornice px-3 py-1.5 text-sm text-lettura hover:border-luce'
                   : 'fuoco-su-scuro inline-block rounded-full border border-luce bg-luce px-3 py-1.5 text-sm font-bold text-notte'
               }
             >
@@ -70,7 +70,7 @@ export default async function Offerte({
                   className={
                     attiva
                       ? 'fuoco-su-scuro inline-block rounded-full border border-luce bg-luce px-3 py-1.5 text-sm font-bold text-notte'
-                      : 'fuoco-su-scuro inline-block rounded-full border border-parete px-3 py-1.5 text-sm text-lettura hover:border-luce'
+                      : 'fuoco-su-scuro inline-block rounded-full border border-cornice px-3 py-1.5 text-sm text-lettura hover:border-luce'
                   }
                 >
                   {categoria}

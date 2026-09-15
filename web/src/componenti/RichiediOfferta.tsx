@@ -92,7 +92,7 @@ export function RichiediOfferta({ offerta }: { offerta: Offerta }) {
           required={!perBiglietti}
           aria-describedby={errori.messaggio ? 'messaggio-errore' : undefined}
           aria-invalid={errori.messaggio ? true : undefined}
-          className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+          className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
         />
         {errori.messaggio ? (
           <span id="messaggio-errore" className="text-xs font-semibold text-arancione">
@@ -121,7 +121,7 @@ export function RichiediOfferta({ offerta }: { offerta: Offerta }) {
             ).map(([valore, etichetta, spiegazione], indice) => (
               <label
                 key={valore}
-                className="flex cursor-pointer items-start gap-3 rounded-lg border border-parete px-3 py-2.5 has-checked:border-luce/70 has-checked:bg-luce/10"
+                className="flex cursor-pointer items-start gap-3 rounded-lg border border-cornice px-3 py-2.5 has-checked:border-luce/70 has-checked:bg-luce/10"
               >
                 <input
                   type="radio"

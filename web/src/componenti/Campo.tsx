@@ -55,7 +55,7 @@ export function Campo({
           : { defaultValue: valore })}
         aria-describedby={[idAiuto, idErrore].filter(Boolean).join(' ') || undefined}
         aria-invalid={errore ? true : undefined}
-        className="fuoco-su-scuro rounded-lg border border-parete bg-notte px-3 py-2 text-corpo"
+        className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
       />
       {aiuto ? (
         <span id={idAiuto} className="text-xs text-tenue">
