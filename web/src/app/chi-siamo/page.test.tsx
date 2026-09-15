@@ -31,9 +31,9 @@ describe('Chi siamo', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: contenutiPagine.chiSiamo.titoloContatti }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /info@cralares\.it/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /segreteriacral@cralares\.com/ })).toHaveAttribute(
       'href',
-      'mailto:info@cralares.it',
+      'mailto:segreteriacral@cralares.com',
     )
   })
 

@@ -15,8 +15,8 @@ describe('Iscriviti', () => {
   test('mostra il contatto per aderire', () => {
     render(<Iscriviti />)
     expect(
-      screen.getByRole('link', { name: /info@cralares\.it/ }),
-    ).toHaveAttribute('href', 'mailto:info@cralares.it')
+      screen.getByRole('link', { name: /segreteriacral@cralares\.com/ }),
+    ).toHaveAttribute('href', 'mailto:segreteriacral@cralares.com')
   })
 
   test('non presenta violazioni di accessibilità', async () => {

@@ -1,6 +1,6 @@
 # Cosa chiedere al direttivo
 
-Aggiornato al 14 settembre 2026, dopo il materiale arrivato via OneDrive.
+Aggiornato al 15 settembre 2026, dopo la telefonata col direttore.
 
 Ogni voce dice **cosa chiedere**, **perché serve** e **cosa si sblocca**. Quando
 arriva una risposta, si cancella la voce e si annota la decisione in
@@ -40,20 +40,25 @@ titolo della home, piè di pagina, pagina «Iscriviti».
 sito. Sono due enti diversi, e sbagliarlo sulla home è il genere di errore che
 un dipendente nota al primo sguardo.
 
-## 3. Qual è il dominio vero: `cralares.it` o `cralares.com`?
+## 3. Il dominio è `cralares.com` — resta da confermare il resto
 
-**Da chiedere:** l'indirizzo dell'associazione è `segreteriacral@cralares.com`?
-Il dominio registrato su Aruba qual è, `.it` o `.com`? E la casella di posta è
-già attiva?
+**Quasi risolta il 15 settembre.** I sei indirizzi dei direttori, comunicati
+per telefono, sono **tutti su `cralares.com`**, segreteria compresa. Il dominio
+è registrato e le caselle esistono: non è più una domanda, è un fatto.
 
-**Perché:** in una corrispondenza col Teatro Diana di luglio compare
-`segreteriacral@cralares.com` — dominio **.com**. Il sito scrive ovunque
-`info@cralares.it` come segnaposto, e nello spec c'è scritto che il dominio non
-era ancora registrato.
+**Cosa resta da chiedere:**
 
-**Cosa si sblocca:** i record DNS da dare ad Aruba, l'indirizzo pubblico del
-sito, e il mittente delle email automatiche. Tutte e tre le cose cambiano a
-seconda della risposta.
+- Il sito pubblico starà su `cralares.com` o su un `.it` da registrare a parte?
+  Avere le email su un dominio e il sito su un altro si può fare, ma è una
+  scelta, non una svista da lasciar accadere.
+- Chi ha le credenziali Aruba, perché i record DNS li deve scrivere qualcuno.
+- Da quale indirizzo devono partire le email automatiche del sito.
+
+**Cosa cambia già adesso:** il sito scrive `info@cralares.it` in tre punti.
+Quella casella con ogni probabilità **non esiste**, mentre
+`segreteriacral@cralares.com` esiste ed è la segreteria. È un indirizzo
+pubblicato che non riceve: va corretto a prescindere da come finisce la
+scelta del dominio del sito.
 
 ## 4. I vantaggi delle dieci convenzioni rimaste in bozza
 
@@ -105,15 +110,29 @@ direttore e di non versare niente prima.
 **Cosa si sblocca:** IBAN, importo e causale già scritti nella conferma e
 nell'email, quindi un giro di email in meno per ogni richiesta.
 
-## 7. Gli indirizzi dei direttori
+## 7. Gli indirizzi dei direttori — ARRIVATI
 
-**Da chiedere:** a quale indirizzo — o a quali — devono arrivare le richieste
-dei soci.
+**Risposta del 15 settembre**, al telefono: il direttore ha comunicato gli
+indirizzi a cui devono arrivare le richieste.
 
-**Perché:** senza, le richieste si salvano e **nessuno viene avvisato**.
+Sono **sei**: la segreteria e cinque caselle personali. Stanno in
+`web/.env.local`, su una riga **commentata**, che non è versionata e che il
+codice non legge finché il cancelletto resta dov'è. Qui non si scrivono: questo
+file sta su git e quelli sono recapiti nominativi di persone.
 
-**Cosa si sblocca:** l'email automatica a ogni richiesta, con l'oggetto
-riconoscibile e il Rispondi che scrive già al socio.
+La segreteria è in testa all'elenco di proposito: il primo indirizzo diventa il
+`reply_to` della conferma che riceve il socio (`posta.ts:106`), e lì deve
+esserci una casella di servizio, non quella di una persona.
+
+**Non vanno accesi finché si fanno prove**, ed è una richiesta esplicita del
+direttore. Servono comunque due gesti per accendere: togliere il cancelletto e
+valorizzare `RESEND_API_KEY`. Senza la chiave non parte niente comunque,
+nemmeno la conferma al socio (`posta.ts:94`).
+
+**Da decidere prima di accendere:** se le richieste debbano arrivare a tutti e
+sei o alla sola segreteria. Sei destinatari per ogni richiesta sono sei caselle
+che si riempiono, e con quattrocento soci diventa rumore che porta a smettere
+di leggerle.
 
 ## 8. Cosa farne di cataloghi e prezziari
 
@@ -152,3 +171,5 @@ passata da nessuno.
 - **Offerte senza scadenza** — decise l'8 settembre, e il foglio delle
   convenzioni le scrive già così (`31/12/2099`).
 - **Cedolino e busta paga** come modalità di pagamento — chiarite l'8 settembre.
+- **Indirizzi dei direttori** — arrivati il 15 settembre, trascritti spenti in
+  `web/.env.local`. Resta da decidere se scrivere a tutti e sei: vedi la voce 7.

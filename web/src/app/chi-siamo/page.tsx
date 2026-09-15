@@ -14,7 +14,7 @@ export default function ChiSiamo() {
     titoloContatti,
     testoContatti,
   } = contenutiPagine.chiSiamo
-  const { email, emailProvvisoria } = contenutiPagine.associazione
+  const { email } = contenutiPagine.associazione
 
   return (
     <article className="flex max-w-2xl flex-col gap-6 text-corpo">
@@ -37,8 +37,7 @@ export default function ChiSiamo() {
             {email}
           </a>
         </p>
-        <p className="text-xs text-tenue">{emailProvvisoria}</p>
-      </section>
+        </section>
     </article>
   )
 }

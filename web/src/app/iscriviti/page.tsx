@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function Iscriviti() {
   const { titolo, paragrafi, notaProvvisoria } = contenutiPagine.iscriviti
-  const { email, emailProvvisoria } = contenutiPagine.associazione
+  const { email } = contenutiPagine.associazione
 
   return (
     <article className="flex max-w-2xl flex-col gap-6 text-corpo">
@@ -23,7 +23,6 @@ export default function Iscriviti() {
           {email}
         </a>
       </p>
-      <p className="text-xs text-tenue">{emailProvvisoria}</p>
       <p className="text-sm text-tenue">{notaProvvisoria}</p>
     </article>
   )

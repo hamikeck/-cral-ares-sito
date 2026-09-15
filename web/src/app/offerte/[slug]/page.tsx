@@ -64,7 +64,6 @@ export default async function PaginaOfferta({
     titoloRichiesta,
     torna,
   } = contenutiPagine.offerta
-  const { email } = contenutiPagine.associazione
 
   return (
     <article className="flex max-w-3xl flex-col gap-8">

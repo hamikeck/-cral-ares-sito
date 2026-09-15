@@ -2,9 +2,12 @@
 -- (OneDrive del 14 settembre 2026).
 --
 -- Le tre PUBBLICATE hanno il vantaggio scritto nero su bianco nei documenti.
--- Le dieci BOZZE hanno partner, contatti e scadenza veri, e «Da precisare» al
--- posto del vantaggio: quello lo sa il direttore, il materiale no. Una bozza
--- non è visibile ai soci e si completa dall$t$area riservata.
+-- Le altre dieci avevano «Da precisare» al posto del vantaggio, perché quello
+-- lo sa il direttore e il materiale no. Il 15 settembre sono state pubblicate
+-- lo stesso, su decisione del committente, con un vantaggio **qualitativo**
+-- — «Sconto riservato ai soci» e simili — in attesa delle cifre vere. Lo
+-- script applicato al database è `pubblica-le-dieci.sql`, che spiega anche
+-- perché in quell'occasione si poteva cambiare lo slug.
 --
 -- Le colonne sono quelle della migrazione 0001, non quelle dello spec: non
 -- esistono né `titolo` né `email_partner`, perché il direttivo ha confermato
@@ -32,45 +35,45 @@ insert into offerte (slug, partner, categoria, vantaggio, descrizione_breve, des
    $t$Il Teatro Bellini riserva ai soci condizioni agevolate sull'acquisto dei biglietti per gli spettacoli di prosa e danza della stagione 2026/2027, in Sala Grande e al Piccolo Bellini. A titolo di esempio: «Amleto2» a 34 € più prevendita invece di 38 €, «Le cinque rose di Jennifer» e «Finale di partita» a 27 € più prevendita invece di 30 €. Il ridotto vale per il venerdì e il sabato, sul miglior posto disponibile al momento dell'acquisto.$t$,
    array[$t$Sono esclusi gli spettacoli di musica e gli eventi collaterali.$t$, $t$Il ridotto vale per gli spettacoli del venerdì e del sabato.$t$, $t$Il posto è il migliore disponibile al momento dell'acquisto.$t$], $t$2026-09-14$t$, $t$2027-07-30$t$, false, $t$solo_sconto$t$, $t$Acquista al botteghino, oppure scrivi a promozione@teatrobellini.it indicando che sei socio del CRAL ARES.$t$,
    null, $t$081 549 9688$t$, $t$https://www.teatrobellini.it$t$, $t$pubblicata$t$),
-  ($t$teatro-diana-da-precisare-2026$t$, $t$Teatro Diana$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Convenzione rinnovata per la stagione 2026/2027.$t$,
+  ($t$teatro-diana-sconto-riservato-ai-soci-2026$t$, $t$Teatro Diana$t$, $t$Teatro$t$, $t$Sconto riservato ai soci$t$, $t$Convenzione rinnovata per la stagione 2026/2027.$t$,
    $t$Convenzione rinnovata per la stagione teatrale 2026/2027. Per gli spettacoli di Salemme conviene concordare gli orari al botteghino al momento dell'acquisto dell'abbonamento.$t$,
    array[$t$Per gli spettacoli di Salemme concorda l'orario al botteghino.$t$], $t$2026-09-14$t$, $t$2027-07-30$t$, false, $t$solo_sconto$t$, $t$Contatto del teatro: segreteria@teatrodiana.it, 081 556 7527.$t$,
-   null, $t$081 556 7527$t$, null, $t$bozza$t$),
-  ($t$teatro-augusteo-da-precisare-2026$t$, $t$Teatro Augusteo$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Prezzi riservati ai soci sugli abbonamenti a turno.$t$,
+   null, $t$081 556 7527$t$, null, $t$pubblicata$t$),
+  ($t$teatro-augusteo-prezzi-riservati-sugli-2026$t$, $t$Teatro Augusteo$t$, $t$Teatro$t$, $t$Prezzi riservati sugli abbonamenti$t$, $t$Prezzi riservati ai soci sugli abbonamenti a turno.$t$,
    $t$Prezzi riservati ai soci. Gli abbonamenti sono divisi in turni: A venerdì 21, C sabato 21, D domenica 18, E martedì 21, F mercoledì 18, G giovedì 21, H venerdì 21, I sabato 21, M domenica 18.$t$,
    '{}', $t$2026-09-14$t$, $t$2027-07-30$t$, false, $t$solo_sconto$t$, $t$Contatto del teatro: teatroaugusteo.gruppi@gmail.com, 081 414243.$t$,
-   null, $t$081 414243$t$, null, $t$bozza$t$),
-  ($t$teatro-cilea-da-precisare-2026$t$, $t$Teatro Cilea$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Convenzione attiva per la stagione teatrale.$t$,
+   null, $t$081 414243$t$, null, $t$pubblicata$t$),
+  ($t$teatro-cilea-sconto-riservato-ai-soci-2026$t$, $t$Teatro Cilea$t$, $t$Teatro$t$, $t$Sconto riservato ai soci$t$, $t$Convenzione attiva per la stagione teatrale.$t$,
    $t$Convenzione attiva. Locandina della stagione e prezziario disponibili presso i direttori.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, $t$Contatto del teatro: info@teatrocilea.it, 081 714 1801.$t$,
-   null, $t$081 714 1801$t$, null, $t$bozza$t$),
-  ($t$cineteatro-acacia-da-precisare-2026$t$, $t$Cineteatro Acacia$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Convenzione attiva.$t$,
+   null, $t$081 714 1801$t$, null, $t$pubblicata$t$),
+  ($t$cineteatro-acacia-sconto-riservato-ai-2026$t$, $t$Cineteatro Acacia$t$, $t$Teatro$t$, $t$Sconto riservato ai soci$t$, $t$Convenzione attiva.$t$,
    $t$Convenzione attiva con il Cineteatro Acacia.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, $t$Contatto del teatro: info@cineteatroacacia.it, 081 215 5639.$t$,
-   null, $t$081 215 5639$t$, null, $t$bozza$t$),
-  ($t$teatro-mercadante-da-precisare-2026$t$, $t$Teatro Mercadante$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Convenzione in corso con il Teatro di Napoli.$t$,
+   null, $t$081 215 5639$t$, null, $t$pubblicata$t$),
+  ($t$teatro-mercadante-ridotto-soci-col-2026$t$, $t$Teatro Mercadante$t$, $t$Teatro$t$, $t$Ridotto soci col Teatro di Napoli$t$, $t$Convenzione in corso con il Teatro di Napoli.$t$,
    $t$Convenzione con il Teatro di Napoli, che comprende il Mercadante.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, $t$Contatto: ufficiopromozione@teatrodinapoli.it, 081 552 4214.$t$,
-   null, $t$081 552 4214$t$, null, $t$bozza$t$),
-  ($t$teatro-san-ferdinando-da-precisare-2026$t$, $t$Teatro San Ferdinando$t$, $t$Teatro$t$, $t$Da precisare$t$, $t$Convenzione in corso con il Teatro di Napoli.$t$,
+   null, $t$081 552 4214$t$, null, $t$pubblicata$t$),
+  ($t$teatro-san-ferdinando-ridotto-soci-col-2026$t$, $t$Teatro San Ferdinando$t$, $t$Teatro$t$, $t$Ridotto soci col Teatro di Napoli$t$, $t$Convenzione in corso con il Teatro di Napoli.$t$,
    $t$Convenzione con il Teatro di Napoli, che comprende il San Ferdinando.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, $t$Contatto: ufficiopromozione@teatrodinapoli.it, 081 292030.$t$,
-   null, $t$081 292030$t$, null, $t$bozza$t$),
-  ($t$eureka-viaggi-da-precisare-2026$t$, $t$Eureka Viaggi$t$, $t$Viaggi$t$, $t$Da precisare$t$, $t$Biglietti Italo a tariffa Flex per i soci.$t$,
+   null, $t$081 292030$t$, null, $t$pubblicata$t$),
+  ($t$eureka-viaggi-italo-a-tariffa-flex-per-2026$t$, $t$Eureka Viaggi$t$, $t$Viaggi$t$, $t$Italo a tariffa Flex per i soci$t$, $t$Biglietti Italo a tariffa Flex per i soci.$t$,
    $t$Convenzione per l'acquisto di biglietti Italo a tariffa Flex.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, null,
-   null, null, null, $t$bozza$t$),
-  ($t$trial-viaggi-da-precisare-2026$t$, $t$Trial Viaggi$t$, $t$Viaggi$t$, $t$Da precisare$t$, $t$Voucher per traghetti e aliscafi verso le isole.$t$,
+   null, null, null, $t$pubblicata$t$),
+  ($t$trial-viaggi-voucher-traghetti-e-2026$t$, $t$Trial Viaggi$t$, $t$Viaggi$t$, $t$Voucher traghetti e aliscafi$t$, $t$Voucher per traghetti e aliscafi verso le isole.$t$,
    $t$Convenzione per l'acquisto di voucher per traghetti e aliscafi, e pacchetti per le isole.$t$,
    '{}', $t$2026-09-14$t$, $t$2027-02-28$t$, false, $t$solo_sconto$t$, null,
-   null, null, null, $t$bozza$t$),
-  ($t$chalet-la-terrasse-da-precisare-2026$t$, $t$Chalet La Terrasse$t$, $t$Ristorazione$t$, $t$Da precisare$t$, $t$Caffetteria convenzionata al Vomero.$t$,
+   null, null, null, $t$pubblicata$t$),
+  ($t$chalet-la-terrasse-sconto-riservato-ai-2026$t$, $t$Chalet La Terrasse$t$, $t$Ristorazione$t$, $t$Sconto riservato ai soci$t$, $t$Caffetteria convenzionata al Vomero.$t$,
    $t$Caffetteria in zona Vomero convenzionata con il CRAL.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, null,
-   null, null, null, $t$bozza$t$),
-  ($t$napolielettrica-da-precisare-2026$t$, $t$Napolielettrica$t$, $t$Auto e moto$t$, $t$Da precisare$t$, $t$Acquisto di scooter e moto elettriche.$t$,
+   null, null, null, $t$pubblicata$t$),
+  ($t$napolielettrica-sconto-su-scooter-e-2026$t$, $t$Napolielettrica$t$, $t$Auto e moto$t$, $t$Sconto su scooter e moto elettriche$t$, $t$Acquisto di scooter e moto elettriche.$t$,
    $t$Convenzione per l'acquisto di scooter e moto elettriche.$t$,
    '{}', $t$2026-09-14$t$, null, false, $t$solo_sconto$t$, null,
-   null, null, null, $t$bozza$t$);
+   null, null, null, $t$pubblicata$t$);
 
 commit;

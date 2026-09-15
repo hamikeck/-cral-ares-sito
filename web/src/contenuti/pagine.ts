@@ -19,9 +19,20 @@ export const contenutiPagine = {
     iban: undefined as string | undefined,
     nome: 'CRAL ARES',
     sottotitolo: "Circolo ricreativo dei dipendenti dell'Agenzia delle Entrate",
-    email: 'info@cralares.it',
-    emailProvvisoria:
-      "Indirizzo non ancora attivo: sarà operativo con la registrazione del dominio.",
+    /**
+     * La segreteria, comunicata dal direttore il 15 settembre 2026 insieme
+     * agli indirizzi degli altri direttori: tutti su `cralares.com`.
+     *
+     * Prima qui c'era `info@cralares.it`, che era un segnaposto su un dominio
+     * che non risulta registrato — un indirizzo pubblicato in tre pagine a cui
+     * nessuno avrebbe mai risposto. Con l'avviso è sparita anche
+     * `emailProvvisoria`: la casella esiste e riceve, non c'è più niente da
+     * avvertire.
+     *
+     * Resta da decidere se il sito starà su `cralares.com` o su un `.it` da
+     * registrare a parte; questo indirizzo vale in entrambi i casi.
+     */
+    email: 'segreteriacral@cralares.com',
   },
   home: {
     titolo: "Il circolo dei dipendenti dell'Agenzia delle Entrate",

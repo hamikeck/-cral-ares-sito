@@ -17,9 +17,9 @@ describe('PiedePagina', () => {
 
   test('mostra l\'indirizzo email dell\'associazione', () => {
     render(<PiedePagina />)
-    expect(screen.getByRole('link', { name: /info@cralares\.it/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /segreteriacral@cralares\.com/ })).toHaveAttribute(
       'href',
-      'mailto:info@cralares.it',
+      'mailto:segreteriacral@cralares.com',
     )
   })
 
