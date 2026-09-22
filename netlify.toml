@@ -35,6 +35,18 @@
 # `dangerouslySetInnerHTML` nel progetto — ma quando in fase 4 a scrivere sarà
 # il pubblico, e non più tre persone nominate a mano in una tabella, questa
 # valutazione va rifatta da capo.
+#
+# Queste regole valgono per i file che serve la CDN — caratteri, immagini, i
+# due SVG del marchio. **Non arrivano all'HTML**: le pagine le serve la
+# funzione del runtime Next, che il file di Netlify non lo legge. Misurato in
+# produzione il 22 settembre 2026: la politica dei contenuti c'era sul PNG di
+# un partner e mancava su `/`, `/privacy` e `/offerte`.
+#
+# Per le pagine le stesse intestazioni passano da `headers()` in
+# `web/next.config.ts`, e i valori stanno in
+# `web/src/lib/intestazioniSicurezza.ts`. Le due copie devono restare
+# identiche: se cambi una riga qui, cambiala anche là — `intestazioniSicurezza
+# .test.ts` legge questo file e fallisce se divergono.
 # ---------------------------------------------------------------------------
 
 [[headers]]
