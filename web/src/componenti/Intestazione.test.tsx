@@ -41,6 +41,30 @@ describe('Intestazione', () => {
     percorso.corrente = '/offerte'
   })
 
+  test('la voce della pagina che si sta guardando si annuncia come corrente', () => {
+    // `aria-current` è la metà invisibile del segno: la sottolineatura la
+    // vede chi guarda, questo attributo lo sente chi ascolta. Senza, un
+    // menu di quattro voci non direbbe mai dove si è.
+    percorso.corrente = '/offerte'
+    render(<Intestazione />)
+
+    expect(screen.getByRole('link', { name: 'Offerte' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
+  })
+
+  test('le altre voci non si annunciano come correnti', () => {
+    percorso.corrente = '/offerte'
+    render(<Intestazione />)
+
+    for (const voce of vociDiMenu.filter((v) => v.percorso !== '/offerte')) {
+      expect(screen.getByRole('link', { name: voce.etichetta })).not.toHaveAttribute(
+        'aria-current',
+      )
+    }
+  })
+
   test('non presenta violazioni di accessibilità', async () => {
     const { container } = render(<Intestazione />)
     expect(await violazioniAccessibilita(container)).toEqual([])

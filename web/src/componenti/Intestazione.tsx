@@ -43,16 +43,34 @@ export function Intestazione() {
         )}
         <nav aria-label="Menu principale">
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            {vociDiMenu.map((voce) => (
-              <li key={voce.percorso}>
-                <Link
-                  href={voce.percorso}
-                  className="fuoco-su-scuro rounded font-semibold text-luce underline-offset-4 hover:underline"
-                >
-                  {voce.etichetta}
-                </Link>
-              </li>
-            ))}
+            {vociDiMenu.map((voce) => {
+              const corrente = percorso === voce.percorso
+
+              return (
+                <li key={voce.percorso}>
+                  {/* La voce della pagina che si sta guardando si distingue due
+                      volte: a occhio con la sottolineatura, e per chi naviga
+                      con uno screen reader con `aria-current`. Il colore da
+                      solo non basterebbe — sarebbe l'unico segno, e il
+                      criterio WCAG 1.4.1 dice che il colore non può essere
+                      l'unico modo per capire qualcosa.
+
+                      La sottolineatura è azzurra e non dorata, anche se il
+                      disegno la proponeva in oro: su questo sito il caldo dice
+                      due cose sole, il denaro e la luce, e una voce di menu
+                      non è né l'una né l'altra. */}
+                  <Link
+                    href={voce.percorso}
+                    aria-current={corrente ? 'page' : undefined}
+                    className={`fuoco-su-scuro rounded font-semibold underline-offset-4 hover:underline ${
+                      corrente ? 'text-chiaro underline decoration-luce decoration-2' : 'text-luce'
+                    }`}
+                  >
+                    {voce.etichetta}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
         </nav>
       </div>
