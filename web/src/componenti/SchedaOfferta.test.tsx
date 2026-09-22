@@ -109,11 +109,42 @@ describe('SchedaOfferta', () => {
     )
   })
 
+  test('senza logo la scheda mostra le iniziali del partner', () => {
+    // La maggior parte delle convenzioni un logo non ce l'ha, e non l'avrà:
+    // il ripiego deve essere leggibile, non un quadrato vuoto.
+    render(<SchedaOfferta offerta={offerta} />)
+
+    expect(screen.getByText('TD')).toBeInTheDocument()
+  })
+
+  test('con il logo lo mostra al posto delle iniziali', () => {
+    const { container } = render(
+      <SchedaOfferta offerta={{ ...offerta, logoUrl: '/partner/teatro-bellini.png' }} />,
+    )
+
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      '/partner/teatro-bellini.png',
+    )
+    expect(screen.queryByText('TD')).not.toBeInTheDocument()
+  })
+
+  test('il marchio non diventa un secondo collegamento', () => {
+    // Il collegamento della scheda è uno solo, sul nome del partner, esteso
+    // al riquadro: è la ragione per cui esiste `fuoco-scheda`.
+    render(<SchedaOfferta offerta={{ ...offerta, logoUrl: '/partner/teatro-bellini.png' }} />)
+
+    expect(screen.getAllByRole('link')).toHaveLength(1)
+  })
+
   test('non ha problemi di accessibilità, né normale né in evidenza', async () => {
     const { container, rerender } = render(<SchedaOfferta offerta={offerta} />)
     expect(await violazioniAccessibilita(container)).toEqual([])
 
     rerender(<SchedaOfferta offerta={offerta} inEvidenza />)
+    expect(await violazioniAccessibilita(container)).toEqual([])
+
+    rerender(<SchedaOfferta offerta={{ ...offerta, logoUrl: '/partner/teatro-bellini.png' }} />)
     expect(await violazioniAccessibilita(container)).toEqual([])
   })
 })

@@ -118,7 +118,7 @@ export default async function Home() {
                 <ul className="flex snap-x snap-mandatory gap-3">
                   {nastro.map((offerta, indice) => (
                     <li key={offerta.slug} className="w-[18.5rem] shrink-0 snap-start">
-                      <SchedaOfferta offerta={offerta} inEvidenza={indice === 0} />
+                      <SchedaOfferta offerta={offerta} inEvidenza={indice === 0} nelNastro />
                     </li>
                   ))}
                 </ul>

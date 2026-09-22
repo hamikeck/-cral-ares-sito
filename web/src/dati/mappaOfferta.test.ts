@@ -63,6 +63,16 @@ describe('mappaOfferta', () => {
     expect(offerta.condizioni).toEqual([])
   })
 
+  test('attacca il logo del partner quando ce l’abbiamo', () => {
+    const offerta = mappaOfferta({ ...riga, partner: 'Teatro Bellini' })
+
+    expect(offerta.logoUrl).toBe('/partner/teatro-bellini.png')
+  })
+
+  test('senza logo il campo resta assente, e la scheda mostrerà le iniziali', () => {
+    expect(mappaOfferta(riga).logoUrl).toBeUndefined()
+  })
+
   test('valida_al nullo diventa validaAl assente, non una stringa vuota: è una convenzione permanente', () => {
     const offerta = mappaOfferta({ ...riga, valida_al: null })
 

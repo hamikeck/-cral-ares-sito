@@ -22,6 +22,17 @@ export type Offerta = {
   slug: string
   partner: string
   categoria: string
+  /**
+   * Il logo del partner, se ce l'abbiamo: un percorso dentro `public/partner/`.
+   * Non è una colonna del database — l'elenco sta in `dati/marchiPartner.ts` —
+   * e senza logo la scheda mostra le iniziali.
+   */
+  logoUrl?: string
+  /**
+   * Le due lettere da mostrare al posto del logo. Quasi sempre assente: si
+   * ricavano dal nome del partner. Esiste per i casi in cui il nome inganna.
+   */
+  iniziali?: string
   /** Il motivo per cui il socio si ferma a leggere. Va scritto corto. */
   vantaggio: string
   /** Una riga, per le schede negli elenchi. */

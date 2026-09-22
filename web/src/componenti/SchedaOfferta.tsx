@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { MarchioPartner } from '@/componenti/MarchioPartner'
 import type { ModalitaOfferta, Offerta } from '@/dominio/offerta'
 import { descriviScadenza } from '@/lib/date'
 
@@ -22,9 +23,9 @@ const AZIONE: Record<ModalitaOfferta, string> = {
  * Fondo pieno, filo azzurro sottile, nessuna ombra e nessuna trasparenza —
  * scelta del committente davanti al campione, e la ragione per cui regge otto
  * ripetizioni di fila senza diventare una macchia sola. L'ordine dentro è
- * sempre lo stesso: categoria, nome, cifra, una riga di testo, la scadenza,
- * l'azione. Chi scorre col pollice trova ogni cosa dove l'ha lasciata nella
- * scheda precedente.
+ * sempre lo stesso: il marchio del partner in riga con categoria e nome, poi
+ * cifra, una riga di testo, la scadenza, l'azione. Chi scorre col pollice
+ * trova ogni cosa dove l'ha lasciata nella scheda precedente.
  *
  * Tutta la scheda è cliccabile, ma il collegamento vero è solo sul nome del
  * partner, esteso al riquadro con uno pseudo-elemento. È la differenza fra
@@ -43,6 +44,7 @@ export function SchedaOfferta({
   inEvidenza = false,
   titolo: Titolo = 'h3',
   collegamentoDisabilitato = false,
+  nelNastro = false,
 }: {
   offerta: Offerta
   inEvidenza?: boolean
@@ -53,6 +55,12 @@ export function SchedaOfferta({
    * scheda resta leggibile ma non cliccabile.
    */
   collegamentoDisabilitato?: boolean
+  /**
+   * Nel nastro della home la carta è più stretta che in elenco, e il marchio
+   * del partner scende da 52 a 44 px: è l'unica cosa che cambia, e cambia
+   * perché quegli otto pixel lì servono al nome del partner.
+   */
+  nelNastro?: boolean
 }) {
   const collegamento = collegamentoDisabilitato ? (
     <span>{offerta.partner}</span>
@@ -73,11 +81,23 @@ export function SchedaOfferta({
         inEvidenza ? 'border-luce/70' : 'hover:border-luce/60'
       }`}
     >
-      <p className="text-sm font-semibold text-luce">{offerta.categoria}</p>
+      {/* Il marchio sta in riga con categoria e nome, e non è cliccabile: il
+          collegamento della scheda resta uno solo. */}
+      <div className="flex items-center gap-3">
+        <MarchioPartner
+          partner={offerta.partner}
+          logoUrl={offerta.logoUrl}
+          iniziali={offerta.iniziali}
+          dimensione={nelNastro ? 'nastro' : 'elenco'}
+        />
 
-      <Titolo className="mt-1 text-2xl text-chiaro">{collegamento}</Titolo>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-luce">{offerta.categoria}</p>
+          <Titolo className="mt-1 text-2xl text-chiaro">{collegamento}</Titolo>
+        </div>
+      </div>
 
-      <p className={`cifra mt-1 text-3xl ${inEvidenza ? 'text-oro' : 'text-chiaro'}`}>
+      <p className={`cifra mt-3 text-3xl ${inEvidenza ? 'text-oro' : 'text-chiaro'}`}>
         {offerta.vantaggio}
       </p>
 

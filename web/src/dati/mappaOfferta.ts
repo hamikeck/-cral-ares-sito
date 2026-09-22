@@ -1,4 +1,5 @@
 import type { Contatti, Offerta } from '@/dominio/offerta'
+import { logoDelPartner } from './marchiPartner'
 import type { RigaOfferta } from './righe'
 
 /** `null` è una risposta del database, `undefined` è l'assenza nel dominio. */
@@ -26,6 +27,10 @@ export function mappaOfferta(riga: RigaOfferta): Offerta {
     slug: riga.slug,
     partner: riga.partner,
     categoria: riga.categoria,
+    /* Il logo non arriva dal database: la tabella non ha una colonna e i
+       direttori non hanno un posto da cui caricare un'immagine. Finché è
+       così, lo cerchiamo per nome nell'elenco dei marchi che abbiamo. */
+    logoUrl: logoDelPartner(riga.partner),
     vantaggio: riga.vantaggio,
     descrizione: riga.descrizione_breve,
     descrizioneCompleta: riga.descrizione,
