@@ -180,14 +180,18 @@
   z-index: 0;
   inset-inline: 0;
   top: 0;
-  height: 30rem;
+  height: 34rem;
   pointer-events: none;
 
-  /* I raggi restano sotto il 40%, così la luce si spegne da sé prima di
+  /* I raggi restano sotto il 45%, così la luce si spegne da sé prima di
      arrivare ai bordi. Con raggi più larghi il contenitore la tranciava di
-     netto, e si vedeva il rettangolo del taglio invece dell'alone. */
+     netto, e si vedeva il rettangolo del taglio invece dell'alone.
+
+     Sono cresciuti con il marchio (settembre 2026): a 24 rem sul telefono e
+     36 rem da `sm` l'alone di prima gli finiva addosso invece di stargli
+     dietro. */
   background:
-    radial-gradient(36% 52% at 50% 40%, rgba(255, 214, 150, 0.36) 0%, rgba(255, 214, 150, 0) 68%),
+    radial-gradient(40% 54% at 50% 40%, rgba(255, 214, 150, 0.36) 0%, rgba(255, 214, 150, 0) 68%),
     radial-gradient(50% 66% at 50% 46%, rgba(234, 162, 86, 0.32) 0%, rgba(234, 162, 86, 0) 72%);
   animation: respiro 14s ease-in-out infinite;
 

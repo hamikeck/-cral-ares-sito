@@ -68,7 +68,7 @@ export default async function Home() {
             alt=""
             width={553}
             height={163}
-            className="mx-auto w-full max-w-[19rem] drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)] sm:max-w-lg"
+            className="mx-auto w-full max-w-sm drop-shadow-[0_1px_4px_rgba(255,224,180,0.45)] sm:max-w-xl"
           />
 
           {/* Le due righe sotto il marchio erano un sussurro grigio da 16 e 14
