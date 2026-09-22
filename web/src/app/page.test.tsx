@@ -46,6 +46,17 @@ describe('Home', () => {
     expect(within(schede[0]).getByText(/Richiedi|Vedi/)).toBeInTheDocument()
   })
 
+  test('sotto il nastro dice quante offerte ci sono', async () => {
+    // Il nastro sul telefono ne mostra una: senza il conto, un socio non ha
+    // modo di sapere se dietro ce ne siano due o tredici.
+    render(await Home())
+
+    const nastro = screen.getByRole('region', { name: contenutiPagine.home.titoloNastro })
+    const quante = within(nastro).getAllByRole('listitem').length
+
+    expect(screen.getByText(contenutiPagine.home.scorriNastro(quante))).toBeInTheDocument()
+  })
+
   test('le due porte del servizio ci sono anche nella settimana senza offerte', async () => {
     // È il motivo per cui stanno sulla home e non dentro l'elenco: biglietti
     // e convenzioni sono il servizio permanente del CRAL, e ci sono anche

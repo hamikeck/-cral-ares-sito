@@ -47,7 +47,18 @@ export const contenutiPagine = {
      * visita, e chi torna ogni lunedì se ne accorgerebbe prima di noi.
      */
     titoloNastro: "Aperte adesso",
-    scorriNastro: "Scorri per vedere le altre",
+    /**
+     * La riga sotto il nastro conta, invece di invitare.
+     *
+     * «Scorri per vedere le altre» diceva come si usa il nastro a chi lo
+     * aveva già davanti; quello che manca a un socio è **quante ce ne sono**,
+     * perché il nastro sul telefono ne mostra una sola e non c'è modo di
+     * indovinare se dietro ce ne siano due o tredici.
+     *
+     * Con una sola offerta l'invito a scorrere sarebbe una bugia, e sparisce.
+     */
+    scorriNastro: (quante: number) =>
+      quante === 1 ? "Un'offerta aperta" : `${quante} offerte · scorri`,
     vediTutteLeOfferte: "Vedile tutte in elenco",
     nessunaOfferta:
       "Questa settimana non ci sono offerte in corso. Le pubblichiamo qui appena arrivano.",

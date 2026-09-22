@@ -102,7 +102,13 @@ export default async function Home() {
                   successiva sbircia dal bordo e tutte restano raggiungibili —
                   col dito, con le frecce, con la tastiera. Una rotazione
                   automatica nasconderebbe sette offerte su otto e andrebbe
-                  resa fermabile per il livello AA. */}
+                  resa fermabile per il livello AA.
+
+                  La carta è larga 18,5 rem: su un telefono da 360 px con i
+                  16 px di margine la prima si legge intera e la seconda
+                  sbircia dal bordo, che è esattamente il comportamento che
+                  questo commento promette. A 16 rem, la misura di prima, la
+                  cifra dell'offerta andava a capo. */}
               <div
                 role="region"
                 aria-label={titoloNastro}
@@ -111,13 +117,13 @@ export default async function Home() {
               >
                 <ul className="flex snap-x snap-mandatory gap-3">
                   {nastro.map((offerta, indice) => (
-                    <li key={offerta.slug} className="w-64 shrink-0 snap-start">
+                    <li key={offerta.slug} className="w-[18.5rem] shrink-0 snap-start">
                       <SchedaOfferta offerta={offerta} inEvidenza={indice === 0} />
                     </li>
                   ))}
                 </ul>
               </div>
-              <p className="mt-1 text-xs text-tenue">{scorriNastro}</p>
+              <p className="mt-1 text-xs text-tenue">{scorriNastro(nastro.length)}</p>
             </>
           ) : (
             <p className="mt-4 max-w-prose text-corpo text-lettura">{nessunaOfferta}</p>
