@@ -231,8 +231,8 @@ function ScegliPagamento({ errore }: { errore?: string }) {
       <div className="flex flex-col gap-2">
         {(
           [
-            ['bonifico', 'Cedolino', 'Ti arrivano IBAN, importo e causale già scritti.'],
-            ['busta_paga', 'Trattenuta in busta paga', 'L’importo ti viene trattenuto dallo stipendio.'],
+            ['bonifico', 'Bonifico', 'Ti arrivano IBAN, importo e causale già scritti.'],
+            ['busta_paga', 'Busta paga', 'L’importo ti viene trattenuto dallo stipendio.'],
           ] as const
         ).map(([valore, etichetta, spiegazione]) => (
           <label

@@ -9,7 +9,7 @@
 export const contenutiPagine = {
   associazione: {
     /**
-     * L'IBAN su cui i soci fanno il bonifico del cedolino.
+     * L'IBAN su cui i soci fanno il bonifico.
      *
      * Assente finché il direttivo non lo comunica, ed è deliberato: la pagina
      * di conferma dice al socio che l'IBAN glielo scriverà un direttore,
@@ -101,7 +101,7 @@ export const contenutiPagine = {
       },
       {
         titolo: "Paghi come preferisci",
-        testo: "Con il cedolino, oppure con la trattenuta in busta paga.",
+        testo: "Con un bonifico, oppure con la trattenuta in busta paga.",
       },
     ],
 

@@ -15,7 +15,7 @@ const richiesta: RichiestaPerEmail = {
     { etichetta: 'Circuito', valore: 'UCI Cinemas' },
     { etichetta: 'Quantità', valore: '4' },
     { etichetta: 'Importo', valore: '26,00 €' },
-    { etichetta: 'Pagamento', valore: 'Cedolino (bonifico)' },
+    { etichetta: 'Pagamento', valore: 'Bonifico' },
   ],
 }
 

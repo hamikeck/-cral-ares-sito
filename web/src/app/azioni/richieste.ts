@@ -226,7 +226,7 @@ export async function inviaRichiestaCinema(
         : []),
       {
         etichetta: 'Pagamento',
-        valore: dati.pagamento === 'bonifico' ? 'Cedolino (bonifico)' : 'Trattenuta in busta paga',
+        valore: dati.pagamento === 'bonifico' ? 'Bonifico' : 'Busta paga',
       },
     ],
     messaggio: dati.messaggio || undefined,
@@ -473,9 +473,7 @@ export async function inviaRichiestaOfferta(
             {
               etichetta: 'Pagamento',
               valore:
-                biglietti.pagamento === 'bonifico'
-                  ? 'Cedolino (bonifico)'
-                  : 'Trattenuta in busta paga',
+                biglietti.pagamento === 'bonifico' ? 'Bonifico' : 'Busta paga',
             },
           ]
         : []),

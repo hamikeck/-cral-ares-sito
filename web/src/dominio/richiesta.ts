@@ -54,9 +54,17 @@ export function cosaChiede(richiesta: Richiesta): string {
   return `${quanti}${richiesta.offerta ?? ''}`.trim()
 }
 
-/** Come ha scelto di pagare, in italiano. Vuoto dove non c'era niente da pagare. */
+/**
+ * Come ha scelto di pagare, in italiano. Vuoto dove non c'era niente da pagare.
+ *
+ * Le parole sono due sole — «Bonifico» e «Busta paga» — e sono le stesse che
+ * il socio ha letto nel modulo. «Cedolino», che era il nome dato al bonifico
+ * nelle parole del direttivo, è sparito il 23 settembre 2026 per richiesta del
+ * committente: è la stessa cosa detta in un secondo modo, e due nomi per una
+ * cosa sola fanno chiedere al socio quale delle due ha scelto.
+ */
 export function comePaga(richiesta: Richiesta): string {
-  if (richiesta.pagamento === 'bonifico') return 'Cedolino'
+  if (richiesta.pagamento === 'bonifico') return 'Bonifico'
   if (richiesta.pagamento === 'busta_paga') return 'Busta paga'
   return ''
 }

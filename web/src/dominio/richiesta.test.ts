@@ -43,8 +43,11 @@ describe('cosaChiede', () => {
 })
 
 describe('comePaga', () => {
-  test('usa le parole del direttivo', () => {
-    expect(comePaga({ ...base, pagamento: 'bonifico' })).toBe('Cedolino')
+  test('usa le due parole del modulo, e non un terzo sinonimo', () => {
+    // «Cedolino» era il bonifico detto in un altro modo: due nomi per una
+    // cosa sola, e il socio che rileggeva la propria richiesta non sapeva
+    // più quale delle due avesse scelto.
+    expect(comePaga({ ...base, pagamento: 'bonifico' })).toBe('Bonifico')
     expect(comePaga({ ...base, pagamento: 'busta_paga' })).toBe('Busta paga')
   })
 

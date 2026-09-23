@@ -165,7 +165,7 @@ export function corpoConferma(richiesta: RichiestaPerEmail, riepilogo: string): 
     'Ti risponde un direttore del CRAL, non un sistema automatico: può volerci',
     'qualche giorno. Non serve rimandare la richiesta — è già in coda.',
     '',
-    'Se paghi con il cedolino, aspetta la sua email prima di fare qualsiasi',
+    'Se paghi con bonifico, aspetta la sua email prima di fare qualsiasi',
     'versamento: l’IBAN e l’importo te li scrive lui.',
     '',
     'CRAL ARES',

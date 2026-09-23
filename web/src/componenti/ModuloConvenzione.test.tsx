@@ -23,7 +23,7 @@ describe('ModuloConvenzione', () => {
 
   test('non chiede come pagare: qui non c’è ancora niente da pagare', () => {
     render(<ModuloConvenzione />)
-    expect(screen.queryByText(/Cedolino/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Bonifico/)).not.toBeInTheDocument()
     expect(screen.queryByText(/busta paga/)).not.toBeInTheDocument()
   })
 

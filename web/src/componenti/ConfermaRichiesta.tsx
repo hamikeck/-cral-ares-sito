@@ -5,7 +5,7 @@ import { contenutiPagine } from '@/contenuti/pagine'
  * Cosa vede il socio dopo aver inviato.
  *
  * Deve dire tre cose e chiuderle: **che la richiesta è partita**, che a
- * rispondere sarà una persona, e — a chi paga per cedolino — dove versare.
+ * rispondere sarà una persona, e — a chi paga con bonifico — dove versare.
  * Se manca una di queste, il socio resta ad aspettare senza sapere se ha
  * fatto tutto, e finisce per telefonare: cioè il fastidio che il modulo
  * esiste per togliere.

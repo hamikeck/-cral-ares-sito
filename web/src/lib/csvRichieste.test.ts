@@ -50,7 +50,7 @@ describe('csvDelleRichieste', () => {
     expect(celle[3]).toBe('Rossi')
     expect(celle[7]).toBe('4 biglietti UCI Cinemas')
     expect(celle[9]).toBe('26,00')
-    expect(celle[10]).toBe('Cedolino')
+    expect(celle[10]).toBe('Bonifico')
     expect(celle[11]).toBe('WhatsApp')
   })
 

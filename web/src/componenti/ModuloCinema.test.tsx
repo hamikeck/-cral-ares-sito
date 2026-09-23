@@ -78,10 +78,12 @@ describe('ModuloCinema', () => {
     expect(screen.queryByLabelText(/Sala/)).not.toBeInTheDocument()
   })
 
-  test('chiede come pagare, con le parole del direttivo', () => {
+  test('chiede come pagare, e le scelte sono due parole sole', () => {
     render(<ModuloCinema circuiti={circuiti} />)
-    expect(screen.getByRole('radio', { name: /Cedolino/ })).toBeChecked()
-    expect(screen.getByRole('radio', { name: /Trattenuta in busta paga/ })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /Bonifico/ })).toBeChecked()
+    expect(screen.getByRole('radio', { name: /Busta paga/ })).toBeInTheDocument()
+    // «Cedolino» era il terzo nome della stessa cosa.
+    expect(screen.queryByText(/[Cc]edolino/)).not.toBeInTheDocument()
   })
 
   test('mostra le limitazioni del circuito scelto', () => {
