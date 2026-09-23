@@ -3,7 +3,7 @@ import type { RigaCircuito } from './righe'
 import { clientPubblico } from './supabasePubblico'
 
 const COLONNE =
-  'id, nome, prezzo_socio, ordine, sedi(id, nome, citta, link_programmazione, ordine)'
+  'id, nome, prezzo_socio, ordine, note, sito, sedi(id, nome, citta, link_programmazione, ordine)'
 
 /**
  * I circuiti convenzionati con le loro sale, per il modulo del cinema.
@@ -44,6 +44,8 @@ export async function circuitiConSedi(): Promise<Circuito[]> {
     // qui vuol dire «il direttivo non ha ancora comunicato il listino», e il
     // modulo mostrerà il servizio senza cifra.
     if (riga.prezzo_socio !== null) circuito.prezzoSocio = Number(riga.prezzo_socio)
+    if (riga.note) circuito.note = riga.note
+    if (riga.sito) circuito.sito = riga.sito
 
     return circuito
   })

@@ -70,6 +70,7 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
               setSedeId('')
             }}
             aria-invalid={errori.circuitoId ? true : undefined}
+            aria-describedby={circuito?.note ? 'circuito-note' : undefined}
             className="fuoco-su-scuro rounded-lg border border-cornice bg-notte px-3 py-2 text-corpo"
           >
             {circuiti.map((uno) => (
@@ -82,6 +83,37 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
             <span className="text-xs font-semibold text-arancione">{errori.circuitoId}</span>
           ) : null}
         </div>
+
+        {/* Le limitazioni del circuito scelto.
+            
+            Stanno qui, sotto la scelta e prima della quantità, perché sono
+            l'unica cosa del modulo che può far cambiare idea: il voucher di
+            Cinema Campania non vale nel periodo natalizio in quattro cinema,
+            e va ritirato invece di arrivare per email. Scoprirlo al
+            botteghino, con il voucher già in tasca, è il modo peggiore di
+            scoprirlo — e il direttore se lo sente dire al telefono.
+
+            Il riquadro è azzurro e non dorato: è un avviso, non un prezzo.
+            `aria-describedby` sul menu lo lega alla scelta, così chi ascolta
+            sente le limitazioni del circuito insieme al suo nome invece che
+            come un paragrafo staccato. */}
+        {circuito?.note ? (
+          <div className="rounded-lg border border-filo bg-pannello px-4 py-3 sm:max-w-prose">
+            <p id="circuito-note" className="text-sm text-lettura">
+              {circuito.note}
+            </p>
+            {circuito.sito ? (
+              <a
+                href={circuito.sito}
+                target="_blank"
+                rel="noreferrer"
+                className="fuoco-su-scuro mt-2 inline-block rounded text-sm font-semibold text-luce underline underline-offset-4"
+              >
+                Guarda le sale e la programmazione
+              </a>
+            ) : null}
+          </div>
+        ) : null}
 
         {circuito && circuito.sedi.length > 0 ? (
           <div className="flex flex-col gap-1 sm:max-w-sm">

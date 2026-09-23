@@ -68,6 +68,10 @@ export type RigaCircuito = {
   nome: string
   prezzo_socio: number | null
   ordine: number
+  /** Limitazioni e modo di consegna, dalla migrazione 0009. */
+  note: string | null
+  /** Il sito del circuito, dalla migrazione 0009. */
+  sito: string | null
   sedi: RigaSede[]
 }
 

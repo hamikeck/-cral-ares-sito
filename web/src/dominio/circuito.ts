@@ -25,6 +25,18 @@ export type Circuito = {
    * direttore rispondendo.
    */
   prezzoSocio?: number
+  /**
+   * Le limitazioni, come le scrive il direttivo: giorni esclusi, sale
+   * escluse, e se il voucher è cartaceo invece che elettronico.
+   *
+   * È testo per il socio, non una regola che qualcuno applica. Il sistema non
+   * sa cosa sia il «periodo natalizio» e non deve saperlo: deve solo dirlo
+   * prima che il socio chieda, invece di lasciarglielo scoprire al
+   * botteghino.
+   */
+  note?: string
+  /** Dove il socio guarda cosa danno, quando le sale non sono elencate. */
+  sito?: string
   sedi: Sede[]
 }
 
