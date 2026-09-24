@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useMemo, useState } from 'react'
+import { inviaSenzaSvuotare } from './inviaSenzaSvuotare'
 import { inviaRichiestaCinema, type EsitoRichiesta } from '@/app/azioni/richieste'
 import { formattaEuro, importoBiglietti, type Circuito } from '@/dominio/circuito'
 import { MASSIMO_BIGLIETTI } from '@/dominio/richiestaSchema'
@@ -44,7 +45,7 @@ export function ModuloCinema({ circuiti }: { circuiti: Circuito[] }) {
   if (stato?.inviata) return <Conferma esito={stato.inviata} />
 
   return (
-    <form action={azione} noValidate className="flex flex-col gap-8">
+    <form action={azione} onSubmit={inviaSenzaSvuotare(azione)} noValidate className="flex flex-col gap-8">
       {errori.modulo ? (
         <p role="alert" className="border-l-4 border-arancione bg-pannello px-4 py-3 text-corpo">
           {errori.modulo}

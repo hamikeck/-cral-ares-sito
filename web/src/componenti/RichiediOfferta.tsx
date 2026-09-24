@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { inviaSenzaSvuotare } from './inviaSenzaSvuotare'
 import { inviaRichiestaOfferta, type EsitoRichiesta } from '@/app/azioni/richieste'
 import type { Offerta } from '@/dominio/offerta'
 import { Campo } from './Campo'
@@ -28,7 +29,7 @@ export function RichiediOfferta({ offerta }: { offerta: Offerta }) {
   if (stato?.inviata) return <ConfermaRichiesta esito={stato.inviata} />
 
   return (
-    <form action={azione} noValidate className="flex flex-col gap-8">
+    <form action={azione} onSubmit={inviaSenzaSvuotare(azione)} noValidate className="flex flex-col gap-8">
       <input type="hidden" name="slug" value={offerta.slug} />
 
       {errori.modulo ? (

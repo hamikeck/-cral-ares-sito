@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { inviaRichiestaCinema } from '@/app/azioni/richieste'
 
 vi.mock('@/app/azioni/richieste', () => ({ inviaRichiestaCinema: vi.fn() }))
 
@@ -128,5 +129,26 @@ describe('ModuloCinema', () => {
   test('non presenta violazioni di accessibilità', async () => {
     const { container } = render(<ModuloCinema circuiti={circuiti} />)
     expect(await violazioniAccessibilita(container)).toEqual([])
+  })
+
+  test('dopo un errore del server il modulo resta compilato', async () => {
+    // React 19 svuota da sé un <form action={…}> alla fine di ogni azione,
+    // anche quando l'azione risponde con un errore. Per un socio vuol dire
+    // riscrivere nome, matricola ed email per un solo campo sbagliato —
+    // oppure rinunciare, che è più probabile.
+    vi.mocked(inviaRichiestaCinema).mockResolvedValue({
+      errori: { modulo: 'Non risulti fra i soci del CRAL ARES.' },
+    })
+    render(<ModuloCinema circuiti={circuiti} />)
+
+    fireEvent.change(screen.getByLabelText('Nome'), { target: { value: 'Mario' } })
+    fireEvent.change(screen.getByLabelText('Email aziendale'), {
+      target: { value: 'mario.rossi@esempio.test' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Invia la richiesta' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Non risulti fra i soci')
+    expect(screen.getByLabelText('Nome')).toHaveValue('Mario')
+    expect(screen.getByLabelText('Email aziendale')).toHaveValue('mario.rossi@esempio.test')
   })
 })
