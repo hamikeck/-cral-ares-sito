@@ -24,15 +24,26 @@ vi.mock('@/dati/circuiti', () => ({
     },
   ],
 }))
+// Il ruolo anonimo può inserire una richiesta ma non leggerla, e la
+// simulazione deve rispettarlo: chiedere indietro la riga appena scritta
+// (`.select()` dopo `.insert()`) è un INSERT … RETURNING, che PostgreSQL
+// respinge con 42501 perché la riga restituita dovrebbe passare anche la
+// politica di lettura. Una simulazione più gentile del database ha nascosto
+// per due settimane che nessuna richiesta veniva salvata.
+const RIFIUTO_RLS = {
+  data: null,
+  error: { code: '42501', message: 'new row violates row-level security policy for table "richieste"' },
+}
 vi.mock('@/dati/supabasePubblico', () => ({
   clientPubblico: () => ({
     rpc,
     from: () => ({
       insert: (riga: Record<string, unknown>) => {
         inserite.push(riga)
-        return {
-          select: () => ({ single: async () => ({ data: { id: 'r1', numero: 42 }, error: null }) }),
-        }
+        const esito = Promise.resolve({ data: null, error: null })
+        return Object.assign(esito, {
+          select: () => ({ single: async () => RIFIUTO_RLS }),
+        })
       },
     }),
   }),
@@ -65,7 +76,9 @@ describe('inviaRichiestaCinema', () => {
     risultaSocio.mockReset().mockResolvedValue(true)
     avvisaIDirettori.mockReset().mockResolvedValue(true)
     confermaAlSocio.mockReset().mockResolvedValue(undefined)
-    rpc.mockReset()
+    rpc.mockReset().mockImplementation(async (funzione: string) =>
+      funzione === 'numero_richiesta' ? { data: 42, error: null } : { data: null, error: null },
+    )
   })
 
   test('chi non risulta socio non scrive niente, e legge cosa controllare', async () => {
@@ -137,9 +150,25 @@ describe('inviaRichiestaCinema', () => {
   test('avvisa i direttori e segna che l’avviso è partito', async () => {
     const esito = await inviaRichiestaCinema(null, modulo({}))
 
+    // L'id lo sceglie il server prima di inserire: è l'unico modo di
+    // ritrovare la riga senza poterla rileggere.
+    const id = inserite[0].id
+    expect(id).toMatch(/^[0-9a-f-]{36}$/)
+    expect(rpc).toHaveBeenCalledWith('numero_richiesta', { richiesta_id: id })
     expect(avvisaIDirettori).toHaveBeenCalledOnce()
-    expect(rpc).toHaveBeenCalledWith('segna_avviso_inviato', { richiesta_id: 'r1' })
+    expect(avvisaIDirettori.mock.calls[0][0].numero).toBe(42)
+    expect(rpc).toHaveBeenCalledWith('segna_avviso_inviato', { richiesta_id: id })
     expect(esito.inviata?.importo).toBe(26)
+  })
+
+  test('la richiesta si salva senza chiedere indietro la riga', async () => {
+    // Il caso che ha fermato tutte le richieste dall'11 settembre: il
+    // database accetta l'inserimento, ma rifiuta di restituire la riga a chi
+    // non può leggerla. La simulazione qui sopra lo riproduce.
+    const esito = await inviaRichiestaCinema(null, modulo({}))
+
+    expect(esito.errori).toBeUndefined()
+    expect(esito.inviata).toBeDefined()
   })
 
   test('se l’avviso non parte, la richiesta resta e il socio non se ne accorge', async () => {
@@ -150,7 +179,7 @@ describe('inviaRichiestaCinema', () => {
     const esito = await inviaRichiestaCinema(null, modulo({}))
 
     expect(inserite).toHaveLength(1)
-    expect(rpc).not.toHaveBeenCalled()
+    expect(rpc).not.toHaveBeenCalledWith('segna_avviso_inviato', expect.anything())
     expect(esito.inviata).toBeDefined()
     expect(esito.errori).toBeUndefined()
   })

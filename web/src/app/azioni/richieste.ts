@@ -37,6 +37,38 @@ export type EsitoRichiesta = {
 }
 
 /**
+ * Salva una richiesta e ne restituisce id e numero, **senza rileggerla.**
+ *
+ * Il ruolo anonimo può inserire in `richieste` ma non leggerla, e deve
+ * restare così: una richiesta contiene nome, matricola e recapiti di una
+ * persona. Per questo non si può chiedere indietro la riga (`.select()` dopo
+ * `.insert()`): è un INSERT … RETURNING, e PostgreSQL lo respinge con 42501.
+ * Dall'11 al 24 settembre 2026 è successo a ogni invio, e ogni socio si è
+ * sentito dire che non risultava iscritto — la migrazione 0010 racconta il
+ * resto.
+ *
+ * Quindi l'id lo sceglie il server prima di inserire, e il numero, che serve
+ * all'oggetto dell'email, lo chiede a `numero_richiesta`. Se quella chiamata
+ * fallisce la richiesta è comunque salvata: il numero resta vuoto, e l'email
+ * ai direttori parte lo stesso.
+ */
+async function inserisciRichiesta(
+  riga: Record<string, unknown>,
+): Promise<
+  | { data: { id: string; numero: number }; error: null }
+  | { data: null; error: { code?: string } }
+> {
+  const client = clientPubblico()
+  const id = crypto.randomUUID()
+
+  const { error } = await client.from('richieste').insert({ ...riga, id })
+  if (error) return { data: null, error }
+
+  const { data: numero } = await client.rpc('numero_richiesta', { richiesta_id: id })
+  return { data: { id, numero: Number(numero) || 0 }, error: null }
+}
+
+/**
  * Quello che l'email di conferma scrive a chi paga con bonifico: gli stessi
  * IBAN, importo e causale della pagina di conferma, presi dallo stesso esito.
  */
@@ -179,9 +211,7 @@ export async function inviaRichiestaCinema(
 
   const sede = circuito.sedi.find((una) => una.id === dati.sedeId)
 
-  const { data, error } = await clientPubblico()
-    .from('richieste')
-    .insert({
+  const { data, error } = await inserisciRichiesta({
       tipo: 'cinema',
       nome: dati.nome,
       cognome: dati.cognome,
@@ -204,9 +234,7 @@ export async function inviaRichiestaCinema(
       messaggio: dati.messaggio || null,
       consenso_privacy: true,
       consenso_il: new Date().toISOString(),
-    })
-    .select('id, numero')
-    .single()
+  })
 
   if (error) {
     console.error('Errore nell’invio di una richiesta cinema:', error)
@@ -294,9 +322,7 @@ export async function inviaRichiestaConvenzione(
   const respinto = await fermaChiNonERisultaSocio(dati)
   if (respinto) return respinto
 
-  const { data, error } = await clientPubblico()
-    .from('richieste')
-    .insert({
+  const { data, error } = await inserisciRichiesta({
       tipo: 'convenzione',
       nome: dati.nome,
       cognome: dati.cognome,
@@ -309,9 +335,7 @@ export async function inviaRichiestaConvenzione(
       messaggio: dati.messaggio,
       consenso_privacy: true,
       consenso_il: new Date().toISOString(),
-    })
-    .select('id, numero')
-    .single()
+  })
 
   if (error) {
     console.error('Errore nell’invio di una richiesta convenzione:', error)
@@ -423,9 +447,7 @@ export async function inviaRichiestaOfferta(
   const respinto = await fermaChiNonERisultaSocio(dati)
   if (respinto) return respinto
 
-  const { data, error } = await clientPubblico()
-    .from('richieste')
-    .insert({
+  const { data, error } = await inserisciRichiesta({
       tipo: 'offerta',
       offerta_id: id,
       nome: dati.nome,
@@ -443,9 +465,7 @@ export async function inviaRichiestaOfferta(
       messaggio: dati.messaggio || null,
       consenso_privacy: true,
       consenso_il: new Date().toISOString(),
-    })
-    .select('id, numero')
-    .single()
+  })
 
   if (error) {
     console.error('Errore nell’invio di una richiesta da offerta:', error)
