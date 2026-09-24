@@ -4,6 +4,7 @@ import {
   corpoHtml,
   oggettoConferma,
   oggettoEmail,
+  type DatiBonifico,
   type RichiestaPerEmail,
 } from '@/lib/emailRichiesta'
 
@@ -89,6 +90,7 @@ export async function avvisaIDirettori(richiesta: RichiestaPerEmail): Promise<bo
 export async function confermaAlSocio(
   richiesta: RichiestaPerEmail,
   riepilogo: string,
+  bonifico?: DatiBonifico,
 ): Promise<void> {
   const chiave = process.env.RESEND_API_KEY
   if (!chiave) return
@@ -101,7 +103,7 @@ export async function confermaAlSocio(
         from: process.env.EMAIL_MITTENTE ?? 'CRAL ARES <onboarding@resend.dev>',
         to: [richiesta.email],
         subject: oggettoConferma(richiesta),
-        text: corpoConferma(richiesta, riepilogo),
+        text: corpoConferma(richiesta, riepilogo, bonifico),
         // Se il socio risponde a questa, deve arrivare ai direttori.
         reply_to: (process.env.EMAIL_DIRETTORI ?? '').split(',')[0]?.trim() || undefined,
       }),

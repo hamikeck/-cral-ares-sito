@@ -111,7 +111,7 @@ export function RichiediOfferta({ offerta }: { offerta: Offerta }) {
           <div className="flex flex-col gap-2">
             {(
               [
-                ['bonifico', 'Bonifico', 'Ti arrivano IBAN, importo e causale già scritti.'],
+                ['bonifico', 'Bonifico', 'Ti arrivano IBAN e causale già scritti; l’importo te lo dice il direttore.'],
                 [
                   'busta_paga',
                   'Busta paga',

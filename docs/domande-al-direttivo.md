@@ -1,44 +1,14 @@
 # Cosa chiedere al direttivo
 
-Aggiornato al 15 settembre 2026, dopo la telefonata col direttore.
+Aggiornato al 24 settembre 2026. La numerazione è quella originale: le voci
+risolte sono spostate in fondo, e i numeri restano per non confondere chi ha
+in mano la versione precedente.
 
 Ogni voce dice **cosa chiedere**, **perché serve** e **cosa si sblocca**. Quando
 arriva una risposta, si cancella la voce e si annota la decisione in
 `decisioni.md` se cambia qualcosa nel sito.
 
 ---
-
-## 1. Il cinema esiste?
-
-**Da chiedere:** il CRAL ha convenzioni con dei cinema? UCI, The Space, altri?
-E se sì, quanto costa un biglietto per un socio?
-
-**Perché:** nel materiale ci sono sette teatri e **zero circuiti
-cinematografici**. Il sito però mette «Richiedi biglietti del cinema» nel
-riquadro più grande della home, e ha un modulo apposito con la scelta del
-circuito e della sala.
-
-**Cosa si sblocca:** se i cinema ci sono, il modulo si accende scrivendo due
-righe nel database. Se non ci sono, quella porta sulla home sta promettendo una
-cosa che il CRAL non ha, e va sostituita con qualcos'altro — i teatri, per
-esempio, che invece abbondano.
-
-**È la domanda più urgente**, perché riguarda la prima cosa che un socio vede.
-
-## 2. Agenzia delle Entrate, o Agenzia delle Entrate-Riscossione?
-
-**Da chiedere:** i soci sono dipendenti dell'Agenzia delle Entrate o
-dell'Agenzia delle Entrate-Riscossione?
-
-**Perché:** due documenti del materiale dicono la seconda — la lettera della
-Farmacia D'Atri è indirizzata alla vicepresidente del «CRAL ARES, Agenzia delle
-Entrate Riscossione, Regione Campania», e la convenzione assicurativa si
-intitola «CRAL ARES ADR». Il sito scrive **Agenzia delle Entrate** ovunque:
-titolo della home, piè di pagina, pagina «Iscriviti».
-
-**Cosa si sblocca:** se è ADER, è una correzione di sostanza in cinque punti del
-sito. Sono due enti diversi, e sbagliarlo sulla home è il genere di errore che
-un dipendente nota al primo sguardo.
 
 ## 3. Il dominio è `cralares.com` — resta da confermare il resto
 
@@ -60,31 +30,6 @@ Quella casella con ogni probabilità **non esiste**, mentre
 pubblicato che non riceve: va corretto a prescindere da come finisce la
 scelta del dominio del sito.
 
-## 4. I vantaggi delle dieci convenzioni rimaste in bozza
-
-**Da chiedere:** per ciascuna di queste, **quanto risparmia un socio**?
-
-| Partner | Cosa sappiamo | Cosa manca |
-|---|---|---|
-| Teatro Diana | Convenzione rinnovata 2026/2027 | Lo sconto o il prezzo |
-| Teatro Augusteo | Prezzi riservati sugli abbonamenti a turno | Quanto |
-| Teatro Cilea | Convenzione attiva | Quanto |
-| Cineteatro Acacia | Convenzione attiva | Quanto |
-| Teatro Mercadante | Convenzione col Teatro di Napoli | Quanto |
-| Teatro San Ferdinando | Convenzione col Teatro di Napoli | Quanto |
-| Eureka Viaggi | Biglietti Italo tariffa Flex | Quanto si risparmia |
-| Trial Viaggi | Voucher traghetti e aliscafi | Quanto |
-| Chalet La Terrasse | Caffetteria al Vomero | Quale sconto |
-| Napolielettrica | Scooter e moto elettriche | Quale sconto, **e la data di fine**, che nel foglio è vuota |
-
-**Perché:** le dieci schede esistono già nel sito con contatti e scadenze
-veri, e aspettano solo quella riga.
-
-**Cosa si sblocca:** le offerte diventano visibili ai soci. È anche
-**l'occasione giusta per fargli usare il sito la prima volta**: entra in area
-riservata, apre una bozza, scrive il vantaggio, pubblica. Trenta secondi a
-scheda, e impara lo strumento su contenuti suoi.
-
 ## 5. L'elenco dei soci
 
 **Da chiedere:** il file dei soci, con nome, cognome, **email aziendale** e
@@ -98,17 +43,6 @@ dieci minuti.
 
 **Da ricordargli:** il file va mandato con un canale protetto, non come
 allegato di un'email in chiaro — sono dati personali di quattrocento persone.
-
-## 6. L'IBAN dell'associazione
-
-**Da chiedere:** l'IBAN su cui i soci fanno il bonifico quando scelgono il
-cedolino.
-
-**Perché:** oggi la pagina di conferma dice al socio di aspettare l'IBAN dal
-direttore e di non versare niente prima.
-
-**Cosa si sblocca:** IBAN, importo e causale già scritti nella conferma e
-nell'email, quindi un giro di email in meno per ogni richiesta.
 
 ## 7. Gli indirizzi dei direttori — ARRIVATI
 
@@ -173,3 +107,18 @@ passata da nessuno.
 - **Cedolino e busta paga** come modalità di pagamento — chiarite l'8 settembre.
 - **Indirizzi dei direttori** — arrivati il 15 settembre, trascritti spenti in
   `web/.env.local`. Resta da decidere se scrivere a tutti e sei: vedi la voce 7.
+- **Agenzia delle Entrate-Riscossione** — confermato il 24 settembre (voce 2):
+  i soci sono dipendenti di ADER. Il sito lo scrive nei cinque punti in cui
+  diceva «Agenzia delle Entrate».
+- **L'IBAN** — comunicato il 24 settembre (voce 6), sta in
+  `web/src/contenuti/pagine.ts` con una prova sul carattere di controllo. Chi
+  paga il cinema con bonifico riceve IBAN, importo e causale a schermo e
+  nell'email; chi chiede un'offerta riceve IBAN e causale, e l'importo glielo
+  scrive il direttore.
+- **Il cinema** — risolto il 23 settembre (voce 1): cinque circuiti veri, con
+  prezzi e limitazioni, nella migrazione 0009. Il C+C resta fuori perché la
+  convenzione è scaduta.
+- **Le dieci convenzioni in bozza** — pubblicate il 15 settembre (voce 4) con
+  un vantaggio detto a parole al posto della cifra, per decisione del
+  committente. Quando il direttivo avrà le cifre, le scrive da sé
+  dall'area riservata.

@@ -9,16 +9,19 @@
 export const contenutiPagine = {
   associazione: {
     /**
-     * L'IBAN su cui i soci fanno il bonifico.
+     * L'IBAN su cui i soci fanno il bonifico, comunicato il 24 settembre 2026.
      *
-     * Assente finché il direttivo non lo comunica, ed è deliberato: la pagina
-     * di conferma dice al socio che l'IBAN glielo scriverà un direttore,
-     * invece di mostrare un numero inventato. Un IBAN sbagliato manda dei
-     * soldi a uno sconosciuto.
+     * Scritto tutto attaccato perché il socio lo copia: non tutte le app delle
+     * banche accettano gli spazi. Il carattere di controllo è verificato da
+     * `iban.test.ts` — un IBAN sbagliato manda dei soldi a uno sconosciuto, e
+     * una cifra scambiata ricopiandolo qui è il modo in cui succede.
+     *
+     * Resta opzionale nel tipo: se un giorno va tolto, la conferma torna a
+     * dire al socio di aspettare la risposta del direttore.
      */
-    iban: undefined as string | undefined,
+    iban: 'IT32Y0538703410000004305459' as string | undefined,
     nome: 'CRAL ARES',
-    sottotitolo: "Circolo ricreativo dei dipendenti dell'Agenzia delle Entrate",
+    sottotitolo: "Circolo ricreativo dei dipendenti dell'Agenzia delle Entrate-Riscossione",
     /**
      * La segreteria, comunicata dal direttore il 15 settembre 2026 insieme
      * agli indirizzi degli altri direttori: tutti su `cralares.com`.
@@ -35,7 +38,7 @@ export const contenutiPagine = {
     email: 'segreteriacral@cralares.com',
   },
   home: {
-    titolo: "Il circolo dei dipendenti dell'Agenzia delle Entrate",
+    titolo: "Il circolo dei dipendenti dell'Agenzia delle Entrate-Riscossione",
     occhiello:
       "Biglietti del cinema, convenzioni con i negozi della zona e offerte riservate ai soci.",
 
@@ -107,7 +110,7 @@ export const contenutiPagine = {
 
     titoloIscrizione: "Non sei ancora socio?",
     testoIscrizione:
-      "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate.",
+      "L'iscrizione è aperta a tutti i dipendenti dell'Agenzia delle Entrate-Riscossione.",
     invito: "Scopri come iscriverti",
   },
   errore: {
@@ -138,7 +141,7 @@ export const contenutiPagine = {
   chiSiamo: {
     titolo: 'Chi siamo',
     paragrafi: [
-      "Il CRAL ARES è l'associazione ricreativa dei dipendenti dell'Agenzia delle Entrate. Nasce per mettere a disposizione dei colleghi convenzioni, biglietti a tariffa agevolata e occasioni di incontro.",
+      "Il CRAL ARES è l'associazione ricreativa dei dipendenti dell'Agenzia delle Entrate-Riscossione. Nasce per mettere a disposizione dei colleghi convenzioni, biglietti a tariffa agevolata e occasioni di incontro.",
       "L'associazione è gestita da un direttivo composto da dipendenti che vi dedicano il proprio tempo, senza scopo di lucro.",
     ],
     titoloDirettivo: 'Il direttivo',
@@ -151,7 +154,7 @@ export const contenutiPagine = {
   iscriviti: {
     titolo: 'Iscriviti al CRAL',
     paragrafi: [
-      "Possono iscriversi al CRAL ARES i dipendenti dell'Agenzia delle Entrate.",
+      "Possono iscriversi al CRAL ARES i dipendenti dell'Agenzia delle Entrate-Riscossione.",
       "Per aderire scrivi all'indirizzo dell'associazione: riceverai il modulo di iscrizione e le indicazioni per il versamento della quota annuale.",
     ],
     notaProvvisoria:

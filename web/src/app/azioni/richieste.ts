@@ -17,6 +17,8 @@ import { risultaSocio } from '@/dati/soci'
 import { clientPubblico } from '@/dati/supabasePubblico'
 import { verificaTurnstile } from '@/lib/turnstile'
 import { formattaEuro } from '@/dominio/circuito'
+import { contenutiPagine } from '@/contenuti/pagine'
+import type { DatiBonifico } from '@/lib/emailRichiesta'
 
 export type EsitoRichiesta = {
   errori?: Record<string, string>
@@ -31,6 +33,19 @@ export type EsitoRichiesta = {
     pagamentoBonifico: boolean
     importo?: number
     causale: string
+  }
+}
+
+/**
+ * Quello che l'email di conferma scrive a chi paga con bonifico: gli stessi
+ * IBAN, importo e causale della pagina di conferma, presi dallo stesso esito.
+ */
+function datiBonifico(inviata: NonNullable<EsitoRichiesta['inviata']>): DatiBonifico | undefined {
+  if (!inviata.pagamentoBonifico) return undefined
+  return {
+    iban: contenutiPagine.associazione.iban,
+    importo: inviata.importo !== undefined ? formattaEuro(inviata.importo) : undefined,
+    causale: inviata.causale,
   }
 }
 
@@ -244,15 +259,14 @@ export async function inviaRichiestaCinema(
   // consegna: quello non è verificato da nessuno, e spedirci un'email
   // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
   // qualsiasi con il nostro mittente.
-  await confermaAlSocio(avviso, avviso.riepilogo)
-
-  return {
-    inviata: {
-      pagamentoBonifico: dati.pagamento === 'bonifico',
-      importo: importoBiglietti(circuito, dati.quantita),
-      causale: `CRAL ARES biglietti ${circuito.nome} ${dati.cognome} ${dati.codiceDipendente}`,
-    },
+  const inviata = {
+    pagamentoBonifico: dati.pagamento === 'bonifico',
+    importo,
+    causale: `CRAL ARES biglietti ${circuito.nome} ${dati.cognome} ${dati.codiceDipendente}`,
   }
+  await confermaAlSocio(avviso, avviso.riepilogo, datiBonifico(inviata))
+
+  return { inviata }
 }
 
 /**
@@ -490,12 +504,11 @@ export async function inviaRichiestaOfferta(
   // consegna: quello non è verificato da nessuno, e spedirci un'email
   // trasformerebbe il modulo in un modo per mandare posta a un indirizzo
   // qualsiasi con il nostro mittente.
-  await confermaAlSocio(avviso, avviso.riepilogo)
-
-  return {
-    inviata: {
-      pagamentoBonifico: biglietti?.pagamento === 'bonifico',
-      causale: `CRAL ARES ${offerta.partner} ${dati.cognome} ${dati.codiceDipendente}`,
-    },
+  const inviata = {
+    pagamentoBonifico: biglietti?.pagamento === 'bonifico',
+    causale: `CRAL ARES ${offerta.partner} ${dati.cognome} ${dati.codiceDipendente}`,
   }
+  await confermaAlSocio(avviso, avviso.riepilogo, datiBonifico(inviata))
+
+  return { inviata }
 }

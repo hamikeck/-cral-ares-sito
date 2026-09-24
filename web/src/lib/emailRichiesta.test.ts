@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { corpoEmail, corpoHtml, oggettoEmail, type RichiestaPerEmail } from './emailRichiesta'
+import {  corpoConferma,  corpoEmail,  corpoHtml,  oggettoEmail,  type RichiestaPerEmail,} from './emailRichiesta'
 
 const richiesta: RichiestaPerEmail = {
   numero: 42,
@@ -110,5 +110,39 @@ describe('corpoHtml', () => {
   test('non chiede al client di posta di scaricare niente', () => {
     const html = corpoHtml(richiesta)
     expect(html).not.toMatch(/<img|<link|@import/)
+  })
+})
+
+describe('corpoConferma', () => {
+  const iban = 'IT32Y0538703410000004305459'
+
+  test('a chi paga con bonifico scrive IBAN, importo e causale', () => {
+    const corpo = corpoConferma(richiesta, richiesta.riepilogo, {
+      iban,
+      importo: '26,00 €',
+      causale: 'CRAL ARES biglietti UCI Cinemas Rossi AE12345',
+    })
+
+    expect(corpo).toContain(`IBAN: ${iban}`)
+    expect(corpo).toContain('Importo: 26,00 €')
+    expect(corpo).toContain('Causale: CRAL ARES biglietti UCI Cinemas Rossi AE12345')
+    expect(corpo).not.toContain('aspetta')
+  })
+
+  test('senza importo, dice di aspettare la cifra dal direttore', () => {
+    const corpo = corpoConferma(richiesta, richiesta.riepilogo, {
+      iban,
+      causale: 'CRAL ARES Teatro Diana Rossi AE12345',
+    })
+
+    expect(corpo).toContain(`IBAN: ${iban}`)
+    expect(corpo).not.toContain('Importo:')
+    expect(corpo).toMatch(/aspetta quella\s+prima di fare il bonifico/)
+  })
+
+  test('a chi non paga con bonifico non parla di versamenti', () => {
+    const corpo = corpoConferma(richiesta, richiesta.riepilogo)
+
+    expect(corpo).not.toMatch(/IBAN|bonifico/i)
   })
 })

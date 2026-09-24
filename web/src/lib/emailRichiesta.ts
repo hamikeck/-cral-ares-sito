@@ -156,7 +156,11 @@ export function oggettoConferma(richiesta: RichiestaPerEmail): string {
   return `Abbiamo ricevuto la tua richiesta · #${richiesta.numero}`
 }
 
-export function corpoConferma(richiesta: RichiestaPerEmail, riepilogo: string): string {
+export function corpoConferma(
+  richiesta: RichiestaPerEmail,
+  riepilogo: string,
+  bonifico?: DatiBonifico,
+): string {
   return [
     `Ciao ${richiesta.nome},`,
     '',
@@ -164,10 +168,41 @@ export function corpoConferma(richiesta: RichiestaPerEmail, riepilogo: string): 
     '',
     'Ti risponde un direttore del CRAL, non un sistema automatico: può volerci',
     'qualche giorno. Non serve rimandare la richiesta — è già in coda.',
-    '',
-    'Se paghi con bonifico, aspetta la sua email prima di fare qualsiasi',
-    'versamento: l’IBAN e l’importo te li scrive lui.',
+    ...righeBonifico(bonifico),
     '',
     'CRAL ARES',
   ].join('\n')
+}
+
+/**
+ * Dove e quanto versare, per chi ha scelto il bonifico.
+ *
+ * L'importo è già scritto in euro perché lo calcola chi chiama, con la stessa
+ * funzione della pagina di conferma: le due cifre non devono poter divergere.
+ * Quando manca — le offerte non hanno un prezzo nel sito — il socio riceve
+ * IBAN e causale, ma gli si dice di aspettare la cifra dal direttore.
+ */
+export type DatiBonifico = { iban?: string; importo?: string; causale: string }
+
+function righeBonifico(bonifico?: DatiBonifico): string[] {
+  if (!bonifico) return []
+
+  if (!bonifico.iban) {
+    return [
+      '',
+      'Se paghi con bonifico, aspetta la sua email prima di fare qualsiasi',
+      'versamento: l’IBAN e l’importo te li scrive lui.',
+    ]
+  }
+
+  return [
+    '',
+    'Per il bonifico:',
+    `IBAN: ${bonifico.iban}`,
+    ...(bonifico.importo ? [`Importo: ${bonifico.importo}`] : []),
+    `Causale: ${bonifico.causale}`,
+    ...(bonifico.importo
+      ? []
+      : ['', 'L’importo te lo scrive il direttore nella risposta: aspetta quella', 'prima di fare il bonifico.']),
+  ]
 }

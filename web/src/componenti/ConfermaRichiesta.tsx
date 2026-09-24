@@ -32,13 +32,23 @@ export function ConfermaRichiesta({
           <h3 className="text-xl text-chiaro">Come pagare</h3>
 
           {iban ? (
-            <dl className="mt-4 flex flex-col gap-3">
-              <Voce etichetta="IBAN" valore={iban} />
-              {esito.importo !== undefined ? (
-                <Voce etichetta="Importo" valore={formattaEuro(esito.importo)} />
+            <>
+              <dl className="mt-4 flex flex-col gap-3">
+                <Voce etichetta="IBAN" valore={iban} />
+                {esito.importo !== undefined ? (
+                  <Voce etichetta="Importo" valore={formattaEuro(esito.importo)} />
+                ) : null}
+                <Voce etichetta="Causale" valore={esito.causale} />
+              </dl>
+              {/* Le offerte non hanno un prezzo nel sito: senza questa riga il
+                  socio vedrebbe l'IBAN e non saprebbe quanto versare. */}
+              {esito.importo === undefined ? (
+                <p className="mt-4 text-corpo text-lettura">
+                  L’importo te lo scrive il direttore nella risposta: aspetta quella prima di
+                  fare il bonifico.
+                </p>
               ) : null}
-              <Voce etichetta="Causale" valore={esito.causale} />
-            </dl>
+            </>
           ) : (
             /* Meglio dire che manca, che mostrare un numero inventato: un
                IBAN sbagliato manda dei soldi a uno sconosciuto. */
