@@ -701,3 +701,46 @@ legate ai campi con `htmlFor`, gli errori legati con `aria-describedby` e
 `aria-invalid`, l'anello di fuoco azzurro da tastiera, `prefers-reduced-motion`
 sull'alone e l'`alt=""` sul marchio in facciata — che è decorativo perché
 l'`h1` accanto dice già il nome — erano già a posto.
+
+## Fase 6 — verso la pubblicazione (24 settembre 2026)
+
+### `'unsafe-inline'` negli script resta, e si aggiunge `script-src-attr 'none'`
+
+La nota in `netlify.toml` chiedeva di rivalutare la scelta prima che i moduli
+andassero online. Rivalutata con i moduli già online, la scelta regge, per
+tre ragioni verificate:
+
+- **Non c'è un punto in cui un testo diventa HTML.** Nessun
+  `dangerouslySetInnerHTML`, nessun `innerHTML`, nessun `eval`. Adesso lo
+  garantisce una prova che legge i sorgenti, e che fallisce il giorno in cui
+  qualcuno ne aggiunge uno.
+- **I link dinamici non vengono dai soci.** Gli unici `href` costruiti da
+  dati sono il sito del circuito e la programmazione della sala, scritti
+  nelle migrazioni. Il sito del partner di un'offerta non diventa mai un
+  link pubblico. React 19 in ogni caso rifiuta gli `href` in `javascript:`.
+- **Il costo dei nonce è alto per quello che proteggono.** Ogni pagina oggi
+  statica diventerebbe generata a ogni visita: più lenta per il socio, e più
+  invocazioni di funzione sul piano gratuito di Netlify.
+
+Si è aggiunto invece `script-src-attr 'none'`, che blocca gli attributi evento
+(`onerror="…"`, `onclick="…"`). È la forma che prende quasi ogni iniezione
+riuscita, e a Next non serve: React collega gli eventi da JavaScript. Prima di
+aggiungerla è stato verificato l'HTML compilato delle undici pagine principali
+(nessun attributo `on…=`), e poi il sito nel browser: il modulo del cinema
+ricalcola il totale, e la console non registra violazioni.
+
+**Due cose da ricordare:**
+
+- Il giorno in cui si accende Turnstile, la politica va allargata a
+  `https://challenges.cloudflare.com` in `script-src` e `frame-src`. Senza,
+  il widget non carica e **ogni richiesta viene respinta**: il server trova
+  la chiave segreta e si aspetta un gettone che il browser non ha potuto
+  produrre. Va aggiornata anche la pagina cookie, perché Cloudflare diventa un
+  terzo che riceve l'indirizzo IP del socio.
+- Se un giorno serve HTML grezzo (un'offerta in grassetto, per dire), la
+  strada è un sottoinsieme di Markdown reso da React, non
+  `dangerouslySetInnerHTML`. La prova lo impedisce apposta.
+
+L'esportazione CSV e l'email in HTML, gli altri due punti da cui i testi dei
+soci escono dal sito, erano già protette: la prima neutralizza le celle che
+Excel leggerebbe come formule, la seconda fa l'escape di ogni valore.

@@ -13,6 +13,13 @@ import Script from 'next/script'
  * Il widget mette da sé un campo nascosto `cf-turnstile-response` nel modulo
  * che lo contiene: la Server Action lo rilegge da lì, e non serve altro
  * codice per collegarli.
+ *
+ * **Accenderlo non basta mettere le chiavi.** La politica dei contenuti oggi
+ * non ammette Cloudflare: va aggiunto `https://challenges.cloudflare.com` a
+ * `script-src` e `frame-src` in `lib/intestazioniSicurezza.ts` e nel
+ * `netlify.toml`, altrimenti il widget non carica e ogni richiesta viene
+ * respinta. E la pagina cookie va aggiornata, perché Cloudflare diventa un
+ * terzo che riceve l'indirizzo IP del socio.
  */
 export function Turnstile() {
   const chiave = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY

@@ -23,18 +23,20 @@
 # Google o uno script di statistiche, non funzionerebbe — invece di funzionare
 # in silenzio e rendere falsa l'informativa.
 #
-# Nota per la fase 4: `script-src` ammette 'unsafe-inline' perché Next
-# inserisce nella pagina i dati di idratazione come script in linea.
-# Toglierlo richiede i nonce e un middleware, che costringerebbe ogni pagina a
-# essere generata su richiesta invece che staticamente. Da questa fase non è
-# più vero che non c'è alcun contenuto scritto dagli utenti: descrizioni,
-# condizioni, istruzioni e recapiti delle offerte sono scritti dai direttori e
-# resi sulle pagine pubbliche. Il compromesso resta accettabile perché il
-# rischio è comunque basso — chi scrive è autenticato e nominato in
-# `redattori`, React fa l'escape di tutto ciò che rende, e non c'è un solo
-# `dangerouslySetInnerHTML` nel progetto — ma quando in fase 4 a scrivere sarà
-# il pubblico, e non più tre persone nominate a mano in una tabella, questa
-# valutazione va rifatta da capo.
+# `script-src` ammette 'unsafe-inline' perché Next inserisce nella pagina i
+# dati di idratazione come script in linea. Toglierlo richiede i nonce, che
+# renderebbero dinamica ogni pagina oggi statica. Rivalutato il 24 settembre
+# 2026, con i moduli pubblici già online, e tenuto: nessun testo scritto da
+# soci o direttori arriva nella pagina senza l'escape di React, e una prova in
+# `intestazioniSicurezza.test.ts` fallisce se compare HTML grezzo. In cambio si
+# è aggiunto `script-src-attr 'none'`, che blocca gli attributi evento
+# (`onerror="…"`), la strada classica di un'iniezione. Il perché completo sta
+# in `docs/decisioni.md`.
+#
+# **Il giorno in cui si accende Turnstile** questa politica va allargata a
+# `https://challenges.cloudflare.com` in `script-src` e in `frame-src`. Senza,
+# il browser blocca il widget, il modulo parte senza gettone e il server
+# respinge ogni richiesta.
 #
 # Queste regole valgono per i file che serve la CDN — caratteri, immagini, i
 # due SVG del marchio. **Non arrivano all'HTML**: le pagine le serve la
@@ -53,7 +55,7 @@
   for = "/*"
 
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://mfwtepgynxcypzetblwc.supabase.co; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; script-src-attr 'none'; connect-src 'self' https://mfwtepgynxcypzetblwc.supabase.co; upgrade-insecure-requests"
 
     # Il sito non va incorniciato in pagine altrui: è la difesa contro il
     # clickjacking, e vale doppio su un sito legato alla pubblica

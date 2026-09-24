@@ -35,14 +35,19 @@ export const INTESTAZIONI_SICUREZZA = [
    * `script-src` ammette 'unsafe-inline' perché Next inserisce nella pagina i
    * dati di idratazione come script in linea. Toglierlo richiede i nonce e un
    * middleware, che costringerebbe ogni pagina a essere generata su richiesta
-   * invece che staticamente.
+   * invece che staticamente. `script-src-attr 'none'` chiude la parte che non
+   * serve a Next: gli attributi evento. Rivalutato il 24 settembre 2026, vedi
+   * `docs/decisioni.md`.
+   *
+   * Turnstile, quando si accende, richiede `https://challenges.cloudflare.com`
+   * in `script-src` e `frame-src`: qui e nel `netlify.toml`.
    */
   {
     key: 'Content-Security-Policy',
     value:
       "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; " +
       "object-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; " +
-      "script-src 'self' 'unsafe-inline'; connect-src 'self' https://mfwtepgynxcypzetblwc.supabase.co; " +
+      "script-src 'self' 'unsafe-inline'; script-src-attr 'none'; connect-src 'self' https://mfwtepgynxcypzetblwc.supabase.co; " +
       'upgrade-insecure-requests',
   },
 

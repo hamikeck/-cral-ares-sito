@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, test } from 'vitest'
 import { INTESTAZIONI_SICUREZZA } from './intestazioniSicurezza'
@@ -49,5 +49,35 @@ describe('intestazioni di sicurezza', () => {
     expect(valoreNelToml('Strict-Transport-Security')).toBe(
       'max-age=31536000; includeSubDomains',
     )
+  })
+
+  test('gli script in linea sono ammessi, gli attributi evento no', () => {
+    // `'unsafe-inline'` resta perché Next scrive i dati di idratazione in
+    // linea. `script-src-attr 'none'` chiude invece la strada più comune di
+    // un'iniezione — un `onerror="…"` infilato in un testo — e React non ne
+    // produce: gli eventi li collega da JavaScript.
+    const politica = INTESTAZIONI_SICUREZZA.find(
+      (i) => i.key === 'Content-Security-Policy',
+    )?.value
+
+    expect(politica).toContain("script-src-attr 'none'")
+  })
+
+  test('nessun componente scrive HTML grezzo nella pagina', () => {
+    // È la condizione che rende accettabile `'unsafe-inline'`: finché ogni
+    // testo passa dall'escape di React, un contenuto scritto da un socio o da
+    // un direttore non può diventare uno script. Chi ha bisogno di HTML
+    // grezzo deve prima rifare la valutazione in `docs/decisioni.md`.
+    const sorgenti = (readdirSync(join(process.cwd(), 'src'), {
+      recursive: true,
+    }) as string[]).filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
+
+    const colpevoli = sorgenti.filter((f) =>
+      /dangerouslySetInnerHTML|\.innerHTML\s*=|\bnew Function\(|\beval\(/.test(
+        readFileSync(join(process.cwd(), 'src', f), 'utf8'),
+      ),
+    )
+
+    expect(colpevoli).toEqual([])
   })
 })

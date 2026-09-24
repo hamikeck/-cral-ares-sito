@@ -48,7 +48,7 @@ const TIPI: Record<string, string> = {
  * separatore, una virgoletta o un a capo — il messaggio di un socio può
  * contenerli tutti e tre.
  *
- * Il trattino davanti a un valore che comincia per `=`, `+`, `-` o `@` non è
+ * L'apostrofo davanti a un valore che comincia per `=`, `+`, `-` o `@` non è
  * una decorazione: Excel interpreta quelle celle come formule, e un messaggio
  * che comincia con «=» diventerebbe un calcolo eseguito all'apertura del file.
  */
