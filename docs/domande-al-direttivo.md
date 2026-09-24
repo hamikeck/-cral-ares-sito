@@ -44,7 +44,7 @@ dieci minuti.
 **Da ricordargli:** il file va mandato con un canale protetto, non come
 allegato di un'email in chiaro — sono dati personali di quattrocento persone.
 
-## 7. Gli indirizzi dei direttori — ARRIVATI
+## 7. Gli indirizzi dei direttori — ARRIVATI, manca il mittente
 
 **Risposta del 15 settembre**, al telefono: il direttore ha comunicato gli
 indirizzi a cui devono arrivare le richieste.
@@ -63,10 +63,17 @@ direttore. Servono comunque due gesti per accendere: togliere il cancelletto e
 valorizzare `RESEND_API_KEY`. Senza la chiave non parte niente comunque,
 nemmeno la conferma al socio (`posta.ts:94`).
 
-**Da decidere prima di accendere:** se le richieste debbano arrivare a tutti e
-sei o alla sola segreteria. Sei destinatari per ogni richiesta sono sei caselle
-che si riempiono, e con quattrocento soci diventa rumore che porta a smettere
-di leggerle.
+**Deciso il 24 settembre: a tutti e sei.** L'elenco in `web/.env.local` resta
+com'è, ancora spento.
+
+**Resta aperto il mittente.** Oggi le email partirebbero da
+`onboarding@resend.dev`, l'indirizzo di prova di Resend, che consegna solo alla
+casella di chi ha aperto l'account: ai direttori non arriverebbe niente. Serve
+un indirizzo su `cralares.com` (proposta: `richieste@cralares.com`), e per
+usarlo bisogna aggiungere su Aruba i record DNS che Resend chiede. La casella
+può anche non esistere, perché nessuno risponde al mittente: ai direttori la
+risposta va al socio, al socio va alla segreteria. Da chiedere: **chi ha le
+credenziali Aruba.**
 
 ## 8. Cosa farne di cataloghi e prezziari
 
