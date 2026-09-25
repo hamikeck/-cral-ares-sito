@@ -105,6 +105,31 @@ passata da nessuno.
 
 ---
 
+## 10. Chi compone il direttivo
+
+**Da chiedere:** ruoli e nomi esatti. Chi è presidente e chi vicepresidente,
+se esistono segretario e tesoriere, chi sono i consiglieri, e se la
+segreteria è una persona o solo la casella `segreteriacral@cralares.com`.
+
+**Perché:** «Chi siamo» ha l'organigramma pronto (dal 25 settembre), ma
+finché mancano i nomi mostra la nota «sarà pubblicata a breve». Non ci sono
+foto dei componenti, e non servono: ognuno ha le sue iniziali.
+
+**Cosa si sblocca:** l'organigramma online, inserendo i nomi in un file.
+
+## 11. Foto di gite ed eventi
+
+**Da chiedere:** esistono foto di gite, spettacoli o cene del CRAL? Ne
+basterebbero 4–6.
+
+**Perché:** servirebbero a una fascia «La vita del CRAL» in «Chi siamo», per
+far vedere che il circolo fa cose, non solo sconti. È un'aggiunta
+facoltativa: il sito regge anche senza.
+
+**Da ricordargli:** una foto in cui un collega è riconoscibile è un dato
+personale. Serve il consenso delle persone ritratte, e l'informativa privacy
+va aggiornata di conseguenza.
+
 ## Già risolte, da non richiedere
 
 - **Campi dell'offerta e immagini** — confermati l'8 settembre: gli otto campi
