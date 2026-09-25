@@ -3,6 +3,7 @@ import { Intestazione } from '@/componenti/Intestazione'
 import { PiedePagina } from '@/componenti/PiedePagina'
 import { contenutiPagine } from '@/contenuti/pagine'
 import { SCHEDA_CONDIVISA } from '@/lib/schedaCondivisa'
+import { indirizzoDelSito } from '@/dati/ambiente'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -13,8 +14,8 @@ export const metadata: Metadata = {
   description: contenutiPagine.home.occhiello,
   // Serve a trasformare in indirizzi completi quelli dell'anteprima: WhatsApp
   // e i programmi di posta non sanno cosa farsene di un «/opengraph-image».
-  // Quando arriva il dominio basta cambiare la variabile su Netlify.
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITO_URL || 'http://localhost:3000'),
+  // L'indirizzo lo decide `indirizzoDelSito`, con le sue regole.
+  metadataBase: new URL(indirizzoDelSito() ?? 'http://localhost:3000'),
   // La scheda che compare quando un direttore incolla un link su WhatsApp o
   // in un'email. L'immagine è `opengraph-image.png` in questa cartella, e
   // Next la aggiunge da sé a ogni pagina.
