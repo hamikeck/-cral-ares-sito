@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Organigramma } from '@/componenti/Organigramma'
 import { contenutiPagine } from '@/contenuti/pagine'
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default function ChiSiamo() {
     paragrafi,
     titoloDirettivo,
     notaProvvisoria,
+    direttivo,
     titoloContatti,
     testoContatti,
   } = contenutiPagine.chiSiamo
@@ -22,22 +24,30 @@ export default function ChiSiamo() {
       {paragrafi.map((paragrafo) => (
         <p key={paragrafo}>{paragrafo}</p>
       ))}
-      <section className="flex flex-col gap-2">
+      <section className="flex flex-col gap-6">
         <h2 className="text-titolo-sezione text-chiaro">{titoloDirettivo}</h2>
-        <p className="text-sm text-tenue">{notaProvvisoria}</p>
+        {direttivo ? (
+          <Organigramma direttivo={direttivo} email={email} />
+        ) : (
+          <p className="text-sm text-tenue">{notaProvvisoria}</p>
+        )}
       </section>
-      <section className="flex flex-col gap-2">
-        <h2 className="text-titolo-sezione text-chiaro">{titoloContatti}</h2>
-        <p>
-          {testoContatti}{' '}
-          <a
-            href={`mailto:${email}`}
-            className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
-          >
-            {email}
-          </a>
-        </p>
+      {/* Con l'organigramma la segreteria ha il suo riquadro, con la stessa
+          casella: ripeterla subito sotto come «Contatti» sarebbe un doppione. */}
+      {direttivo ? null : (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-titolo-sezione text-chiaro">{titoloContatti}</h2>
+          <p>
+            {testoContatti}{' '}
+            <a
+              href={`mailto:${email}`}
+              className="fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4"
+            >
+              {email}
+            </a>
+          </p>
         </section>
+      )}
     </article>
   )
 }

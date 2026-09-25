@@ -6,6 +6,8 @@
  * privacy con i dati reali del titolare (spec, sezione 16). Sostituirli
  * significa modificare questo file e nient'altro.
  */
+import type { Direttivo } from '@/componenti/Organigramma'
+
 export const contenutiPagine = {
   associazione: {
     /**
@@ -147,6 +149,12 @@ export const contenutiPagine = {
     titoloDirettivo: 'Il direttivo',
     notaProvvisoria:
       'La composizione del direttivo sarà pubblicata a breve.',
+    /**
+     * Chi fa cosa nel CRAL. Finché è `null` la pagina mostra la nota qui
+     * sopra: i nomi li comunica il direttivo, e un organigramma con nomi
+     * inventati sarebbe una dichiarazione falsa su persone vere.
+     */
+    direttivo: null as Direttivo | null,
     titoloContatti: 'Contatti',
     testoContatti:
       "Per qualsiasi informazione scrivi all'indirizzo dell'associazione:",
