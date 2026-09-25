@@ -744,3 +744,27 @@ ricalcola il totale, e la console non registra violazioni.
 L'esportazione CSV e l'email in HTML, gli altri due punti da cui i testi dei
 soci escono dal sito, erano già protette: la prima neutralizza le celle che
 Excel leggerebbe come formule, la seconda fa l'escape di ogni valore.
+
+### Il database si tiene sveglio da Netlify, ogni giorno
+
+Il piano gratuito di Supabase sospende il progetto dopo sette giorni senza
+richieste al database. Visitare il sito non conta, perché le pagine pubbliche
+sono statiche. In una settimana tranquilla il sito smetterebbe di salvare
+richieste e di aprire l'area riservata, e nessuno se ne accorgerebbe fino
+alla prima richiesta persa.
+
+`web/netlify/functions/sveglia-database.mts` è una funzione programmata di
+Netlify: ogni giorno alle 6 UTC fa la lettura più piccola possibile, un id da
+`circuiti`. La logica sta in `src/lib/sveglia.ts`, con le sue prove, perché
+ogni file nella cartella delle funzioni diventa una funzione, prove comprese.
+
+Perché Netlify e non un'azione programmata di GitHub: GitHub disattiva le
+azioni programmate di un repository che non riceve commit per 60 giorni, e a
+sito finito i commit si fermano. Cioè la sveglia si spegnerebbe proprio quando
+serve. Netlify invece la esegue finché il sito è pubblicato, con le variabili
+che ha già, e il piano gratuito la comprende.
+
+Una volta al giorno lascia sei tentativi di margine prima della soglia. Se il
+database risponde male, la funzione fallisce e l'esecuzione risulta fallita nei
+log di Netlify (Logs → Functions), dove si può anche lanciarla a mano con
+«Run now».
