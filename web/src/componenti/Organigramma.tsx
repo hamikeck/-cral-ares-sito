@@ -30,13 +30,82 @@ export function Organigramma({
 }: {
   direttivo: Direttivo
   email: string
-  forma?: 'albero' | 'tessere'
+  forma?: 'albero' | 'tessere' | 'locandina'
 }) {
+  if (forma === 'locandina') return <Locandina direttivo={direttivo} email={email} />
   return forma === 'albero' ? (
     <Albero direttivo={direttivo} email={email} />
   ) : (
     <Tessere direttivo={direttivo} email={email} />
   )
+}
+
+/**
+ * La forma tipografica: come il programma di sala di un teatro.
+ *
+ * Niente riquadri, iniziali o linee di collegamento: ruoli piccoli in
+ * azzurro, nomi grandi, filetti corti fra un gruppo e l'altro. Per sette o
+ * otto persone basta la tipografia a dire chi viene prima.
+ */
+function Locandina({ direttivo, email }: { direttivo: Direttivo; email: string }) {
+  const { presidente, cariche, consiglieri } = direttivo
+  const ruolo = 'text-xs font-semibold tracking-[0.2em] text-luce uppercase'
+
+  return (
+    <div className="flex flex-col items-center border-y border-parete py-10 text-center sm:py-12">
+      <ul className="flex flex-col items-center">
+        <li>
+          <p className={ruolo}>{presidente.ruolo}</p>
+          <p className="mt-2 font-titolo text-4xl font-bold text-chiaro sm:text-5xl">
+            {presidente.nome}
+          </p>
+        </li>
+      </ul>
+
+      {cariche.length > 0 ? (
+        <>
+          <Filetto />
+          <ul className="grid w-full gap-7 sm:grid-cols-3 sm:gap-6">
+            {cariche.map((carica) => (
+              <li key={carica.ruolo}>
+                <p className={ruolo}>{carica.ruolo}</p>
+                <p className="mt-2 font-titolo text-2xl font-bold text-chiaro sm:text-xl">{carica.nome}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+
+      {consiglieri.length > 0 ? (
+        <>
+          <Filetto />
+          <h3 className={ruolo}>Consiglio direttivo</h3>
+          {/* Niente separatori fra i nomi: andando a capo, un puntino finiva
+              in testa alla riga. Basta lo spazio, e ogni nome resta intero. */}
+          <ul className="mt-3 flex max-w-xl flex-wrap justify-center gap-x-7 gap-y-1 text-xl text-lettura">
+            {consiglieri.map((nome) => (
+              <li key={nome} className="whitespace-nowrap">
+                {nome}
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+
+      <Filetto />
+      <h3 className={ruolo}>Segreteria</h3>
+      <a
+        href={`mailto:${email}`}
+        className="fuoco-su-scuro mt-3 rounded text-lg font-semibold text-luce underline underline-offset-4"
+      >
+        {email}
+      </a>
+    </div>
+  )
+}
+
+function Filetto() {
+  return <span aria-hidden="true" className="my-9 block h-px w-12 bg-cornice" />
 }
 
 function Albero({ direttivo, email }: { direttivo: Direttivo; email: string }) {

@@ -14,7 +14,7 @@ const direttivo: Direttivo = {
   consiglieri: ['Antonio Ferrara', 'Carmela Romano'],
 }
 
-describe.each(['albero', 'tessere'] as const)('Organigramma, forma %s', (forma) => {
+describe.each(['albero', 'tessere', 'locandina'] as const)('Organigramma, forma %s', (forma) => {
   test('ogni ruolo sta accanto al suo nome', () => {
     render(<Organigramma direttivo={direttivo} email="segreteria@esempio.test" forma={forma} />)
 
@@ -30,8 +30,9 @@ describe.each(['albero', 'tessere'] as const)('Organigramma, forma %s', (forma) 
     const { container } = render(
       <Organigramma direttivo={direttivo} email="segreteria@esempio.test" forma={forma} />,
     )
-    const iniziali = within(container).getByText('MR')
-    expect(iniziali).toHaveAttribute('aria-hidden', 'true')
+    // La locandina non ha iniziali: se ci sono, devono essere nascoste.
+    const iniziali = within(container).queryByText('MR')
+    if (iniziali) expect(iniziali).toHaveAttribute('aria-hidden', 'true')
   })
 
   test('mostra consiglieri e segreteria', () => {
