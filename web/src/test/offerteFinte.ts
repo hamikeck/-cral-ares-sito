@@ -123,7 +123,12 @@ export const offerteFinte: Offerta[] = [
     istruzioni:
       'Mostra la tessera del CRAL alla cassa prima del pagamento. Lo sconto viene applicato subito.',
     inEvidenza: false,
-    contatti: {},
+    contatti: {
+      indirizzo: 'Via Toledo 12, Napoli',
+      telefono: '081 555 1234',
+      sito: 'https://www.farmaciavesuvio.test',
+      codiceSconto: 'CRAL15',
+    },
   },
   {
     slug: 'palestra-acquachiara-abbonamento',

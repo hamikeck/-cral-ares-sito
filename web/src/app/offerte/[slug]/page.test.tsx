@@ -8,8 +8,9 @@ import { offerteFinte } from '@/test/offerteFinte'
 vi.mock('@/dati/offerte', () => ({
   offerteValide: async () =>
     offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15'),
-  offertaDaSlug: async (slug: string) =>
+  offertaDaSlug: vi.fn(async (slug: string) =>
     offerteFinte.find((offerta) => offerta.slug === slug),
+  ),
   slugPubblicati: async () => offerteFinte.map((offerta) => offerta.slug),
 }))
 
@@ -150,5 +151,52 @@ describe('Pagina di una singola offerta', () => {
     )
     expect(screen.getByText('Senza scadenza')).toBeInTheDocument()
     expect(screen.queryByText(/Era valida fino al/)).not.toBeInTheDocument()
+  })
+
+  describe('i recapiti del partner, per le offerte che si ottengono da soli', () => {
+    // Lo spec li prevede per `solo_sconto` (sezione 7): il socio va dal
+    // partner senza passare dai direttori, quindi deve sapere dove, a che
+    // numero e con quale codice. Fino al 25 settembre 2026 il modulo li
+    // salvava e nessuna pagina li mostrava.
+    const conRecapiti = valide.find((o) => o.slug === 'farmacia-vesuvio-parafarmaco')!
+
+    test('mostra codice sconto, indirizzo, telefono e sito', async () => {
+      render(await PaginaOfferta({ params: Promise.resolve({ slug: conRecapiti.slug }) }))
+
+      expect(screen.getByText('CRAL15')).toBeInTheDocument()
+      expect(screen.getByText('Via Toledo 12, Napoli')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: '081 555 1234' })).toHaveAttribute(
+        'href',
+        'tel:0815551234',
+      )
+      const sito = screen.getByRole('link', { name: /farmaciavesuvio\.test/ })
+      expect(sito).toHaveAttribute('href', 'https://www.farmaciavesuvio.test')
+      expect(sito).toHaveAttribute('rel', expect.stringContaining('noopener'))
+    })
+
+    test('senza recapiti non disegna un riquadro vuoto', async () => {
+      const senza = valide.find(
+        (o) => o.modalita === 'solo_sconto' && Object.keys(o.contatti).length === 0,
+      )!
+      render(await PaginaOfferta({ params: Promise.resolve({ slug: senza.slug }) }))
+
+      expect(screen.queryByText('Telefono')).not.toBeInTheDocument()
+      expect(screen.queryByText('Codice sconto')).not.toBeInTheDocument()
+    })
+
+    test('un sito che non comincia per http non diventa un link', async () => {
+      // Lo scrive un direttore a mano: «www.partner.it» senza protocollo
+      // porterebbe a una pagina del nostro sito, e tutto il resto non è un
+      // indirizzo web.
+      const { offertaDaSlug } = await import('@/dati/offerte')
+      vi.mocked(offertaDaSlug).mockResolvedValueOnce({
+        ...conRecapiti,
+        contatti: { sito: 'www.farmaciavesuvio.test' },
+      })
+      render(await PaginaOfferta({ params: Promise.resolve({ slug: conRecapiti.slug }) }))
+
+      expect(screen.getByText('www.farmaciavesuvio.test')).toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: /farmaciavesuvio/ })).not.toBeInTheDocument()
+    })
   })
 })

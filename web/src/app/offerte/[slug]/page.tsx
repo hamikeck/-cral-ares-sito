@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { RichiediOfferta } from '@/componenti/RichiediOfferta'
 import { contenutiPagine } from '@/contenuti/pagine'
+import type { Contatti } from '@/dominio/offerta'
 import { offertaDaSlug, slugPubblicati } from '@/dati/offerte'
 import { descriviScadenza, formattaData, scaduta } from '@/lib/date'
 
@@ -129,6 +130,7 @@ export default async function PaginaOfferta({
           <>
             <h2 className="text-2xl text-chiaro">{titoloComeFunziona}</h2>
             <p className="mt-3 max-w-prose text-corpo">{offerta.istruzioni}</p>
+            <Recapiti contatti={offerta.contatti} />
           </>
         ) : (
           <>
@@ -150,5 +152,65 @@ export default async function PaginaOfferta({
         </Link>
       </p>
     </article>
+  )
+}
+
+/**
+ * Codice sconto, indirizzo, telefono e sito del partner.
+ *
+ * Servono alle offerte `solo_sconto`, dove il socio va dal partner senza
+ * passare dai direttori (spec, sezione 7). Fino al 25 settembre 2026 il
+ * modulo dell'area riservata li salvava e nessuna pagina li mostrava: il
+ * telefono di quasi tutti i teatri si leggeva solo perché qualcuno l'aveva
+ * ricopiato anche nelle istruzioni.
+ *
+ * Il codice sconto va per primo ed è selezionabile per intero, come l'IBAN
+ * nella conferma: si copia, non si ricopia. Il sito diventa un link solo se
+ * comincia per http — lo scrive un direttore a mano, e «www.partner.it»
+ * senza protocollo porterebbe a una pagina di questo sito.
+ */
+function Recapiti({ contatti }: { contatti: Contatti }) {
+  const { codiceSconto, indirizzo, telefono, sito } = contatti
+  if (!codiceSconto && !indirizzo && !telefono && !sito) return null
+
+  const collegamento =
+    'fuoco-su-scuro rounded font-semibold text-luce underline underline-offset-4'
+
+  return (
+    <dl className="mt-5 flex flex-col gap-3 border-t border-parete pt-5">
+      {codiceSconto ? (
+        <Voce etichetta="Codice sconto">
+          <span className="font-mono text-chiaro select-all">{codiceSconto}</span>
+        </Voce>
+      ) : null}
+      {indirizzo ? <Voce etichetta="Indirizzo">{indirizzo}</Voce> : null}
+      {telefono ? (
+        <Voce etichetta="Telefono">
+          <a href={`tel:${telefono.replace(/[^\d+]/g, '')}`} className={collegamento}>
+            {telefono}
+          </a>
+        </Voce>
+      ) : null}
+      {sito ? (
+        <Voce etichetta="Sito">
+          {/^https?:\/\//i.test(sito) ? (
+            <a href={sito} target="_blank" rel="noopener noreferrer" className={collegamento}>
+              {sito.replace(/^https?:\/\//i, '').replace(/\/$/, '')}
+            </a>
+          ) : (
+            sito
+          )}
+        </Voce>
+      ) : null}
+    </dl>
+  )
+}
+
+function Voce({ etichetta, children }: { etichetta: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-3">
+      <dt className="text-sm text-tenue">{etichetta}</dt>
+      <dd className="text-corpo">{children}</dd>
+    </div>
   )
 }
