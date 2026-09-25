@@ -1,9 +1,10 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { RichiediOfferta } from '@/componenti/RichiediOfferta'
 import { contenutiPagine } from '@/contenuti/pagine'
 import type { Contatti } from '@/dominio/offerta'
+import { SCHEDA_CONDIVISA } from '@/lib/schedaCondivisa'
 import { offertaDaSlug, slugPubblicati } from '@/dati/offerte'
 import { descriviScadenza, formattaData, scaduta } from '@/lib/date'
 
@@ -22,17 +23,32 @@ export async function generateStaticParams() {
   return (await slugPubblicati()).map((slug) => ({ slug }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+export async function generateMetadata(
+  {
+    params,
+  }: {
+    params: Promise<{ slug: string }>
+  },
+  genitore?: ResolvingMetadata,
+): Promise<Metadata> {
   const { slug } = await params
   const offerta = await offertaDaSlug(slug)
   if (!offerta) return {}
+  const titolo = `${offerta.partner} — ${offerta.vantaggio}`
   return {
-    title: `${offerta.partner} — ${offerta.vantaggio}`,
+    title: titolo,
     description: offerta.descrizione,
+    // Il titolo della scheda su WhatsApp è quello che il socio legge prima
+    // di aprire: deve dire il partner e il vantaggio, non «CRAL ARES».
+    // L'immagine va ripresa dal layout: un `openGraph` dichiarato qui
+    // sostituisce per intero quello del genitore, e la scheda arriverebbe
+    // senza marchio.
+    openGraph: {
+      ...SCHEDA_CONDIVISA,
+      title: titolo,
+      description: offerta.descrizione,
+      images: (await genitore)?.openGraph?.images,
+    },
   }
 }
 

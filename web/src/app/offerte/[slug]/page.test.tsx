@@ -17,7 +17,7 @@ vi.mock('@/dati/offerte', () => ({
 import { violazioniAccessibilita } from '@/test/accessibilita'
 import { contenutiPagine } from '@/contenuti/pagine'
 import { descriviScadenza, formattaData } from '@/lib/date'
-import PaginaOfferta, { generateStaticParams } from './page'
+import PaginaOfferta, { generateMetadata, generateStaticParams } from './page'
 
 /** La stessa espressione usata dal mock qui sopra: è il dato atteso dai test. */
 const valide = offerteFinte.filter((o) => o.validaAl === undefined || o.validaAl >= '2026-09-15')
@@ -197,6 +197,17 @@ describe('Pagina di una singola offerta', () => {
 
       expect(screen.getByText('www.farmaciavesuvio.test')).toBeInTheDocument()
       expect(screen.queryByRole('link', { name: /farmaciavesuvio/ })).not.toBeInTheDocument()
+    })
+  })
+
+  test('il link condiviso su WhatsApp dice partner e vantaggio, non solo «CRAL ARES»', async () => {
+    const dati = await generateMetadata({ params: Promise.resolve({ slug: soloSconto.slug }) })
+
+    expect(dati.openGraph).toMatchObject({
+      title: `${soloSconto.partner} — ${soloSconto.vantaggio}`,
+      description: soloSconto.descrizione,
+      siteName: 'CRAL ARES',
+      locale: 'it_IT',
     })
   })
 })
